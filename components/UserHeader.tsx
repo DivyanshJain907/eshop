@@ -108,8 +108,15 @@ export default function UserHeader() {
                   </div>
                 </div>
 
-                {/* Logout Button */}
-                <div className="p-4">
+                {/* Action Buttons */}
+                <div className="p-4 space-y-2">
+                  <Link
+                    href="/profile/edit"
+                    onClick={() => setShowProfileMenu(false)}
+                    className="block w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors text-center"
+                  >
+                    ✏️ Edit Profile
+                  </Link>
                   <button
                     onClick={() => {
                       setShowProfileMenu(false);

@@ -2,166 +2,27 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
-import UserHeader from '@/components/UserHeader';
-import InventoryStats from '@/components/InventoryStats';
-import ProductTable from '@/components/ProductTable';
-import SaleHistory from '@/components/SaleHistory';
-import ProductBrowser from '@/components/ProductBrowser';
-import CartManager from '@/components/CartManager';
-import BookingModal from '@/components/BookingModal';
-import BookingHistory from '@/components/BookingHistory';
-import BookingManagement from '@/components/BookingManagement';
-import UserManagement from '@/components/UserManagement';
-import { Product } from '@/lib/types';
 
-export default function Home() {
+export default function LandingPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuth();
-  const [cartItems, setCartItems] = useState<(Product & { cartQuantity: number })[]>([]);
-  const [activeTab, setActiveTab] = useState<'browse' | 'cart' | 'bookings'>('browse');
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [bookingRefresh, setBookingRefresh] = useState(0);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsRefresh, setProductsRefresh] = useState(0);
-  const [sales, setSales] = useState<Array<{ _id?: string; productName: string; quantity: number; totalAmount: number; createdAt?: string | Date; timestamp?: string | Date }>>([]);
 
+  // Redirect authenticated users to their respective dashboard
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, isLoading, router]);
-
-  // Redirect admin/employee users to dashboard
-  useEffect(() => {
-    if (!isLoading && isAuthenticated && user && (user.role === 'admin' || user.role === 'employee')) {
-      router.push('/dashboard');
-    }
-  }, [isLoading, isAuthenticated, user?.role, router]);
-
-  // Fetch products for dashboard
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(Array.isArray(data) ? data : (data.products || []));
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-    fetchProducts();
-  }, [productsRefresh]);
-
-  // Fetch sales for dashboard
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        const response = await fetch('/api/sales');
-        if (response.ok) {
-          const data = await response.json();
-          setSales(Array.isArray(data) ? data : []);
-        }
-      } catch (error) {
-        console.error('Error fetching sales:', error);
-      }
-    };
-    fetchSales();
-  }, []);
-
-  // Load cart from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        try {
-          setCartItems(JSON.parse(savedCart));
-        } catch (error) {
-          console.error('Error loading cart:', error);
-        }
+    if (!isLoading && isAuthenticated) {
+      if (user?.role === 'admin' || user?.role === 'employee') {
+        router.push('/dashboard');
+      } else {
+        router.push('/home');
       }
     }
-  }, []);
-
-  // Save cart to localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('cart', JSON.stringify(cartItems));
-    }
-  }, [cartItems]);
-
-  const handleAddToCart = (product: Product) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find(
-        (item) => (item._id || item.id) === (product._id || product.id)
-      );
-
-      if (existingItem) {
-        return prevItems.map((item) =>
-          (item._id || item.id) === (product._id || product.id)
-            ? { ...item, cartQuantity: item.cartQuantity + 1 }
-            : item
-        );
-      }
-
-      return [...prevItems, { ...product, cartQuantity: 1 }];
-    });
-  };
-
-  const handleRemoveFromCart = (productId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => (item._id || item.id) !== productId)
-    );
-  };
-
-  const handleUpdateCartQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      handleRemoveFromCart(productId);
-      return;
-    }
-
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        (item._id || item.id) === productId
-          ? { ...item, cartQuantity: quantity }
-          : item
-      )
-    );
-  };
-
-  const handleBookingSuccess = () => {
-    setCartItems([]);
-    setBookingRefresh((prev) => prev + 1);
-    setActiveTab('bookings');
-  };
-
-  const handleProductQuantityChange = async (productId: string, quantity: number) => {
-    try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ quantity }),
-      });
-      if (response.ok) {
-        // Refresh products list
-        const productsResponse = await fetch('/api/products');
-        if (productsResponse.ok) {
-          const data = await productsResponse.json();
-          setProducts(data.products || []);
-        }
-      }
-    } catch (error) {
-      console.error('Error updating product quantity:', error);
-    }
-  };
+  }, [isAuthenticated, isLoading, user?.role, router]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
@@ -170,173 +31,183 @@ export default function Home() {
     );
   }
 
-  if (!isAuthenticated) {
+  // If authenticated, redirect (handled in useEffect above)
+  if (isAuthenticated) {
     return null;
   }
 
-  // Check if user is Employee or Admin
-  const isEmployeeOrAdmin = user?.role === 'employee' || user?.role === 'admin';
-
-  // Show Dashboard for Employees and Admins
-  if (isEmployeeOrAdmin) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <UserHeader />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="mb-12">
-            <h1 className="text-4xl font-bold text-gray-900">Welcome back, {user?.name}! 👋</h1>
-            <p className="text-gray-600 mt-2 text-lg">Manage your shop efficiently</p>
-          </div>
-
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {/* Products Card */}
-            <Link href="/products" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
-              <div className="text-4xl mb-3">📦</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Products</h3>
-              <p className="text-gray-600 mb-4">Manage your product catalog</p>
-              <button className="text-indigo-600 font-medium hover:text-indigo-700">View Products →</button>
-            </Link>
-
-            {/* Bookings Card */}
-            <Link href="/bookings" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
-              <div className="text-4xl mb-3">📋</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Bookings</h3>
-              <p className="text-gray-600 mb-4">View all customer bookings</p>
-              <button className="text-indigo-600 font-medium hover:text-indigo-700">View Bookings →</button>
-            </Link>
-
-            {/* Sales Card */}
-            <Link href="/sales" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
-              <div className="text-4xl mb-3">💰</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Sales</h3>
-              <p className="text-gray-600 mb-4">Track your sales history</p>
-              <button className="text-indigo-600 font-medium hover:text-indigo-700">View Sales →</button>
-            </Link>
-          </div>
-
-          {/* Admin Only Card */}
-          {user?.role === 'admin' && (
-            <div className="grid grid-cols-1 gap-6">
-              <Link href="/users" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
-                <div className="text-4xl mb-3">👥</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">User Management</h3>
-                <p className="text-gray-600 mb-4">Manage system users and permissions</p>
-                <button className="text-indigo-600 font-medium hover:text-indigo-700">Manage Users →</button>
-              </Link>
-            </div>
-          )}
-
-          {/* Quick Action Button */}
-          <div className="mt-12 flex gap-4">
-            <Link
-              href="/products/add"
-              className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-lg transition shadow-lg"
-            >
-              ➕ Add New Product
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show Landing Page for Customers
+  // Landing Page for unauthenticated users
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <UserHeader />
-
-      {/* Navigation Tabs */}
-      <nav className="bg-white border-b border-gray-200 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-8">
-            <button
-              onClick={() => setActiveTab('browse')}
-              className={`py-4 px-2 font-medium border-b-2 transition-colors ${
-                activeTab === 'browse'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              🛍️ Browse Products
-            </button>
-            <button
-              onClick={() => setActiveTab('cart')}
-              className={`py-4 px-2 font-medium border-b-2 transition-colors relative ${
-                activeTab === 'cart'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              🛒 Shopping Cart
-              {cartItems.length > 0 && (
-                <span className="absolute top-2 right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItems.length}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab('bookings')}
-              className={`py-4 px-2 font-medium border-b-2 transition-colors ${
-                activeTab === 'bookings'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              📋 My Bookings
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex flex-col">
+      {/* Navigation Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="text-3xl">🛒</div>
+            <h1 className="text-2xl font-bold text-gray-900">eShop</h1>
+          </div>
+          <div className="flex gap-4">
+            <Link href="/login" className="px-6 py-2 text-indigo-600 font-medium hover:text-indigo-700 transition-colors">
+              Sign In
+            </Link>
+            <Link href="/register" className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+              Register
+            </Link>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Main Content */}
-      <main className="grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'browse' && (
-          <div id="browse">
-            <ProductBrowser onAddToCart={handleAddToCart} />
-          </div>
-        )}
-
-        {activeTab === 'cart' && (
-          <div className="space-y-4">
-            <CartManager
-              cartItems={cartItems}
-              onRemove={handleRemoveFromCart}
-              onUpdateQuantity={handleUpdateCartQuantity}
-            />
-            {cartItems.length > 0 && (
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setIsBookingModalOpen(true)}
-                  className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-bold text-lg"
-                >
-                  📋 Book This Order (24hr Lock)
-                </button>
+      {/* Hero Section */}
+      <section className="grow flex items-center">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+                  Your Trusted <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-600">eShop</span>
+                </h2>
+                <p className="text-xl text-gray-600">
+                  Discover amazing products, manage your inventory efficiently, and grow your business with eShop's powerful tools.
+                </p>
               </div>
-            )}
+
+              {/* Features List */}
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="text-gray-700">Browse thousands of products</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="text-gray-700">24-hour booking and reservation system</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="text-gray-700">Track your orders in real-time</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="text-gray-700">Secure and reliable transactions</span>
+                </li>
+              </ul>
+
+              {/* CTA Buttons */}
+              <div className="flex gap-4 pt-4">
+                <Link href="/register" className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl">
+                  Get Started
+                </Link>
+                <Link href="/login" className="px-8 py-3 border-2 border-indigo-600 text-indigo-600 rounded-lg font-bold hover:bg-indigo-50 transition-colors">
+                  Sign In
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Illustration */}
+            <div className="hidden md:block">
+              <div className="relative w-full h-96 bg-gradient-to-br from-indigo-200 to-blue-200 rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden">
+                <div className="text-center">
+                  <div className="text-8xl mb-4">📦</div>
+                  <p className="text-2xl font-bold text-indigo-900">Ready to Shop?</p>
+                </div>
+                <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-300 rounded-full opacity-30"></div>
+                <div className="absolute bottom-10 left-10 w-32 h-32 bg-blue-300 rounded-full opacity-30"></div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
+      </section>
 
-        {activeTab === 'bookings' && (
-          <BookingHistory key={bookingRefresh} />
-        )}
-      </main>
+      {/* Features Section */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-bold text-gray-900 mb-4">Why Choose eShop?</h3>
+            <p className="text-xl text-gray-600">Everything you need for a seamless shopping experience</p>
+          </div>
 
-      {/* Booking Modal */}
-      <BookingModal
-        cartItems={cartItems}
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        onSuccess={handleBookingSuccess}
-      />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="p-8 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-5xl mb-4">🛍️</div>
+              <h4 className="text-xl font-bold text-gray-900 mb-3">Wide Selection</h4>
+              <p className="text-gray-600">
+                Browse through our extensive catalog of quality products from trusted sellers.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-5xl mb-4">⏰</div>
+              <h4 className="text-xl font-bold text-gray-900 mb-3">24-Hour Lock System</h4>
+              <p className="text-gray-600">
+                Book your products with our innovative 24-hour reservation system for guaranteed availability.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-5xl mb-4">🔒</div>
+              <h4 className="text-xl font-bold text-gray-900 mb-3">Secure & Safe</h4>
+              <p className="text-gray-600">
+                Your transactions are protected with industry-leading security standards and encryption.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 bg-gradient-to-r from-indigo-600 to-blue-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center text-white">
+            <div>
+              <div className="text-5xl font-bold mb-2">10K+</div>
+              <p className="text-indigo-100">Products Available</p>
+            </div>
+            <div>
+              <div className="text-5xl font-bold mb-2">50K+</div>
+              <p className="text-indigo-100">Happy Customers</p>
+            </div>
+            <div>
+              <div className="text-5xl font-bold mb-2">100K+</div>
+              <p className="text-indigo-100">Orders Completed</p>
+            </div>
+            <div>
+              <div className="text-5xl font-bold mb-2">24/7</div>
+              <p className="text-indigo-100">Customer Support</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h3 className="text-4xl font-bold text-gray-900 mb-4">Ready to Start Shopping?</h3>
+          <p className="text-xl text-gray-600 mb-8">
+            Join thousands of satisfied customers and discover amazing products today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register" className="px-8 py-4 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl text-lg">
+              Create Your Account
+            </Link>
+            <Link href="/login" className="px-8 py-4 border-2 border-indigo-600 text-indigo-600 rounded-lg font-bold hover:bg-indigo-50 transition-colors text-lg">
+              Already Have an Account?
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 mt-12 border-t border-gray-800">
+      <footer className="bg-gray-900 text-gray-300 mt-auto border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* About */}
             <div>
-              <h3 className="text-white font-bold text-lg mb-4">About eShop</h3>
+              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                <span className="text-2xl">🛒</span> eShop
+              </h3>
               <p className="text-sm text-gray-400">
                 Your trusted online shopping destination for quality products and excellent customer service.
               </p>
@@ -346,10 +217,9 @@ export default function Home() {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Shop</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">My Orders</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Cart</a></li>
+                <li><Link href="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
+                <li><Link href="/login" className="text-gray-400 hover:text-white transition-colors">Browse Products</Link></li>
+                <li><Link href="/register" className="text-gray-400 hover:text-white transition-colors">Sign Up</Link></li>
               </ul>
             </div>
 
@@ -357,10 +227,10 @@ export default function Home() {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">Support</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Shipping Info</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Returns</a></li>
+                <li><Link href="/support/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="/support/faq" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link href="/support/shipping" className="text-gray-400 hover:text-white transition-colors">Shipping Info</Link></li>
+                <li><Link href="/support/returns" className="text-gray-400 hover:text-white transition-colors">Returns</Link></li>
               </ul>
             </div>
 
@@ -368,10 +238,9 @@ export default function Home() {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">Contact</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>📧 support@eshop.com</li>
-                <li>📞 1-800-ESHOP-01</li>
-                <li>📍 123 Shopping St, Commerce City</li>
-                <li>🕐 24/7 Customer Support</li>
+                <li>📧 jainsalescorporationrudrapur@google.com</li>
+                <li>📞 774-483-5784</li>
+                <li>📍 Preet-Vihar colony, Rudrapur, Uttarakhand</li>
               </ul>
             </div>
           </div>
