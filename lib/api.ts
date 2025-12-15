@@ -276,7 +276,7 @@ export async function updateUserRole(id: string, role: string) {
       const responseText = await response.text();
       console.error('🔴 Update role failed - response:', responseText);
       
-      let errorData = {};
+      let errorData: any = {};
       try {
         errorData = JSON.parse(responseText);
       } catch (e) {
