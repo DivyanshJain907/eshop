@@ -9,6 +9,7 @@ import ProductBrowser from '@/components/ProductBrowser';
 import CartManager from '@/components/CartManager';
 import BookingModal from '@/components/BookingModal';
 import BookingHistory from '@/components/BookingHistory';
+import Footer from '@/components/Footer';
 import { Product } from '@/lib/types';
 
 export default function CustomerHome() {
@@ -196,66 +197,7 @@ export default function CustomerHome() {
       />
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 mt-12 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            {/* About */}
-            <div>
-              <h3 className="text-white font-bold text-lg mb-4">Jain Sales Corporation</h3>
-              <p className="text-sm text-gray-400">
-                Your trusted online shopping destination for quality products and excellent customer service.
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/home" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-                <li><a href="#" onClick={() => setActiveTab('browse')} className="text-gray-400 hover:text-white transition-colors">Shop</a></li>
-                <li><a href="#" onClick={() => setActiveTab('bookings')} className="text-gray-400 hover:text-white transition-colors">My Orders</a></li>
-                <li><a href="#" onClick={() => setActiveTab('cart')} className="text-gray-400 hover:text-white transition-colors">Cart</a></li>
-              </ul>
-            </div>
-
-            {/* Support */}
-            <div>
-              <h3 className="text-white font-bold text-lg mb-4">Support</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/support/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
-                <li><Link href="/support/faq" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
-                <li><Link href="/support/shipping" className="text-gray-400 hover:text-white transition-colors">Shipping Info</Link></li>
-                <li><Link href="/support/returns" className="text-gray-400 hover:text-white transition-colors">Returns</Link></li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h3 className="text-white font-bold text-lg mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>📧 jainsalescorporationrudrapur@google.com</li>
-                <li>📞 774-483-5784</li>
-                <li>📍 Preet-Vihar colony, Rudrapur, Uttarakhand</li>
-                <li>🕐 24/7 Customer Support</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-gray-800 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-sm text-gray-400 mb-4 md:mb-0">
-                © 2026 Jain Sales Corporation. All rights reserved.
-              </p>
-              <div className="flex gap-4 text-sm text-gray-400">
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-white transition-colors">Cookies</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer onTabChange={setActiveTab} />
     </div>
   );
 }

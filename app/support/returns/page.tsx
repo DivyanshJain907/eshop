@@ -1,22 +1,23 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
 export default function ReturnsPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-50">
       <UserHeader />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm mb-8">
-          <Link href="/" className="text-indigo-600 hover:text-indigo-700">Home</Link>
-          <span className="text-gray-500">/</span>
-          <Link href="/support" className="text-indigo-600 hover:text-indigo-700">Support</Link>
-          <span className="text-gray-500">/</span>
-          <span className="text-gray-600 font-semibold">Returns & Refunds</span>
-        </div>
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="mb-8 flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
+        >
+          <span>←</span> Back
+        </button>
 
         {/* Header */}
         <div className="mb-12">
@@ -305,41 +306,6 @@ export default function ReturnsPage() {
           <p className="text-gray-600 text-sm mt-6 text-center">
             Note: Banks may take an additional 1-2 days to process the refund on their end.
           </p>
-        </div>
-
-        {/* FAQ for Returns */}
-        <div className="bg-indigo-50 rounded-lg shadow-md p-8 mb-12 border border-indigo-200">
-          <h2 className="text-2xl font-bold text-indigo-900 mb-6">Common Questions</h2>
-
-          <div className="space-y-6">
-            <div>
-              <h4 className="font-semibold text-indigo-900 mb-2">Q: Can I get store credit instead of refund?</h4>
-              <p className="text-indigo-800">
-                A: Yes! If you prefer, we can provide store credit equal to 110% of your refund amount. Contact support to arrange this.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-indigo-900 mb-2">Q: What if the item was a gift?</h4>
-              <p className="text-indigo-800">
-                A: We can process a refund to the original payment method or issue store credit. You'll need the booking details or receipt.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-indigo-900 mb-2">Q: Can I exchange an item instead of returning?</h4>
-              <p className="text-indigo-800">
-                A: Absolutely! You can exchange items at no additional cost if the new item is within 7 days of your original booking. Contact support.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-indigo-900 mb-2">Q: What if I miss the return window?</h4>
-              <p className="text-indigo-800">
-                A: Contact our support team and explain your situation. We consider special cases for defective items or manufacturing defects.
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Support CTA */}

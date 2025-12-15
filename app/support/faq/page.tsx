@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
@@ -87,6 +88,7 @@ const faqData: FAQItem[] = [
 ];
 
 export default function FAQPage() {
+  const router = useRouter();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'booking' | 'delivery' | 'payment' | 'general'>('all');
 
@@ -97,14 +99,13 @@ export default function FAQPage() {
       <UserHeader />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm mb-8">
-          <Link href="/" className="text-indigo-600 hover:text-indigo-700">Home</Link>
-          <span className="text-gray-500">/</span>
-          <Link href="/support" className="text-indigo-600 hover:text-indigo-700">Support</Link>
-          <span className="text-gray-500">/</span>
-          <span className="text-gray-600 font-semibold">FAQ</span>
-        </div>
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="mb-8 flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
+        >
+          <span>←</span> Back
+        </button>
 
         {/* Header */}
         <div className="mb-12">
