@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -24,7 +24,8 @@ export async function GET(
       process.env.JWT_SECRET || 'your-secret-key'
     );
 
-    const booking = await Booking.findById(params.id)
+    const { id } = await params;
+    const booking = await Booking.findById(id)
       .populate('userId', 'name email phone street city state pincode')
       .populate('items.productId', 'name price');
 
@@ -66,7 +67,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -104,8 +105,9 @@ export async function PUT(
       );
     }
 
+    const { id } = await params;
     const booking = await Booking.findByIdAndUpdate(
-      params.id,
+      id,
       { status },
       { new: true, runValidators: true }
     )
@@ -138,7 +140,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -156,7 +158,8 @@ export async function DELETE(
       process.env.JWT_SECRET || 'your-secret-key'
     );
 
-    const booking = await Booking.findById(params.id);
+    const { id } = await params;
+    const booking = await Booking.findById(id);
 
     if (!booking) {
       return NextResponse.json(

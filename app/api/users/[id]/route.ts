@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -33,7 +33,8 @@ export async function GET(
       );
     }
 
-    const user = await User.findById(params.id).select('-password');
+    const { id } = await params;
+    const user = await User.findById(id).select('-password');
 
     if (!user) {
       return NextResponse.json(
@@ -60,10 +61,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    console.log('🔵 PUT /api/users/:id called with params:', params);
+    const { id } = await params;
+    console.log('🔵 PUT /api/users/:id called with params:', id);
     
     await connectDB();
     console.log('✅ Database connected');
@@ -114,22 +116,22 @@ export async function PUT(
     }
 
     // Validate user ID format - accept string representation of ObjectId
-    let validObjectId = params.id;
-    console.log('🔵 ID to validate:', params.id, 'length:', params.id.length);
+    let validObjectId = id;
+    console.log('🔵 ID to validate:', id, 'length:', id.length);
     
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
-      console.log('🔴 Invalid user ID format:', params.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log('🔴 Invalid user ID format:', id);
       return NextResponse.json(
-        { message: `Invalid user ID format: ${params.id}` },
+        { message: `Invalid user ID format: ${id}` },
         { status: 400 }
       );
     }
 
     // Check if user exists first
-    const userExists = await User.findById(params.id);
+    const userExists = await User.findById(id);
     console.log('🔵 User exists:', !!userExists);
     if (!userExists) {
-      console.log('🔴 User not found before update:', params.id);
+      console.log('🔴 User not found before update:', id);
       return NextResponse.json(
         { message: 'User not found' },
         { status: 404 }
@@ -149,7 +151,7 @@ export async function PUT(
     console.log('🔵 Update data:', updateData);
 
     const updatedUser = await User.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(params.id),
+      new mongoose.Types.ObjectId(id),
       updateData,
       { new: true, runValidators: false }
     ).select('-password');
@@ -157,7 +159,7 @@ export async function PUT(
     console.log('🔵 Updated user:', updatedUser);
 
     if (!updatedUser) {
-      console.log('🔴 Failed to update user:', params.id);
+      console.log('🔴 Failed to update user:', id);
       return NextResponse.json(
         { message: 'Failed to update user' },
         { status: 500 }
@@ -188,7 +190,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -215,15 +217,16 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
     // Prevent deleting yourself
-    if (params.id === decoded.id) {
+    if (id === decoded.id) {
       return NextResponse.json(
         { message: 'You cannot delete your own account' },
         { status: 400 }
       );
     }
 
-    const deletedUser = await User.findByIdAndDelete(params.id);
+    const deletedUser = await User.findByIdAndDelete(id);
 
     if (!deletedUser) {
       return NextResponse.json(
