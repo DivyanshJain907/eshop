@@ -16,7 +16,7 @@ function setDiscounts(newDiscounts: any[]) {
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = request.cookies.get('token')?.value;
@@ -31,9 +31,10 @@ export async function PUT(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const currentDiscounts = getDiscounts();
-    const index = currentDiscounts.findIndex((d) => d.id === params.id);
+    const index = currentDiscounts.findIndex((d) => d.id === id);
 
     if (index === -1) {
       return NextResponse.json(
@@ -45,7 +46,7 @@ export async function PUT(
     const updatedDiscount = {
       ...currentDiscounts[index],
       ...body,
-      id: params.id, // Keep the same ID
+      id: id, // Keep the same ID
       createdAt: currentDiscounts[index].createdAt, // Keep original creation date
     };
 
@@ -64,7 +65,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = request.cookies.get('token')?.value;
@@ -79,8 +80,9 @@ export async function DELETE(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
 
+    const { id } = await params;
     const currentDiscounts = getDiscounts();
-    const index = currentDiscounts.findIndex((d) => d.id === params.id);
+    const index = currentDiscounts.findIndex((d) => d.id === id);
 
     if (index === -1) {
       return NextResponse.json(
