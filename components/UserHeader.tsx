@@ -188,7 +188,13 @@ export default function UserHeader() {
               href="/sales"
               className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
             >
-              💰 Sales
+              🏪 Direct Sales
+            </Link>
+            <Link
+              href="/discounts"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
+            >
+              🎯 Discounts
             </Link>
             {user.role === 'admin' && (
               <Link

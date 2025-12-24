@@ -1,5 +1,6 @@
 import { connectDB } from '@/lib/db';
 import Booking from '@/lib/models/Booking';
+import Product from '@/lib/models/Product';
 import User from '@/lib/models/User';
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
@@ -106,13 +107,7 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const booking = await Booking.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true, runValidators: true }
-    )
-      .populate('userId', 'name email phone')
-      .populate('items.productId', 'name price');
+    const booking = await Booking.findById(id);
 
     if (!booking) {
       return NextResponse.json(
@@ -121,11 +116,36 @@ export async function PUT(
       );
     }
 
+    // If cancelling a booking, restore product quantities
+    if (status === 'cancelled' && booking.status !== 'cancelled') {
+      for (const item of booking.items) {
+        try {
+          const product = await Product.findById(item.productId);
+          if (product) {
+            // Restore quantity
+            product.quantity += item.quantity;
+            await product.save();
+            console.log(`✅ Product ${item.productName} quantity restored by ${item.quantity}. New quantity: ${product.quantity}`);
+          }
+        } catch (productError) {
+          console.warn(`⚠️  Could not restore product ${item.productId}:`, productError);
+        }
+      }
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true }
+    )
+      .populate('userId', 'name email phone')
+      .populate('items.productId', 'name price');
+
     return NextResponse.json(
       {
         success: true,
         message: `Booking status updated to ${status}`,
-        booking,
+        booking: updatedBooking,
       },
       { status: 200 }
     );

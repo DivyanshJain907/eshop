@@ -1,21 +1,17 @@
 import { connectDB } from '@/lib/db';
-import Booking from '@/lib/models/Booking';
 import Product from '@/lib/models/Product';
-import User from '@/lib/models/User';
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
+// In-memory storage for direct sales
+let directSales: any[] = [];
+
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔵 Booking API: POST request received');
-    
-    await connectDB();
-    console.log('✅ Connected to database');
+    console.log('🔵 Direct Sales API: POST request received');
 
-    // Get token from cookie
     const token = request.cookies.get('token')?.value;
-    console.log('Token present:', !!token);
-    
+
     if (!token) {
       console.log('❌ No token found');
       return NextResponse.json(
@@ -27,10 +23,7 @@ export async function POST(request: NextRequest) {
     // Verify token
     let decoded: any;
     try {
-      decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET || 'your-secret-key'
-      );
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
       console.log('✅ Token verified, user ID:', decoded.id);
     } catch (jwtError: any) {
       console.log('❌ Token verification failed:', jwtError.message);
@@ -42,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     console.log('Request body:', body);
-    
+
     const { items, totalAmount } = body;
 
     // Validation
@@ -72,7 +65,6 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Check if quantity is positive
       if (item.quantity <= 0) {
         console.log('❌ Invalid quantity:', item.quantity);
         return NextResponse.json(
@@ -83,7 +75,9 @@ export async function POST(request: NextRequest) {
 
       // Check product availability
       try {
+        await connectDB();
         const product = await Product.findById(item.productId);
+
         if (!product) {
           console.log('❌ Product not found:', item.productId);
           return NextResponse.json(
@@ -93,7 +87,9 @@ export async function POST(request: NextRequest) {
         }
 
         if (product.quantity < item.quantity) {
-          console.log(`❌ Insufficient stock for ${item.productName}. Available: ${product.quantity}, Requested: ${item.quantity}`);
+          console.log(
+            `❌ Insufficient stock for ${item.productName}. Available: ${product.quantity}, Requested: ${item.quantity}`
+          );
           return NextResponse.json(
             { message: `Insufficient stock for "${item.productName}". Only ${product.quantity} item(s) available, but you requested ${item.quantity}.` },
             { status: 400 }
@@ -108,64 +104,41 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create booking with 24-hour expiry
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 24);
-
-    console.log('Creating booking with:', { userId: decoded.id, itemCount: items.length, totalAmount, expiresAt });
-
-    // Reduce product quantities for each booked item
+    // Reduce product quantities for each sold item
     for (const item of items) {
       try {
+        await connectDB();
         const product = await Product.findById(item.productId);
         if (product) {
-          // Reduce quantity by booked amount
+          // Reduce quantity by sold amount
           product.quantity = Math.max(0, product.quantity - item.quantity);
           await product.save();
           console.log(`✅ Product ${item.productName} quantity reduced by ${item.quantity}. New quantity: ${product.quantity}`);
         }
       } catch (productError) {
-        console.warn(`⚠️  Could not update product ${item.productId}:`, productError);
+        console.warn(`⚠️ Could not update product ${item.productId}:`, productError);
       }
     }
 
-    const booking = await Booking.create({
-      userId: decoded.id,
+    // Record the direct sale
+    const sale = {
+      id: Date.now().toString(),
+      employeeId: decoded.id,
       items,
       totalAmount,
-      status: 'pending',
-      expiresAt,
-    });
+      status: 'completed',
+      createdAt: new Date().toISOString(),
+    };
 
-    console.log('✅ Booking created:', booking._id);
+    directSales.push(sale);
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: 'Booking created successfully',
-        booking: {
-          id: booking._id,
-          userId: booking.userId,
-          items: booking.items,
-          totalAmount: booking.totalAmount,
-          status: booking.status,
-          expiresAt: booking.expiresAt,
-          createdAt: booking.createdAt,
-        },
-      },
-      { status: 201 }
-    );
+    console.log('✅ Direct sale created successfully:', sale);
+
+    return NextResponse.json(sale, { status: 201 });
   } catch (error: any) {
-    console.error('❌ Booking creation error:', error);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    
+    console.error('❌ Error processing direct sale:', error);
     return NextResponse.json(
-      { 
-        message: 'Error creating booking', 
-        error: error.message,
-        details: error.stack
-      },
+      { message: 'Error processing sale', error: error.message },
       { status: 500 }
     );
   }
@@ -173,64 +146,19 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
-
-    // Get token from cookie
     const token = request.cookies.get('token')?.value;
+
     if (!token) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify token
-    const decoded: any = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'your-secret-key'
-    );
+    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
 
-    // Get user to check role
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      return NextResponse.json(
-        { message: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    let bookings;
-
-    // If customer, get their bookings
-    if (user.role === 'customer') {
-      bookings = await Booking.find({ userId: decoded.id })
-        .populate('userId', 'name email phone')
-        .populate('items.productId', 'name price')
-        .sort({ createdAt: -1 });
-    } else if (user.role === 'employee' || user.role === 'admin') {
-      // If employee/admin, get all bookings
-      bookings = await Booking.find()
-        .populate('userId', 'name email phone street city state pincode')
-        .populate('items.productId', 'name price')
-        .sort({ createdAt: -1 });
-    } else {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 403 }
-      );
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-        bookings,
-      },
-      { status: 200 }
-    );
+    return NextResponse.json(directSales);
   } catch (error: any) {
-    console.error('Fetch bookings error:', error);
+    console.error('Error fetching direct sales:', error);
     return NextResponse.json(
-      { message: 'Error fetching bookings', error: error.message },
+      { message: 'Error fetching sales' },
       { status: 500 }
     );
   }

@@ -110,7 +110,7 @@ export default function CustomerHome() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navbar isAuthenticated={true} userName={user?.name} />
+      <Navbar isAuthenticated={true} userName={user?.name} userRole={user?.role} />
 
       {/* Navigation Tabs */}
       <nav className="bg-white border-b border-gray-200 sticky top-16 z-40">

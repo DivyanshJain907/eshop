@@ -18,7 +18,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
     description: '',
     price: '',
     quantity: '',
-    stock: '',
+    stockThreshold: '',
     image: '',
     images: '',
     category: '',
@@ -109,7 +109,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
             description: formData.description.trim(),
             price: parseFloat(price),
             quantity: parseInt(quantity, 10),
-            stock: parseInt(formData.stock || quantity, 10),
+            stockThreshold: formData.stockThreshold ? parseInt(formData.stockThreshold, 10) : 0,
             image: formData.image || '📦',
             images: imageArray,
             category: formData.category.trim(),
@@ -138,7 +138,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
           description: '',
           price: '',
           quantity: '',
-          stock: '',
+          stockThreshold: '',
           image: '',
           images: '',
           category: '',
@@ -228,9 +228,21 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                placeholder="e.g., Electronics, Clothing"
+                placeholder="Type category or select from suggestions"
+                list="categoryList"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
               />
+              <datalist id="categoryList">
+                <option value="Borosil" />
+                <option value="Jaypee Plus" />
+                <option value="Laopala" />
+                <option value="Pearlpet" />
+                <option value="Yera Glassware" />
+                <option value="Dreamz" />
+                <option value="Bergner" />
+                <option value="Borosil Lara" />
+              </datalist>
+              <p className="text-xs text-gray-500 mt-1">Type custom category or use suggestions</p>
             </div>
           </div>
         </div>
@@ -311,18 +323,18 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Stock Level
+                Stock Threshold
               </label>
               <input
                 type="number"
-                name="stock"
-                value={formData.stock}
+                name="stockThreshold"
+                value={formData.stockThreshold || ''}
                 onChange={handleChange}
-                placeholder="Auto-filled from quantity"
+                placeholder="Alert when stock falls below this"
                 min="0"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
               />
-              <p className="text-xs text-gray-500 mt-1">Leave empty to use quantity value</p>
+              <p className="text-xs text-gray-500 mt-1">Admin & Employee will be alerted when stock reaches this level</p>
             </div>
           </div>
         </div>

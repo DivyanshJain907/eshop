@@ -42,6 +42,16 @@ export default function CartManager({
       return;
     }
 
+    // Find the product to check available stock
+    const product = items.find(item => (item._id || item.id) === productId);
+    if (!product) return;
+
+    // Validate against available quantity
+    if (quantity > product.quantity) {
+      alert(`⚠️ Only ${product.quantity} item(s) available for "${product.name}"`);
+      return;
+    }
+
     const updated = items.map(item =>
       (item._id || item.id) === productId ? { ...item, cartQuantity: quantity } : item
     );
@@ -81,6 +91,9 @@ export default function CartManager({
             <div className="flex-1">
               <h3 className="font-bold text-gray-900">{item.name}</h3>
               <p className="text-sm text-gray-600">Price: ₹{item.price.toFixed(2)}</p>
+              <p className="text-xs text-blue-600 mt-1">
+                📦 Available: {item.quantity} item(s)
+              </p>
             </div>
 
             {/* Quantity Control */}

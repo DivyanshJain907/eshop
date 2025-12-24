@@ -76,7 +76,14 @@ export default function ProductTable({ products = [], onQuantityChange }: Produc
                     product.quantity < 10 ? 'text-red-600' : 'text-green-600'
                   }`}
                 >
-                  {product.quantity}
+                  <div>
+                    {product.quantity}
+                    {product.stockThreshold && product.quantity <= product.stockThreshold && (
+                      <div className="text-xs text-red-600 font-bold mt-1 bg-red-50 px-2 py-1 rounded">
+                        ⚠️ Low Stock
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="border border-gray-300 px-4 py-3 text-right text-gray-900 font-medium">
                   ${(product.price * product.quantity).toFixed(2)}

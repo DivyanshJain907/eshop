@@ -23,10 +23,10 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Please provide quantity'],
       min: [0, 'Quantity cannot be negative'],
     },
-    stock: {
+    stockThreshold: {
       type: Number,
       default: 0,
-      min: [0, 'Stock cannot be negative'],
+      min: [0, 'Stock threshold cannot be negative'],
     },
     image: {
       type: String,

@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation';
 interface NavbarProps {
   isAuthenticated?: boolean;
   userName?: string;
+  userRole?: string;
 }
 
-export default function Navbar({ isAuthenticated = false, userName }: NavbarProps) {
+export default function Navbar({ isAuthenticated = false, userName, userRole }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
@@ -77,6 +78,14 @@ export default function Navbar({ isAuthenticated = false, userName }: NavbarProp
                 >
                   Products
                 </Link>
+                {(userRole === 'admin' || userRole === 'employee') && (
+                  <Link
+                    href="/discounts"
+                    className="px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 transition-colors rounded-lg hover:bg-gray-100"
+                  >
+                    💰 Discounts
+                  </Link>
+                )}
                 <Link
                   href="/bookings"
                   className="px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 transition-colors rounded-lg hover:bg-gray-100"
@@ -159,6 +168,14 @@ export default function Navbar({ isAuthenticated = false, userName }: NavbarProp
                 >
                   Products
                 </button>
+                {(userRole === 'admin' || userRole === 'employee') && (
+                  <button
+                    onClick={() => handleNavClick('/discounts')}
+                    className="w-full text-left px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    💰 Discounts
+                  </button>
+                )}
                 <button
                   onClick={() => handleNavClick('/bookings')}
                   className="w-full text-left px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors"
