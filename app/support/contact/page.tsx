@@ -5,7 +5,6 @@ import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
 export default function ContactUsPage() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',

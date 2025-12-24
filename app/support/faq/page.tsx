@@ -87,7 +87,6 @@ const faqData: FAQItem[] = [
 ];
 
 export default function FAQPage() {
-  const router = useRouter();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'booking' | 'delivery' | 'payment' | 'general'>('all');
 

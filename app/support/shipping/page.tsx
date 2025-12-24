@@ -5,7 +5,6 @@ import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
 export default function ShippingInfoPage() {
-  const router = useRouter();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const toggleSection = (section: string) => {

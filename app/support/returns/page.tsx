@@ -4,7 +4,6 @@ import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
 export default function ReturnsPage() {
-  const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-50">
       <UserHeader />
