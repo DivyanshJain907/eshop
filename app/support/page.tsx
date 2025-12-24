@@ -1,9 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
 export default function SupportPage() {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
   const supportOptions = [
     {
       icon: '📞',
