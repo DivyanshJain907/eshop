@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
@@ -11,14 +10,6 @@ export default function ReturnsPage() {
       <UserHeader />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back Button */}
-        <button
-          onClick={() => router.back()}
-          className="mb-8 flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
-        >
-          <span>←</span> Back
-        </button>
-
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Returns & Refunds Policy</h1>

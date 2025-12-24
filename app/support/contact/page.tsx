@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 
@@ -46,14 +45,6 @@ export default function ContactUsPage() {
       <UserHeader />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back Button */}
-        <button
-          onClick={() => router.back()}
-          className="mb-8 flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold transition-colors"
-        >
-          <span>←</span> Back
-        </button>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
           {/* Contact Information */}
           <div>
