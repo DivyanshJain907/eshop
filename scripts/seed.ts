@@ -1,12 +1,12 @@
 /**
- * Seed script to create a demo user in MongoDB
+ * Seed script to create a demo user and products in MongoDB
  * Run with: npx ts-node scripts/seed.ts
  */
 
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
-import * as dotenv from 'dotenv';
-import path from 'path';
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 
@@ -33,11 +33,62 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please provide a name'],
       trim: true,
     },
+    role: {
+      type: String,
+      enum: ['customer', 'employee', 'admin'],
+      default: 'customer',
+    },
+  },
+  { timestamps: true }
+);
+
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please provide a product name'],
+      trim: true,
+      maxlength: [100, 'Product name cannot be more than 100 characters'],
+    },
+    description: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    price: {
+      type: Number,
+      required: [true, 'Please provide a price'],
+      min: [0, 'Price cannot be negative'],
+    },
+    quantity: {
+      type: Number,
+      required: [true, 'Please provide quantity'],
+      min: [0, 'Quantity cannot be negative'],
+    },
+    stock: {
+      type: Number,
+      default: 0,
+      min: [0, 'Stock cannot be negative'],
+    },
+    image: {
+      type: String,
+      default: '📦',
+    },
+    images: {
+      type: [String],
+      default: [],
+    },
+    category: {
+      type: String,
+      default: '',
+      trim: true,
+    },
   },
   { timestamps: true }
 );
 
 const User = mongoose.model('User', userSchema);
+const Product = mongoose.model('Product', productSchema);
 
 async function seedDatabase() {
   try {
@@ -58,35 +109,103 @@ async function seedDatabase() {
 
     console.log('✅ Connected to MongoDB');
 
-    // Clear existing users (optional)
+    // Clear existing data (optional)
     await User.deleteMany({});
-    console.log('🗑️  Cleared existing users');
+    await Product.deleteMany({});
+    console.log('🗑️  Cleared existing data');
 
-    // Create demo user
+    // Create demo users
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('demo123', salt);
-
+    
     const demoUser = await User.create({
       email: 'demo@example.com',
-      password: hashedPassword,
-      name: 'Demo User',
+      password: await bcrypt.hash('demo123', salt),
+      name: 'Demo Customer',
+      role: 'customer',
     });
 
-    console.log('✅ Demo user created successfully!');
-    console.log('📧 Email: demo@example.com');
-    console.log('🔑 Password: demo123');
-    console.log('\nYou can now login with these credentials.');
-
-    // Create additional test user
-    const testUser = await User.create({
-      email: 'test@example.com',
-      password: await bcrypt.hash('test123', salt),
-      name: 'Test User',
+    const employeeUser = await User.create({
+      email: 'employee@example.com',
+      password: await bcrypt.hash('emp123', salt),
+      name: 'Employee User',
+      role: 'employee',
     });
 
-    console.log('\n✅ Test user created successfully!');
-    console.log('📧 Email: test@example.com');
-    console.log('🔑 Password: test123');
+    const adminUser = await User.create({
+      email: 'admin@example.com',
+      password: await bcrypt.hash('admin123', salt),
+      name: 'Admin User',
+      role: 'admin',
+    });
+
+    console.log('\n✅ Users created successfully!');
+    console.log('👤 Customer: demo@example.com / demo123');
+    console.log('👔 Employee: employee@example.com / emp123');
+    console.log('👨‍💼 Admin: admin@example.com / admin123');
+
+    // Create sample products
+    const sampleProducts = [
+      {
+        name: 'Laptop',
+        description: 'High-performance laptop for work and gaming',
+        price: 999.99,
+        quantity: 15,
+        stock: 15,
+        image: '💻',
+        category: 'Electronics',
+      },
+      {
+        name: 'Smartphone',
+        description: 'Latest smartphone with advanced features',
+        price: 699.99,
+        quantity: 25,
+        stock: 25,
+        image: '📱',
+        category: 'Electronics',
+      },
+      {
+        name: 'Tablet',
+        description: 'Portable tablet for entertainment and work',
+        price: 499.99,
+        quantity: 20,
+        stock: 20,
+        image: '📱',
+        category: 'Electronics',
+      },
+      {
+        name: 'Headphones',
+        description: 'Wireless noise-cancelling headphones',
+        price: 199.99,
+        quantity: 40,
+        stock: 40,
+        image: '🎧',
+        category: 'Audio',
+      },
+      {
+        name: 'Smart Watch',
+        description: 'Wearable smartwatch with health tracking',
+        price: 299.99,
+        quantity: 30,
+        stock: 30,
+        image: '⌚',
+        category: 'Wearables',
+      },
+      {
+        name: 'Camera',
+        description: 'Professional DSLR camera',
+        price: 1299.99,
+        quantity: 10,
+        stock: 10,
+        image: '📷',
+        category: 'Photography',
+      },
+    ];
+
+    const products = await Product.insertMany(sampleProducts);
+    console.log(`\n✅ ${products.length} products created successfully!`);
+    products.forEach((p: any) => {
+      console.log(`   - ${p.name}: $${p.price}`);
+    });
 
     await mongoose.disconnect();
     console.log('\n✅ Database seeded successfully!');
