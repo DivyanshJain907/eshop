@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { fetchProducts } from '@/lib/api';
 
@@ -9,6 +10,7 @@ interface ProductBrowserProps {
 }
 
 export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -93,11 +95,20 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
           {filteredProducts.map((product) => (
             <div
               key={product._id || product.id}
-              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              onClick={() => router.push(`/products/details/${product._id || product.id}`)}
             >
-              {/* Product Image Placeholder */}
-              <div className="w-full h-48 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <span className="text-4xl">📦</span>
+              {/* Product Image */}
+              <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                {product.image ? (
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-4xl">📦</span>
+                )}
               </div>
 
               {/* Product Info */}

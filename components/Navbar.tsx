@@ -78,6 +78,12 @@ export default function Navbar({ isAuthenticated = false, userName, userRole }: 
                 >
                   Products
                 </Link>
+                <Link
+                  href="/category"
+                  className="px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 transition-colors rounded-lg hover:bg-gray-100"
+                >
+                  Categories
+                </Link>
                 {(userRole === 'admin' || userRole === 'employee') && (
                   <Link
                     href="/discounts"
@@ -167,6 +173,12 @@ export default function Navbar({ isAuthenticated = false, userName, userRole }: 
                   className="w-full text-left px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   Products
+                </button>
+                <button
+                  onClick={() => handleNavClick('/category')}
+                  className="w-full text-left px-4 py-2 text-gray-600 font-medium hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  Categories
                 </button>
                 {(userRole === 'admin' || userRole === 'employee') && (
                   <button

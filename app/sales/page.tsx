@@ -21,9 +21,6 @@ export default function SalesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedItemForDiscount, setSelectedItemForDiscount] = useState<string | null>(null);
-  const [showCustomerModal, setShowCustomerModal] = useState(false);
-  const [customerDetails, setCustomerDetails] = useState({ name: '', mobileNumber: '', shopName: '' });
-  const [billData, setBillData] = useState<any>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -136,75 +133,10 @@ export default function SalesPage() {
       return;
     }
 
-    // Show customer details modal instead of processing immediately
-    setShowCustomerModal(true);
-  };
-
-  const handleCompleteSaleWithCustomerDetails = async () => {
-    if (!customerDetails.name.trim() || !customerDetails.mobileNumber.trim()) {
-      setError('Please enter customer name and mobile number');
-      return;
-    }
-
-    setIsProcessing(true);
-    setError('');
-
-    try {
-      const totalAmount = cartItems.reduce((sum, item) => {
-        const itemTotal = item.price * item.cartQuantity;
-        const customDiscount = item.customDiscount || 0;
-        return sum + (itemTotal * (1 - customDiscount / 100));
-      }, 0);
-
-      const response = await fetch('/api/direct-sales', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          items: cartItems.map((item) => ({
-            productId: item._id || item.id,
-            productName: item.name,
-            quantity: item.cartQuantity,
-            price: item.price,
-            customDiscount: item.customDiscount || 0,
-          })),
-          totalAmount,
-          customerName: customerDetails.name,
-          customerMobile: customerDetails.mobileNumber,
-          shopName: customerDetails.shopName,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to process sale');
-      }
-
-      const saleData = await response.json();
-      
-      // Generate bill data
-      setBillData({
-        saleId: saleData._id,
-        customerName: customerDetails.name,
-        customerMobile: customerDetails.mobileNumber,
-        shopName: customerDetails.shopName,
-        items: cartItems,
-        totalAmount,
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        employeeName: user?.name,
-      });
-
-      // Clear cart and refresh data
-      setCartItems([]);
-      setShowCustomerModal(false);
-      setCustomerDetails({ name: '', mobileNumber: '', shopName: '' });
-      fetchProducts();
-    } catch (err: any) {
-      setError(err.message || 'Error processing sale');
-    } finally {
-      setIsProcessing(false);
-    }
+    // Save cart data to localStorage and navigate to checkout
+    localStorage.setItem('directSalesCart', JSON.stringify(cartItems));
+    localStorage.setItem('directSalesTotal', cartTotal.toString());
+    router.push('/sales/checkout');
   };
 
   const filteredProducts = products.filter(
@@ -288,7 +220,17 @@ export default function SalesPage() {
                     className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <div className="text-2xl">{product.image || '📦'}</div>
+                      {product.image ? (
+                        <img 
+                          src={product.image} 
+                          alt={product.name}
+                          className="w-20 h-20 object-cover rounded-lg bg-gray-100"
+                        />
+                      ) : (
+                        <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center text-3xl">
+                          📦
+                        </div>
+                      )}
                       <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
                         product.quantity > 0
                           ? 'bg-green-100 text-green-800'
@@ -515,239 +457,6 @@ export default function SalesPage() {
           </div>
         </div>
       </div>
-
-      {/* Customer Details Modal */}
-      {showCustomerModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">👤 Customer Details</h2>
-            
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-                {error}
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {/* Customer Name */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Customer Name <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={customerDetails.name}
-                  onChange={(e) =>
-                    setCustomerDetails({ ...customerDetails, name: e.target.value })
-                  }
-                  placeholder="Enter customer name"
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Mobile Number */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Mobile Number <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="tel"
-                  value={customerDetails.mobileNumber}
-                  onChange={(e) =>
-                    setCustomerDetails({ ...customerDetails, mobileNumber: e.target.value })
-                  }
-                  placeholder="Enter 10-digit mobile number"
-                  maxLength={10}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              {/* Shop Name (Optional) */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Shop Name <span className="text-gray-500 text-xs">(Optional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={customerDetails.shopName}
-                  onChange={(e) =>
-                    setCustomerDetails({ ...customerDetails, shopName: e.target.value })
-                  }
-                  placeholder="Enter shop name"
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-
-            {/* Order Summary */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-2">Order Summary:</p>
-              <div className="space-y-1 text-sm">
-                {cartItems.map((item) => (
-                  <div key={item._id || item.id} className="flex justify-between text-gray-700">
-                    <span>{item.name} × {item.cartQuantity}</span>
-                    <span>₹{calculateItemTotal(item).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3 pt-3 border-t border-gray-200 flex justify-between font-bold text-gray-900">
-                <span>Total:</span>
-                <span>₹{cartTotal.toFixed(2)}</span>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => {
-                  setShowCustomerModal(false);
-                  setError('');
-                }}
-                disabled={isProcessing}
-                className="flex-1 px-4 py-3 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-300 text-gray-900 rounded-lg font-bold transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCompleteSaleWithCustomerDetails}
-                disabled={isProcessing}
-                className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-bold transition-colors"
-              >
-                {isProcessing ? '⏳ Processing...' : '✓ Complete Sale'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Bill Modal */}
-      {billData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-96 overflow-y-auto">
-            {/* Bill Content */}
-            <div id="bill-content" className="p-8 bg-white">
-              <div className="text-center mb-6 border-b-2 border-gray-300 pb-4">
-                <h1 className="text-3xl font-bold text-gray-900">🏪 SALES BILL</h1>
-                <p className="text-gray-600 mt-1">Invoice Receipt</p>
-              </div>
-
-              {/* Bill Details */}
-              <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                <div>
-                  <p className="text-gray-600">Bill ID:</p>
-                  <p className="font-bold text-gray-900">{billData.saleId}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-gray-600">Date & Time:</p>
-                  <p className="font-bold text-gray-900">{billData.date} {billData.time}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600">Customer Name:</p>
-                  <p className="font-bold text-gray-900">{billData.customerName}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-gray-600">Mobile:</p>
-                  <p className="font-bold text-gray-900">{billData.customerMobile}</p>
-                </div>
-                {billData.shopName && (
-                  <div className="col-span-2">
-                    <p className="text-gray-600">Shop Name:</p>
-                    <p className="font-bold text-gray-900">{billData.shopName}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Items Table */}
-              <div className="mb-6">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b-2 border-gray-300">
-                      <th className="text-left py-2 font-bold text-gray-900">Product</th>
-                      <th className="text-center py-2 font-bold text-gray-900">Qty</th>
-                      <th className="text-right py-2 font-bold text-gray-900">Price</th>
-                      <th className="text-right py-2 font-bold text-gray-900">Discount</th>
-                      <th className="text-right py-2 font-bold text-gray-900">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {billData.items.map((item: any, index: number) => {
-                      const itemTotal = item.price * item.cartQuantity;
-                      const discountAmount = (itemTotal * (item.customDiscount || 0)) / 100;
-                      const finalTotal = itemTotal - discountAmount;
-                      return (
-                        <tr key={index} className="border-b border-gray-200">
-                          <td className="py-2 text-gray-900">{item.name}</td>
-                          <td className="text-center py-2 text-gray-900">{item.cartQuantity}</td>
-                          <td className="text-right py-2 text-gray-900">₹{item.price.toFixed(2)}</td>
-                          <td className="text-right py-2 text-red-600">
-                            {item.customDiscount ? `${item.customDiscount}%` : '-'}
-                          </td>
-                          <td className="text-right py-2 font-bold text-gray-900">₹{finalTotal.toFixed(2)}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Total */}
-              <div className="border-t-2 border-gray-300 pt-4 mb-6">
-                <div className="flex justify-between text-lg mb-2">
-                  <span className="font-bold text-gray-900">TOTAL AMOUNT:</span>
-                  <span className="font-bold text-gray-900">₹{billData.totalAmount.toFixed(2)}</span>
-                </div>
-                <div className="text-right text-xs text-gray-600">
-                  <p>Employee: {billData.employeeName}</p>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="text-center border-t border-gray-300 pt-4 text-xs text-gray-600">
-                <p>Thank you for your purchase!</p>
-                <p className="mt-1">Please keep this bill for future reference</p>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 p-6 bg-gray-50 border-t border-gray-200">
-              <button
-                onClick={() => window.print()}
-                className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors"
-              >
-                🖨️ Print Bill
-              </button>
-              <button
-                onClick={() => {
-                  setBillData(null);
-                  setCustomerDetails({ name: '', mobileNumber: '', shopName: '' });
-                }}
-                className="flex-1 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-bold transition-colors"
-              >
-                ✓ Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Print Styles */}
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #bill-content,
-          #bill-content * {
-            visibility: visible;
-          }
-          #bill-content {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchAllUsers, updateUserRole, deleteUser } from '@/lib/api';
+import { fetchAllUsers, updateUserRole, deleteUser, fetchDirectSalesCustomers } from '@/lib/api';
 
 interface User {
   _id: string;
@@ -14,27 +14,40 @@ interface User {
   state: string;
   pincode: string;
   createdAt: string;
+  isDirectSaleCustomer?: boolean;
+  totalPurchases?: number;
+  totalAmount?: number;
+  lastPurchaseDate?: string;
+  totalAmountPaid?: number;
+  totalAmountDue?: number;
+  pendingPayments?: number;
 }
 
-export default function UserManagement() {
+interface UserManagementProps {
+  isAdmin?: boolean;
+}
+
+export default function UserManagement({ isAdmin = true }: UserManagementProps) {
   const [users, setUsers] = useState<User[]>([]);
+  const [directSalesCustomers, setDirectSalesCustomers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'registered' | 'directSales'>('all');
 
   useEffect(() => {
-    loadUsers();
+    loadData();
   }, []);
 
-  const loadUsers = async () => {
+  const loadData = async () => {
     setLoading(true);
-    const data = await fetchAllUsers();
-    console.log('🔵 Fetched users:', data);
-    if (Array.isArray(data) && data.length > 0) {
-      console.log('🔵 First user structure:', data[0]);
-    }
-    setUsers(Array.isArray(data) ? data : []);
+    const [usersData, directSalesData] = await Promise.all([
+      fetchAllUsers(),
+      fetchDirectSalesCustomers(),
+    ]);
+    setUsers(Array.isArray(usersData) ? usersData : []);
+    setDirectSalesCustomers(Array.isArray(directSalesData) ? directSalesData : []);
     setLoading(false);
   };
 
@@ -78,11 +91,23 @@ export default function UserManagement() {
     }
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUsers = (() => {
+    let allUsers: User[] = [];
+    
+    if (filterType === 'all') {
+      allUsers = [...users, ...directSalesCustomers];
+    } else if (filterType === 'registered') {
+      allUsers = users;
+    } else if (filterType === 'directSales') {
+      allUsers = directSalesCustomers;
+    }
+    
+    return allUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  })();
 
   if (loading) {
     return (
@@ -95,6 +120,40 @@ export default function UserManagement() {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">👥 User Management</h2>
+
+      {/* Filter Buttons */}
+      <div className="mb-6 flex gap-2 flex-wrap">
+        <button
+          onClick={() => setFilterType('all')}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            filterType === 'all'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          📊 All Users ({users.length + directSalesCustomers.length})
+        </button>
+        <button
+          onClick={() => setFilterType('registered')}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            filterType === 'registered'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          👤 Registered Users ({users.length})
+        </button>
+        <button
+          onClick={() => setFilterType('directSales')}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            filterType === 'directSales'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          🛒 Direct Sales Customers ({directSalesCustomers.length})
+        </button>
+      </div>
 
       {/* Search Bar */}
       <div className="mb-6">
@@ -109,7 +168,7 @@ export default function UserManagement() {
 
       {/* User Count */}
       <div className="mb-4 text-sm text-gray-600">
-        Showing {filteredUsers.length} of {users.length} users
+        Showing {filteredUsers.length} of {users.length + directSalesCustomers.length} users
       </div>
 
       {/* Users List */}
@@ -134,8 +193,16 @@ export default function UserManagement() {
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(user.role)}`}>
                         {user.role}
                       </span>
+                      {user.isDirectSaleCustomer && (
+                        <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                          🛒 Direct Sale
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm text-gray-600 mt-1">{user.email}</p>
+                    {user.isDirectSaleCustomer && (
+                      <p className="text-sm text-gray-500 mt-1">💰 {user.totalPurchases} purchase(s) - ₹{user.totalAmount?.toFixed(2)}</p>
+                    )}
                   </div>
 
                   <span className="ml-4 text-gray-400">
@@ -158,44 +225,101 @@ export default function UserManagement() {
                   </div>
 
                   {/* Address Info */}
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">📍 Address</h4>
-                    <div className="bg-gray-50 rounded-lg p-3 text-sm">
-                      <p>{user.street}</p>
-                      <p>{user.city}, {user.state} {user.pincode}</p>
+                  {!user.isDirectSaleCustomer && (
+                    <div>
+                      <h4 className="font-bold text-gray-900 mb-3">📍 Address</h4>
+                      <div className="bg-gray-50 rounded-lg p-3 text-sm">
+                        <p>{user.street}</p>
+                        <p>{user.city}, {user.state} {user.pincode}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Purchase History for Direct Sales Customers */}
+                  {user.isDirectSaleCustomer && (
+                    <>
+                      <div>
+                        <h4 className="font-bold text-gray-900 mb-3">📦 Purchase Summary</h4>
+                        <div className="bg-gray-50 rounded-lg p-3 space-y-2 text-sm">
+                          <p><span className="font-medium">Total Purchases:</span> {user.totalPurchases}</p>
+                          <p><span className="font-medium">Total Amount:</span> <span className="text-green-600 font-bold">₹{user.totalAmount?.toFixed(2)}</span></p>
+                          <p><span className="font-medium">Average Order Value:</span> ₹{(user.totalAmount ? user.totalAmount / (user.totalPurchases || 1) : 0).toFixed(2)}</p>
+                          {user.lastPurchaseDate && (
+                            <p><span className="font-medium">Last Purchase:</span> {new Date(user.lastPurchaseDate).toLocaleDateString()}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Payment Information */}
+                      <div>
+                        <h4 className="font-bold text-gray-900 mb-3">💳 Payment Information</h4>
+                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border-2 border-orange-200 space-y-3">
+                          <div className="grid grid-cols-3 gap-3">
+                            <div className="bg-white rounded-lg p-3 border border-green-200">
+                              <p className="text-xs text-gray-600 font-semibold">Total Amount</p>
+                              <p className="text-lg font-bold text-green-600">₹{user.totalAmount?.toFixed(2) || '0.00'}</p>
+                            </div>
+                            <div className={`bg-white rounded-lg p-3 border-2 ${user.totalAmountPaid ? 'border-green-400' : 'border-gray-300'}`}>
+                              <p className="text-xs text-gray-600 font-semibold">Amount Paid</p>
+                              <p className={`text-lg font-bold ${user.totalAmountPaid ? 'text-green-600' : 'text-gray-500'}`}>
+                                ₹{(user.totalAmountPaid || 0).toFixed(2)}
+                              </p>
+                            </div>
+                            <div className={`bg-white rounded-lg p-3 border-2 ${user.totalAmountDue ? 'border-orange-400' : 'border-green-400'}`}>
+                              <p className="text-xs text-gray-600 font-semibold">Amount Due</p>
+                              <p className={`text-lg font-bold ${user.totalAmountDue ? 'text-orange-600' : 'text-green-600'}`}>
+                                ₹{(user.totalAmountDue || 0).toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                          {user.pendingPayments ? (
+                            <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                              <p className="text-sm text-red-800"><span className="font-bold">⚠️ Pending:</span> {user.pendingPayments} order(s) awaiting payment</p>
+                            </div>
+                          ) : (
+                            <div className="bg-green-50 border-l-4 border-green-500 p-3 rounded">
+                              <p className="text-sm text-green-800"><span className="font-bold">✓ Status:</span> All payments up to date</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   {/* Role Management */}
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">🎯 Change Role</h4>
-                    <div className="flex gap-2 flex-wrap">
-                      {['customer', 'employee', 'admin'].map((role) => (
-                        <button
-                          key={role}
-                          onClick={() => handleRoleChange(user._id, role)}
-                          disabled={updating === user._id || user.role === role}
-                          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                            user.role === role
-                              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                              : 'bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50'
-                          }`}
-                        >
-                          {updating === user._id && user.role !== role ? 'Updating...' : role.charAt(0).toUpperCase() + role.slice(1)}
-                        </button>
-                      ))}
+                  {isAdmin && !user.isDirectSaleCustomer && (
+                    <div>
+                      <h4 className="font-bold text-gray-900 mb-3">🎯 Change Role</h4>
+                      <div className="flex gap-2 flex-wrap">
+                        {['customer', 'employee', 'admin'].map((role) => (
+                          <button
+                            key={role}
+                            onClick={() => handleRoleChange(user._id, role)}
+                            disabled={updating === user._id || user.role === role}
+                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                              user.role === role
+                                ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                : 'bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50'
+                            }`}
+                          >
+                            {updating === user._id && user.role !== role ? 'Updating...' : role.charAt(0).toUpperCase() + role.slice(1)}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Delete Button */}
-                  <div className="pt-4 border-t border-gray-200">
-                    <button
-                      onClick={() => handleDeleteUser(user._id)}
-                      className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
-                    >
-                      🗑️ Delete User
-                    </button>
-                  </div>
+                  {isAdmin && !user.isDirectSaleCustomer && (
+                    <div className="pt-4 border-t border-gray-200">
+                      <button
+                        onClick={() => handleDeleteUser(user._id)}
+                        className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                      >
+                        🗑️ Delete User
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -106,20 +106,16 @@ export default function BookingHistory() {
 
   if (bookings.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-12">
-        <div className="text-center">
-          <div className="text-5xl mb-4">📝</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Bookings Yet</h2>
-          <p className="text-gray-600">You haven't made any bookings yet.</p>
-        </div>
+      <div className="text-center py-12">
+        <div className="text-5xl mb-4">📝</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">No Bookings Yet</h2>
+        <p className="text-gray-600">You haven't made any bookings yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">My Bookings</h2>
-
+    <div className="w-full">
       <div className="space-y-4">
         {bookings.map((booking) => (
           <div

@@ -112,89 +112,10 @@ export default function CustomerHome() {
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar isAuthenticated={true} userName={user?.name} userRole={user?.role} />
 
-      {/* Navigation Tabs */}
-      <nav className="bg-white border-b border-gray-200 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-8">
-            <button
-              onClick={() => setActiveTab('browse')}
-              className={`py-4 px-2 font-medium border-b-2 transition-colors ${
-                activeTab === 'browse'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              🛍️ Browse Products
-            </button>
-            <button
-              onClick={() => setActiveTab('cart')}
-              className={`py-4 px-2 font-medium border-b-2 transition-colors relative ${
-                activeTab === 'cart'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              🛒 Shopping Cart
-              {cartItems.length > 0 && (
-                <span className="absolute top-2 right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItems.length}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab('bookings')}
-              className={`py-4 px-2 font-medium border-b-2 transition-colors ${
-                activeTab === 'bookings'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              📋 My Bookings
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* Main Content */}
       <main className="grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'browse' && (
-          <div id="browse">
-            <ProductBrowser onAddToCart={handleAddToCart} />
-          </div>
-        )}
-
-        {activeTab === 'cart' && (
-          <div className="space-y-4">
-            <CartManager
-              cartItems={cartItems}
-              onRemove={handleRemoveFromCart}
-              onUpdateQuantity={handleUpdateCartQuantity}
-            />
-            {cartItems.length > 0 && (
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setIsBookingModalOpen(true)}
-                  className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-bold text-lg"
-                >
-                  📋 Book This Order (24hr Lock)
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'bookings' && (
-          <BookingHistory key={bookingRefresh} />
-        )}
+        <ProductBrowser onAddToCart={handleAddToCart} />
       </main>
-
-      {/* Booking Modal */}
-      <BookingModal
-        cartItems={cartItems}
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        onSuccess={handleBookingSuccess}
-      />
 
       {/* Footer */}
       <Footer onTabChange={setActiveTab} />

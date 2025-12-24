@@ -15,6 +15,7 @@ export default function EditProductPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<any>(null);
   const [error, setError] = useState('');
+  const [imagePreview, setImagePreview] = useState<string>('');
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -38,6 +39,9 @@ export default function EditProductPage() {
         const data = await response.json();
         setProduct(data);
         setFormData(data);
+        if (data.image) {
+          setImagePreview(data.image);
+        }
       } catch (error) {
         console.error('Error fetching product:', error);
         setError('Failed to load product');
@@ -58,6 +62,22 @@ export default function EditProductPage() {
       [name]: name.includes('quantity') || name.includes('price') || name.includes('discount') || name.includes('threshold') ? 
         (value === '' ? '' : isNaN(Number(value)) ? value : Number(value)) : value,
     }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setImagePreview(base64);
+        setFormData((prev: any) => ({
+          ...prev,
+          image: base64,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSave = async () => {
@@ -191,6 +211,31 @@ export default function EditProductPage() {
                   rows={3}
                   className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                 />
+              </div>
+
+              {/* Image Upload */}
+              <div className="mt-4">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">📸 Product Image</label>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                    />
+                    <p className="text-xs text-gray-600 mt-1">Upload a new image to replace the current one</p>
+                  </div>
+                  {imagePreview && (
+                    <div className="w-24 h-24 flex-shrink-0">
+                      <img 
+                        src={imagePreview} 
+                        alt="Product preview" 
+                        className="w-full h-full object-cover rounded-lg border-2 border-blue-300"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

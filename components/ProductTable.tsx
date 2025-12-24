@@ -53,7 +53,13 @@ export default function ProductTable({ products = [], onQuantityChange }: Produc
             {products.map((product) => (
               <tr key={product._id || product.id} className="hover:bg-gray-50 border-b border-gray-300">
                 <td className="border border-gray-300 px-4 py-3">
-                  {product.images && product.images.length > 0 ? (
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-16 w-16 object-cover rounded border border-gray-200"
+                    />
+                  ) : (product.images && product.images.length > 0) ? (
                     <img
                       src={product.images[0]}
                       alt={product.name}

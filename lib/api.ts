@@ -331,3 +331,63 @@ export async function deleteUser(id: string) {
     return false;
   }
 }
+export async function fetchDirectSalesCustomers() {
+  try {
+    const response = await fetch(`${API_URL}/api/direct-sales`, {
+      credentials: 'include',
+    });
+    if (!response.ok) throw new Error('Failed to fetch direct sales');
+    const sales = await response.json();
+    
+    // Extract unique customers from sales, deduplicating by phone number
+    const customersMap = new Map();
+    sales.forEach((sale: any) => {
+      // Use phone number as primary key, fallback to customer name
+      const key = sale.customerMobile?.trim() || sale.customerName?.trim();
+      
+      if (key) {
+        if (!customersMap.has(key)) {
+          customersMap.set(key, {
+            _id: `direct-sale-${key}`,
+            name: sale.customerName,
+            email: sale.customerMobile || 'N/A',
+            phone: sale.customerMobile || '',
+            role: 'customer',
+            street: '',
+            city: '',
+            state: '',
+            pincode: '',
+            createdAt: sale.createdAt,
+            isDirectSaleCustomer: true,
+            totalPurchases: 0,
+            totalAmount: 0,
+            totalAmountPaid: 0,
+            totalAmountDue: 0,
+            pendingPayments: 0,
+            lastPurchaseDate: null,
+          });
+        }
+        const customer = customersMap.get(key);
+        customer.totalPurchases += 1;
+        customer.totalAmount += sale.totalAmount || 0;
+        customer.totalAmountPaid += sale.amountPaid || 0;
+        customer.totalAmountDue += sale.remainingAmount || 0;
+        
+        // Count pending/partially paid orders
+        if (sale.paymentStatus === 'pending' || sale.paymentStatus === 'partially-paid') {
+          customer.pendingPayments += 1;
+        }
+        
+        // Track most recent purchase date
+        if (!customer.lastPurchaseDate || new Date(sale.createdAt) > new Date(customer.lastPurchaseDate)) {
+          customer.lastPurchaseDate = sale.createdAt;
+        }
+      }
+    });
+    
+    return Array.from(customersMap.values());
+  } catch (error) {
+    console.error('Error fetching direct sales customers:', error);
+    return [];
+  }
+}

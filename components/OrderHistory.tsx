@@ -54,27 +54,22 @@ export default function OrderHistory({ orders = [] }: OrderHistoryProps) {
 
   if (orderList.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-12">
-        <div className="text-center">
-          <div className="text-5xl mb-4">📭</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Orders Yet</h2>
-          <p className="text-gray-600 mb-6">You haven't placed any orders yet.</p>
-          <a
-            href="#browse"
-            className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-          >
-            Start Shopping
-          </a>
-        </div>
+      <div className="text-center py-12">
+        <div className="text-5xl mb-4">📭</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">No Orders Yet</h2>
+        <p className="text-gray-600 mb-6">You haven't placed any orders yet.</p>
+        <a
+          href="#browse"
+          className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+        >
+          Start Shopping
+        </a>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Orders</h2>
-
-      {/* Orders List */}
+    <div className="w-full">
       <div className="space-y-4">
         {orderList.map((order) => (
           <div

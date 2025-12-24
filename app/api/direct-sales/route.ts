@@ -1,10 +1,8 @@
 import { connectDB } from '@/lib/db';
 import Product from '@/lib/models/Product';
+import DirectSale from '@/lib/models/DirectSale';
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-
-// In-memory storage for direct sales
-let directSales: any[] = [];
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,13 +34,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log('Request body:', body);
 
-    const { items, totalAmount } = body;
+    const { items, totalAmount, amountPaid = 0, paymentMethod = 'cash', customerName, customerMobile, employeeName } = body;
 
     // Validation
     if (!items || !Array.isArray(items) || items.length === 0) {
       console.log('❌ Invalid items array');
       return NextResponse.json(
         { message: 'Please provide at least one item' },
+        { status: 400 }
+      );
+    }
+
+    if (!customerName || customerName.trim() === '') {
+      console.log('❌ Customer name is required');
+      return NextResponse.json(
+        { message: 'Customer name is required' },
         { status: 400 }
       );
     }
@@ -120,21 +126,46 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Record the direct sale
-    const sale = {
-      id: Date.now().toString(),
-      employeeId: decoded.id,
-      items,
-      totalAmount,
-      status: 'completed',
-      createdAt: new Date().toISOString(),
-    };
+    // Record the direct sale in MongoDB
+    try {
+      await connectDB();
+      
+      // Calculate payment status and remaining amount
+      const remainingAmount = totalAmount - amountPaid;
+      const paymentStatus = amountPaid === 0 ? 'pending' : amountPaid >= totalAmount ? 'fully-paid' : 'partially-paid';
+      
+      const newSale = new DirectSale({
+        employeeId: decoded.id,
+        employeeName: employeeName || 'Unknown Employee',
+        customerName: customerName.trim(),
+        customerMobile: customerMobile || '',
+        items,
+        totalAmount,
+        amountPaid,
+        remainingAmount,
+        paymentStatus,
+        status: 'completed',
+        paymentHistory: amountPaid > 0 ? [
+          {
+            amount: amountPaid,
+            paymentMethod,
+            date: new Date(),
+            notes: 'Initial payment',
+          }
+        ] : [],
+      });
 
-    directSales.push(sale);
+      await newSale.save();
+      console.log('✅ Direct sale saved to MongoDB:', newSale._id);
 
-    console.log('✅ Direct sale created successfully:', sale);
-
-    return NextResponse.json(sale, { status: 201 });
+      return NextResponse.json(newSale, { status: 201 });
+    } catch (dbError: any) {
+      console.error('❌ Error saving sale to MongoDB:', dbError);
+      return NextResponse.json(
+        { message: 'Error saving sale to database', error: dbError.message },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
     console.error('❌ Error processing direct sale:', error);
     return NextResponse.json(
@@ -154,7 +185,15 @@ export async function GET(request: NextRequest) {
 
     jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
 
-    return NextResponse.json(directSales);
+    // Fetch all direct sales from MongoDB, sorted by newest first
+    await connectDB();
+    const sales = await DirectSale.find()
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec();
+
+    console.log(`✅ Fetched ${sales.length} direct sales from MongoDB`);
+    return NextResponse.json(sales);
   } catch (error: any) {
     console.error('Error fetching direct sales:', error);
     return NextResponse.json(

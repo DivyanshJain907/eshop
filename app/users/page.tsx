@@ -16,9 +16,9 @@ export default function UsersPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Check if user is Admin only
+  // Check if user is Admin or Employee
   useEffect(() => {
-    if (!isLoading && user && user.role !== 'admin') {
+    if (!isLoading && user && (user.role !== 'admin' && user.role !== 'employee')) {
       router.push('/');
     }
   }, [user, isLoading, router]);
@@ -34,7 +34,7 @@ export default function UsersPage() {
     );
   }
 
-  if (!isAuthenticated || (user && user.role !== 'admin')) {
+  if (!isAuthenticated || (user && user.role !== 'admin' && user.role !== 'employee')) {
     return null;
   }
 
@@ -44,13 +44,13 @@ export default function UsersPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">👥 User Management</h1>
-          <p className="text-gray-600 mt-2">Manage system users and permissions</p>
+          <p className="text-gray-600 mt-2">{user?.role === 'admin' ? 'Manage system users and permissions' : 'View system users'}</p>
         </div>
 
         {/* User Management Section */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6">
-            <UserManagement />
+            <UserManagement isAdmin={user?.role === 'admin'} />
           </div>
         </div>
       </div>
