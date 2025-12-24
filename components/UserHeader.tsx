@@ -191,6 +191,12 @@ export default function UserHeader() {
               🏪 Direct Sales
             </Link>
             <Link
+              href="/sales/history"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
+            >
+              📜 Sales History
+            </Link>
+            <Link
               href="/discounts"
               className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
             >
