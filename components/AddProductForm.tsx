@@ -172,7 +172,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
   return (
     <form onSubmit={handleSubmit} className="divide-y">
       {/* Form Header */}
-      <div className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 border-b">
+      <div className="p-6 bg-linear-to-r from-indigo-50 to-blue-50 border-b">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Details</h2>
         <p className="text-gray-600 text-sm">Fill in all the required fields marked with *</p>
       </div>
@@ -523,7 +523,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
         <button
           type="submit"
           disabled={isLoading}
-          className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-400 text-white py-3 rounded-lg font-semibold transition shadow-lg"
+          className="flex-1 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-400 text-white py-3 rounded-lg font-semibold transition shadow-lg"
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
@@ -543,7 +543,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
               description: '',
               price: '',
               quantity: '',
-              stock: '',
+              stockThreshold: '',
               image: '',
               images: '',
               category: '',
@@ -568,4 +568,5 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
     </form>
   );
 }
+
 

@@ -25,7 +25,7 @@ export default function LandingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 to-blue-50">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
@@ -41,7 +41,7 @@ export default function LandingPage() {
 
   // Landing Page for unauthenticated users
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-blue-50 flex flex-col">
       {/* Navigation */}
       <Navbar isAuthenticated={false} />
 
@@ -53,7 +53,7 @@ export default function LandingPage() {
             <div className="space-y-8">
               <div>
                 <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-                  Your Trusted <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-600">eShop</span>
+                  Your Trusted <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-blue-600">eShop</span>
                 </h2>
                 <p className="text-xl text-gray-600">
                   Discover amazing products, manage your inventory efficiently, and grow your business with eShop's powerful tools.
@@ -63,19 +63,19 @@ export default function LandingPage() {
               {/* Features List */}
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
                   <span className="text-gray-700">Browse thousands of products</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
                   <span className="text-gray-700">24-hour booking and reservation system</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
                   <span className="text-gray-700">Track your orders in real-time</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
+                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
                   <span className="text-gray-700">Secure and reliable transactions</span>
                 </li>
               </ul>
@@ -93,7 +93,7 @@ export default function LandingPage() {
 
             {/* Right Illustration */}
             <div className="hidden md:block">
-              <div className="relative w-full h-96 bg-gradient-to-br from-indigo-200 to-blue-200 rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-96 bg-linear-to-br from-indigo-200 to-blue-200 rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden">
                 <div className="text-center">
                   <div className="text-8xl mb-4">📦</div>
                   <p className="text-2xl font-bold text-indigo-900">Ready to Shop?</p>
@@ -116,7 +116,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="p-8 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div className="p-8 bg-linear-to-br from-indigo-50 to-blue-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
               <div className="text-5xl mb-4">🛍️</div>
               <h4 className="text-xl font-bold text-gray-900 mb-3">Wide Selection</h4>
               <p className="text-gray-600">
@@ -125,7 +125,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div className="p-8 bg-linear-to-br from-green-50 to-emerald-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
               <div className="text-5xl mb-4">⏰</div>
               <h4 className="text-xl font-bold text-gray-900 mb-3">24-Hour Lock System</h4>
               <p className="text-gray-600">
@@ -134,7 +134,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div className="p-8 bg-linear-to-br from-purple-50 to-pink-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
               <div className="text-5xl mb-4">🔒</div>
               <h4 className="text-xl font-bold text-gray-900 mb-3">Secure & Safe</h4>
               <p className="text-gray-600">
@@ -146,7 +146,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-indigo-600 to-blue-600">
+      <section className="py-20 bg-linear-to-r from-indigo-600 to-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center text-white">
             <div>
@@ -446,3 +446,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

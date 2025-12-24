@@ -124,7 +124,7 @@ export default function ReturnsPage() {
 
             <div className="space-y-4">
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold">
                     1
                   </div>
@@ -141,7 +141,7 @@ export default function ReturnsPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold">
                     2
                   </div>
@@ -156,7 +156,7 @@ export default function ReturnsPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold">
                     3
                   </div>
@@ -171,7 +171,7 @@ export default function ReturnsPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold">
                     4
                   </div>
@@ -189,7 +189,7 @@ export default function ReturnsPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white font-bold">
                     5
                   </div>
@@ -299,7 +299,7 @@ export default function ReturnsPage() {
         </div>
 
         {/* Support CTA */}
-        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg p-8 text-white">
+        <div className="bg-linear-to-r from-indigo-600 to-blue-600 rounded-lg p-8 text-white">
           <h3 className="text-2xl font-bold mb-3">Need Help with Your Return?</h3>
           <p className="mb-6 text-indigo-100">
             Our support team is ready to help you with any questions or issues regarding returns and refunds.
@@ -315,3 +315,4 @@ export default function ReturnsPage() {
     </div>
   );
 }
+

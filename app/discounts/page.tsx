@@ -115,7 +115,7 @@ export default function DiscountsPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-indigo-50 to-blue-50 border-b-2 border-gray-200">
+                <thead className="bg-linear-to-r from-indigo-50 to-blue-50 border-b-2 border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Product Name</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Category</th>
@@ -176,3 +176,4 @@ export default function DiscountsPage() {
     </div>
   );
 }
+

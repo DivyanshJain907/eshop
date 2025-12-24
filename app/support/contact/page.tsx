@@ -55,7 +55,7 @@ export default function ContactUsPage() {
             <div className="space-y-6">
               {/* Phone */}
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-600 text-white text-xl">
                     📞
                   </div>
@@ -72,7 +72,7 @@ export default function ContactUsPage() {
 
               {/* Email */}
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-600 text-white text-xl">
                     📧
                   </div>
@@ -89,7 +89,7 @@ export default function ContactUsPage() {
 
               {/* Address */}
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-600 text-white text-xl">
                     📍
                   </div>
@@ -105,7 +105,7 @@ export default function ContactUsPage() {
 
               {/* Live Chat */}
               <div className="flex gap-4">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-600 text-white text-xl">
                     💬
                   </div>
@@ -244,3 +244,4 @@ export default function ContactUsPage() {
     </div>
   );
 }
+

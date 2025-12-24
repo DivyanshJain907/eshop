@@ -174,7 +174,7 @@ export default function FAQPage() {
                   {item.question}
                 </h3>
                 <span
-                  className={`text-2xl transition-transform duration-300 flex-shrink-0 ml-4 ${
+                  className={`text-2xl transition-transform duration-300 shrink-0 ml-4 ${
                     expandedId === item.id ? 'rotate-180' : ''
                   }`}
                 >
@@ -210,3 +210,4 @@ export default function FAQPage() {
     </div>
   );
 }
+
