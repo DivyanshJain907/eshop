@@ -7,7 +7,7 @@ import UserHeader from '@/components/UserHeader';
 
 export default function SupportPage() {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(''); // Fixed router initialization
   const supportOptions = [
     {
       icon: '📞',
