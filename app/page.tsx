@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -41,23 +42,8 @@ export default function LandingPage() {
   // Landing Page for unauthenticated users
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex flex-col">
-      {/* Navigation Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="text-3xl">🛒</div>
-            <h1 className="text-2xl font-bold text-gray-900">eShop</h1>
-          </div>
-          <div className="flex gap-4">
-            <Link href="/login" className="px-6 py-2 text-indigo-600 font-medium hover:text-indigo-700 transition-colors">
-              Sign In
-            </Link>
-            <Link href="/register" className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors">
-              Register
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navbar isAuthenticated={false} />
 
       {/* Hero Section */}
       <section className="grow flex items-center">

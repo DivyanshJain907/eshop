@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import UserHeader from '@/components/UserHeader';
+import Navbar from '@/components/Navbar';
 import ProductBrowser from '@/components/ProductBrowser';
 import CartManager from '@/components/CartManager';
 import BookingModal from '@/components/BookingModal';
@@ -110,7 +110,7 @@ export default function CustomerHome() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <UserHeader />
+      <Navbar isAuthenticated={true} userName={user?.name} />
 
       {/* Navigation Tabs */}
       <nav className="bg-white border-b border-gray-200 sticky top-16 z-40">
