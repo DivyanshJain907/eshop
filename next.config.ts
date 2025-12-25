@@ -56,24 +56,6 @@ const nextConfig: NextConfig = {
     };
   },
 
-  // Webpack optimization
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.optimization.splitChunks.cacheGroups = {
-        ...config.optimization.splitChunks.cacheGroups,
-        default: false,
-        vendors: false,
-        vendor: {
-          filename: 'chunks/vendor.js',
-          test: /node_modules/,
-          priority: 10,
-          reuseExistingChunk: true,
-        },
-      };
-    }
-    return config;
-  },
-
   // Poweredby header disabled for security
   poweredByHeader: false,
 };
