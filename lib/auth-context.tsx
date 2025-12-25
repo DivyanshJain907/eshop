@@ -29,15 +29,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const router = useRouter();
 
-  // Check if user is logged in on mount
+  // Check if user is logged in on mount - with timeout and caching
   const checkAuth = async () => {
+    // Skip if already checked and token exists
+    if (hasCheckedAuth) {
+      return;
+    }
+
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
       const response = await fetch('/api/auth/me', {
         method: 'GET',
         credentials: 'include',
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
@@ -50,6 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
     } finally {
       setIsLoading(false);
+      setHasCheckedAuth(true);
     }
   };
 
@@ -64,6 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         credentials: 'include',
       });
       setUser(null);
+      setHasCheckedAuth(false);
       router.push('/login');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -71,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshAuth = async () => {
+    setHasCheckedAuth(false);
     await checkAuth();
   };
 
