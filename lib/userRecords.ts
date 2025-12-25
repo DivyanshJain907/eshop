@@ -19,5 +19,5 @@ export async function fetchUserBookingRecords(userId: string) {
   // Fetch all bookings
   const allBookings = await fetchBookings();
   // Filter by userId
-  return allBookings.filter(booking => booking.userId === userId);
+  return allBookings.filter((booking: any) => booking.userId === userId);
 }
