@@ -1,10 +1,14 @@
 import { Product } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// Use relative URLs for same-origin requests (works in both dev and production)
+const getApiUrl = (path: string) => {
+  // For client-side requests, use relative URLs (will use current origin)
+  return path.startsWith('/') ? path : `/${path}`;
+};
 
 export async function fetchProducts(): Promise<Product[]> {
   try {
-    const response = await fetch(`${API_URL}/api/products?limit=100`);
+    const response = await fetch(getApiUrl('/api/products?limit=100'));
     if (!response.ok) throw new Error('Failed to fetch products');
     const data = await response.json();
     // Handle both old array format and new paginated format
@@ -19,7 +23,7 @@ export async function createProduct(
   product: Omit<Product, 'id' | '_id'>
 ): Promise<Product | null> {
   try {
-    const response = await fetch(`${API_URL}/api/products`, {
+    const response = await fetch(getApiUrl('/api/products'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product),
@@ -37,7 +41,7 @@ export async function updateProduct(
   updates: Partial<Product>
 ): Promise<Product | null> {
   try {
-    const response = await fetch(`${API_URL}/api/products/${id}`, {
+    const response = await fetch(getApiUrl(`/api/products/${id}`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
@@ -52,7 +56,7 @@ export async function updateProduct(
 
 export async function deleteProduct(id: string): Promise<boolean> {
   try {
-    const response = await fetch(`${API_URL}/api/products/${id}`, {
+    const response = await fetch(getApiUrl(`/api/products/${id}`), {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete product');
@@ -65,7 +69,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
 
 export async function deleteAllProducts(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_URL}/api/products`, {
+    const response = await fetch(getApiUrl('/api/products'), {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete all products');
@@ -78,7 +82,7 @@ export async function deleteAllProducts(): Promise<boolean> {
 
 export async function fetchSales() {
   try {
-    const response = await fetch(`${API_URL}/api/sales`);
+    const response = await fetch(getApiUrl('/api/sales'));
     if (!response.ok) throw new Error('Failed to fetch sales');
     return response.json();
   } catch (error) {
@@ -94,7 +98,7 @@ export async function createSale(sale: {
   totalAmount: number;
 }) {
   try {
-    const response = await fetch(`${API_URL}/api/sales`, {
+    const response = await fetch(getApiUrl('/api/sales'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sale),
@@ -109,7 +113,7 @@ export async function createSale(sale: {
 
 export async function deleteAllSales(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_URL}/api/sales`, {
+    const response = await fetch(getApiUrl('/api/sales'), {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete all sales');
@@ -130,7 +134,7 @@ export async function createBooking(items: any[], totalAmount: number) {
     const payload = { items, totalAmount };
     console.log('Request payload:', JSON.stringify(payload));
     
-    const response = await fetch(`${API_URL}/api/bookings`, {
+    const response = await fetch(getApiUrl('/api/bookings'), {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -175,7 +179,7 @@ export async function createBooking(items: any[], totalAmount: number) {
 
 export async function fetchBookings() {
   try {
-    const response = await fetch(`${API_URL}/api/bookings`, {
+    const response = await fetch(getApiUrl('/api/bookings'), {
       credentials: 'include',
     });
     if (!response.ok) throw new Error('Failed to fetch bookings');
@@ -189,7 +193,7 @@ export async function fetchBookings() {
 
 export async function getBooking(id: string) {
   try {
-    const response = await fetch(`${API_URL}/api/bookings/${id}`, {
+    const response = await fetch(getApiUrl(`/api/bookings/${id}`), {
       credentials: 'include',
     });
     if (!response.ok) throw new Error('Failed to fetch booking');
@@ -203,7 +207,7 @@ export async function getBooking(id: string) {
 
 export async function updateBookingStatus(id: string, status: string) {
   try {
-    const response = await fetch(`${API_URL}/api/bookings/${id}`, {
+    const response = await fetch(getApiUrl(`/api/bookings/${id}`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -220,7 +224,7 @@ export async function updateBookingStatus(id: string, status: string) {
 
 export async function cancelBooking(id: string) {
   try {
-    const response = await fetch(`${API_URL}/api/bookings/${id}`, {
+    const response = await fetch(getApiUrl(`/api/bookings/${id}`), {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -235,7 +239,7 @@ export async function cancelBooking(id: string) {
 // User Management API functions
 export async function fetchAllUsers() {
   try {
-    const response = await fetch(`${API_URL}/api/users`, {
+    const response = await fetch(getApiUrl('/api/users'), {
       credentials: 'include',
     });
     if (!response.ok) throw new Error('Failed to fetch users');
@@ -249,7 +253,7 @@ export async function fetchAllUsers() {
 
 export async function getUser(id: string) {
   try {
-    const response = await fetch(`${API_URL}/api/users/${id}`, {
+    const response = await fetch(getApiUrl(`/api/users/${id}`), {
       credentials: 'include',
     });
     if (!response.ok) throw new Error('Failed to fetch user');
@@ -265,7 +269,7 @@ export async function updateUserRole(id: string, role: string) {
   try {
     console.log('🔵 Updating user role:', { id, role, idType: typeof id, idLength: id?.length });
     
-    const response = await fetch(`${API_URL}/api/users/${id}`, {
+    const response = await fetch(getApiUrl(`/api/users/${id}`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -289,7 +293,6 @@ export async function updateUserRole(id: string, role: string) {
         status: response.status,
         message: errorData.message,
         details: errorData.details,
-        urlUsed: `${API_URL}/api/users/${id}`,
       });
       throw new Error(errorData.message || 'Failed to update user role');
     }
@@ -305,7 +308,7 @@ export async function updateUserRole(id: string, role: string) {
 
 export async function updateUser(id: string, updates: any) {
   try {
-    const response = await fetch(`${API_URL}/api/users/${id}`, {
+    const response = await fetch(getApiUrl(`/api/users/${id}`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -322,7 +325,7 @@ export async function updateUser(id: string, updates: any) {
 
 export async function deleteUser(id: string) {
   try {
-    const response = await fetch(`${API_URL}/api/users/${id}`, {
+    const response = await fetch(getApiUrl(`/api/users/${id}`), {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -333,9 +336,10 @@ export async function deleteUser(id: string) {
     return false;
   }
 }
+
 export async function fetchDirectSalesCustomers() {
   try {
-    const response = await fetch(`${API_URL}/api/direct-sales`, {
+    const response = await fetch(getApiUrl('/api/direct-sales'), {
       credentials: 'include',
     });
     if (!response.ok) throw new Error('Failed to fetch direct sales');
