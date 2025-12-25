@@ -101,4 +101,10 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Add indexes for performance
+productSchema.index({ name: 1 }); // Index for searching by name
+productSchema.index({ category: 1 }); // Index for filtering by category
+productSchema.index({ createdAt: -1 }); // Index for sorting by creation date
+productSchema.index({ price: 1 }); // Index for price range queries
+
 export default mongoose.models.Product || mongoose.model('Product', productSchema);

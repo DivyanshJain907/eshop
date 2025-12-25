@@ -62,27 +62,99 @@ let demoProducts: any[] = [
   },
 ];
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Get pagination and filtering params from query string
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const limit = Math.min(100, parseInt(searchParams.get('limit') || '10', 10)); // Max 100 per page
+    const category = searchParams.get('category');
+    const search = searchParams.get('search');
+    const skip = (page - 1) * limit;
+
     const conn = await connectDB();
     
     // If MongoDB is not connected, use demo data
     if (!conn) {
       console.log('📌 Using demo data (MongoDB not connected)');
-      return NextResponse.json(demoProducts, { status: 200 });
+      return NextResponse.json({
+        products: demoProducts,
+        pagination: {
+          page: 1,
+          limit: demoProducts.length,
+          total: demoProducts.length,
+          pages: 1,
+        },
+      }, { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=59',
+        }
+      });
     }
     
     try {
-      const products = await Product.find().sort({ createdAt: -1 });
-      return NextResponse.json(products, { status: 200 });
+      // Build query filter
+      const filter: any = {};
+      if (category) filter.category = category;
+      if (search) {
+        filter.$or = [
+          { name: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } },
+        ];
+      }
+
+      // Fetch total count for pagination (single query for count)
+      const total = await Product.countDocuments(filter);
+
+      // Fetch products with field projection (only necessary fields)
+      const products = await Product.find(filter)
+        .select('name price quantity image category createdAt updatedAt') // Exclude heavy fields
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(); // Use lean for read-only data (faster)
+
+      const pages = Math.ceil(total / limit);
+
+      return NextResponse.json({
+        products,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages,
+        },
+      }, { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=59',
+        }
+      });
     } catch (dbError) {
       console.error('Database query error:', dbError);
-      return NextResponse.json(demoProducts, { status: 200 });
+      return NextResponse.json({
+        products: demoProducts,
+        pagination: {
+          page: 1,
+          limit: demoProducts.length,
+          total: demoProducts.length,
+          pages: 1,
+        },
+      }, { status: 200 });
     }
   } catch (error) {
     console.error('Error fetching products:', error);
     // Return demo data as fallback
-    return NextResponse.json(demoProducts, { status: 200 });
+    return NextResponse.json({
+      products: demoProducts,
+      pagination: {
+        page: 1,
+        limit: demoProducts.length,
+        total: demoProducts.length,
+        pages: 1,
+      },
+    }, { status: 200 });
   }
 }
 

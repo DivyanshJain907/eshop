@@ -62,4 +62,10 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Add indexes for performance
+bookingSchema.index({ userId: 1 }); // Index for user bookings
+bookingSchema.index({ userId: 1, createdAt: -1 }); // Compound index for user bookings sorted by date
+bookingSchema.index({ status: 1 }); // Index for filtering by status
+bookingSchema.index({ expiresAt: 1 }); // Already used for TTL, but explicit
+
 export default mongoose.models.Booking || mongoose.model<IBooking>('Booking', bookingSchema);

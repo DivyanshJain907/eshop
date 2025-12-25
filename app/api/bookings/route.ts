@@ -173,6 +173,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Get pagination params
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const limit = Math.min(50, parseInt(searchParams.get('limit') || '20', 10)); // Max 50 per page
+    const skip = (page - 1) * limit;
+
     await connectDB();
 
     // Get token from cookie
@@ -199,33 +205,50 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    let bookings;
-
+    let filter: any = {};
+    
     // If customer, get their bookings
     if (user.role === 'customer') {
-      bookings = await Booking.find({ userId: decoded.id })
-        .populate('userId', 'name email phone')
-        .populate('items.productId', 'name price')
-        .sort({ createdAt: -1 });
-    } else if (user.role === 'employee' || user.role === 'admin') {
-      // If employee/admin, get all bookings
-      bookings = await Booking.find()
-        .populate('userId', 'name email phone street city state pincode')
-        .populate('items.productId', 'name price')
-        .sort({ createdAt: -1 });
-    } else {
+      filter.userId = decoded.id;
+    } else if (user.role !== 'employee' && user.role !== 'admin') {
+      // If not customer/employee/admin, unauthorized
       return NextResponse.json(
         { message: 'Unauthorized' },
         { status: 403 }
       );
     }
+    // If employee/admin, no filter (get all bookings)
+
+    // Get total count
+    const total = await Booking.countDocuments(filter);
+
+    // Fetch bookings with pagination and field projection
+    const bookings = await Booking.find(filter)
+      .select('userId items totalAmount status createdAt expiresAt') // Only necessary fields
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(); // Use lean for faster read-only queries
+
+    const pages = Math.ceil(total / limit);
 
     return NextResponse.json(
       {
         success: true,
         bookings,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages,
+        },
       },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=30',
+        }
+      }
     );
   } catch (error: any) {
     console.error('Fetch bookings error:', error);
