@@ -1,6 +1,6 @@
 import { fetchSales, fetchBookings } from '@/lib/api';
 
-export async function fetchUserSalesRecords({ userId, customerMobile, customerName }) {
+export async function fetchUserSalesRecords({ userId, customerMobile, customerName }: { userId?: string; customerMobile?: string; customerName?: string }) {
   // Fetch all sales
   const allSales = await fetchSales();
   // Filter by customerMobile or customerName
@@ -15,7 +15,7 @@ export async function fetchUserSalesRecords({ userId, customerMobile, customerNa
   });
 }
 
-export async function fetchUserBookingRecords(userId) {
+export async function fetchUserBookingRecords(userId: string) {
   // Fetch all bookings
   const allBookings = await fetchBookings();
   // Filter by userId
