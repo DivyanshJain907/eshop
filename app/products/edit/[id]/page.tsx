@@ -2,7 +2,7 @@
 
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 
@@ -15,7 +15,8 @@ export default function EditProductPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<any>(null);
   const [error, setError] = useState('');
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -38,10 +39,11 @@ export default function EditProductPage() {
         if (!response.ok) throw new Error('Failed to fetch product');
         const data = await response.json();
         setProduct(data);
-        setFormData(data);
-        if (data.image) {
-          setImagePreview(data.image);
-        }
+        setFormData({
+          ...data,
+          images: Array.isArray(data.images) ? data.images : data.image ? [data.image] : [],
+        });
+        setImagePreviews(Array.isArray(data.images) ? data.images : data.image ? [data.image] : []);
       } catch (error) {
         console.error('Error fetching product:', error);
         setError('Failed to load product');
@@ -64,25 +66,56 @@ export default function EditProductPage() {
     }));
   };
 
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setImagePreview(base64);
-        setFormData((prev: any) => ({
-          ...prev,
-          image: base64,
-        }));
-      };
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    // Only allow up to 5 images
+    const totalImages = imagePreviews.length + files.length;
+    if (totalImages > 5) {
+      setError('You can upload up to 5 images.');
+      return;
     }
+    setError('');
+    const readers = files.map(
+      (file) =>
+        new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        })
+    );
+    Promise.all(readers).then((base64Images) => {
+      const newImages = [...imagePreviews, ...base64Images].slice(0, 5);
+      setImagePreviews(newImages);
+      setFormData((prev: any) => ({
+        ...prev,
+        images: newImages,
+        image: newImages[0] || '', // for backward compatibility
+      }));
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    });
+  };
+
+  const handleRemoveImage = (idx: number) => {
+    const newImages = imagePreviews.filter((_, i) => i !== idx);
+    setImagePreviews(newImages);
+    setFormData((prev: any) => ({
+      ...prev,
+      images: newImages,
+      image: newImages[0] || '',
+    }));
   };
 
   const handleSave = async () => {
     if (!formData.name || !formData.price || !formData.quantity) {
       setError('Please fill in all required fields');
+      return;
+    }
+
+    if (imagePreviews.length === 0) {
+      setError('Please upload at least one product image.');
       return;
     }
 
@@ -94,12 +127,12 @@ export default function EditProductPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, images: imagePreviews, image: imagePreviews[0] }),
       });
 
       if (!response.ok) throw new Error('Failed to update product');
 
-      setProduct(formData);
+      setProduct({ ...formData, images: imagePreviews, image: imagePreviews[0] });
       alert('Product updated successfully!');
       router.push('/products');
     } catch (error) {
@@ -213,26 +246,39 @@ export default function EditProductPage() {
                 />
               </div>
 
-              {/* Image Upload */}
+              {/* Image Upload (Multiple) */}
               <div className="mt-4">
-                <label className="block text-sm font-semibold text-gray-800 mb-2">📸 Product Image</label>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
-                    />
-                    <p className="text-xs text-gray-600 mt-1">Upload a new image to replace the current one</p>
-                  </div>
-                  {imagePreview && (
-                    <div className="w-24 h-24 flex-shrink-0">
-                      <img 
-                        src={imagePreview} 
-                        alt="Product preview" 
-                        className="w-full h-full object-cover rounded-lg border-2 border-blue-300"
-                      />
+                <label className="block text-sm font-semibold text-gray-800 mb-2">📸 Product Images (up to 5)</label>
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                    disabled={imagePreviews.length >= 5}
+                  />
+                  <p className="text-xs text-gray-600 mt-1">Upload up to 5 images. Drag to reorder (coming soon).</p>
+                  {imagePreviews.length > 0 && (
+                    <div className="flex gap-3 flex-wrap mt-2">
+                      {imagePreviews.map((img, idx) => (
+                        <div key={idx} className="relative group w-24 h-24">
+                          <img
+                            src={img}
+                            alt={`Product preview ${idx + 1}`}
+                            className="w-full h-full object-cover rounded-lg border-2 border-blue-300"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(idx)}
+                            className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-80 group-hover:opacity-100 transition"
+                            title="Remove image"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -274,7 +320,7 @@ export default function EditProductPage() {
               <h3 className="text-lg font-bold text-purple-900 mb-4">💵 Base Price</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Base Price ($) *</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Base Price (Rs.) *</label>
                   <input
                     type="number"
                     name="price"
@@ -316,7 +362,7 @@ export default function EditProductPage() {
                   />
                 </div>
                 <div className="bg-blue-100 p-4 rounded-lg border border-blue-300">
-                  <label className="block text-sm font-semibold text-blue-900 mb-2">Price ($)</label>
+                  <label className="block text-sm font-semibold text-blue-900 mb-2">Price (Rs.)</label>
                   <input
                     type="number"
                     name="retailPrice"
@@ -358,7 +404,7 @@ export default function EditProductPage() {
                   />
                 </div>
                 <div className="bg-green-100 p-4 rounded-lg border border-green-300">
-                  <label className="block text-sm font-semibold text-green-900 mb-2">Price ($)</label>
+                  <label className="block text-sm font-semibold text-green-900 mb-2">Price (Rs.)</label>
                   <input
                     type="number"
                     name="wholesalePrice"
@@ -400,7 +446,7 @@ export default function EditProductPage() {
                   />
                 </div>
                 <div className="bg-amber-100 p-4 rounded-lg border border-amber-300">
-                  <label className="block text-sm font-semibold text-amber-900 mb-2">Price ($)</label>
+                  <label className="block text-sm font-semibold text-amber-900 mb-2">Price (Rs.)</label>
                   <input
                     type="number"
                     name="superWholesalePrice"

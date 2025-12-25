@@ -22,7 +22,7 @@ export interface Product {
   superDiscount?: number;
   superWholesalePrice?: number;
   // Metadata
-  createdBy?: string;
+  createdBy?: string | { _id?: string; name: string; shopName?: string };
   createdAt?: Date;
   updatedAt?: Date;
 }

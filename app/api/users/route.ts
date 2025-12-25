@@ -23,14 +23,26 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify token
-    const decoded: any = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'your-secret-key'
-    );
+    let decoded: any;
+    try {
+      decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'your-secret-key'
+      );
+      console.log('🔑 Decoded token (users):', decoded);
+    } catch (jwtError) {
+      console.error('❌ JWT verification error (users):', jwtError);
+      return NextResponse.json(
+        { message: 'Invalid token' },
+        { status: 401 }
+      );
+    }
 
     // Check if user is admin
     const user = await User.findById(decoded.id);
+    console.log('👤 User from DB (users):', user);
     if (user?.role !== 'admin') {
+      console.warn('🚫 Unauthorized attempt to view users by:', user ? user.role : 'not found');
       return NextResponse.json(
         { message: 'Only admins can view users' },
         { status: 403 }

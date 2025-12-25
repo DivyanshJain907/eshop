@@ -97,7 +97,7 @@ export default function ContactUsPage() {
                 <div>
                   <h3 className="text-lg font-medium text-gray-900">Office Address</h3>
                   <p className="text-gray-600 mt-1">Visit our office or collection center</p>
-                  <p className="text-gray-700 font-semibold mt-2">eShop Headquarters</p>
+                  <p className="text-gray-700 font-semibold mt-2">Jain Sales Corporation Headquarters</p>
                   <p className="text-gray-600">Preet-Vihar colony, Rudrapur, Uttarakhand</p>
                   <p className="text-gray-600">State - 123456, India</p>
                 </div>

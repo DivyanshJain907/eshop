@@ -26,7 +26,7 @@ export default function InventoryStats({ products = [] }: InventoryStatsProps) {
       
       <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
         <p className="text-gray-600 text-sm font-medium">Inventory Value</p>
-        <p className="text-3xl font-bold text-purple-600 mt-2">${totalValue.toFixed(2)}</p>
+        <p className="text-3xl font-bold text-purple-600 mt-2">Rs. {totalValue.toFixed(2)}</p>
       </div>
       
       <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">

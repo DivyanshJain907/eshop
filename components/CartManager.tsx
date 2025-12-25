@@ -94,6 +94,27 @@ export default function CartManager({
               <p className="text-xs text-blue-600 mt-1">
                 📦 Available: {item.quantity} item(s)
               </p>
+              {/* Discount Info */}
+              {(item.retailDiscount || item.discount || item.superDiscount) && (
+                <div className="mt-1 text-xs">
+                  {item.retailDiscount && (
+                    <span className="mr-2 text-blue-700 font-semibold">Retail: {item.retailDiscount}%</span>
+                  )}
+                  {item.discount && (
+                    <span className="mr-2 text-green-700 font-semibold">Wholesale: {item.discount}%</span>
+                  )}
+                  {item.superDiscount && (
+                    <span className="text-purple-700 font-semibold">Super WS: {item.superDiscount}%</span>
+                  )}
+                </div>
+              )}
+              {/* How many more for next discount */}
+              {item.minWholesaleQuantity && item.discount && item.cartQuantity < item.minWholesaleQuantity && (
+                <div className="text-xs text-green-700 mt-1">Add {item.minWholesaleQuantity - item.cartQuantity} more for wholesale discount</div>
+              )}
+              {item.minSuperWholesaleQuantity && item.superDiscount && item.cartQuantity < item.minSuperWholesaleQuantity && (
+                <div className="text-xs text-purple-700 mt-1">Add {item.minSuperWholesaleQuantity - item.cartQuantity} more for super wholesale discount</div>
+              )}
             </div>
 
             {/* Quantity Control */}

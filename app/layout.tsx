@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "eShop - Inventory Management",
+  title: "Jain Sales Corporation - Inventory Management",
   description: "Manage your e-shop inventory efficiently",
 };
 

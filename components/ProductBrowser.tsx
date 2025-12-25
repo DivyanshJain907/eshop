@@ -16,6 +16,7 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high'>('name');
+  const [addedProduct, setAddedProduct] = useState<string | null>(null);
 
   useEffect(() => {
     loadProducts();
@@ -45,6 +46,21 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
 
     setFilteredProducts(filtered);
   }, [searchQuery, products, sortBy]);
+
+  const handleAddToCart = (product: Product) => {
+    if (onAddToCart && product.quantity > 0) {
+      onAddToCart(product);
+      
+      // Show success feedback
+      const productId = product._id || product.id;
+      setAddedProduct(productId || '');
+      
+      // Clear feedback after 2 seconds
+      setTimeout(() => {
+        setAddedProduct(null);
+      }, 2000);
+    }
+  };
 
   if (loading) {
     return (
@@ -133,15 +149,24 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
 
                 {/* Action Buttons */}
                 <button
-                  onClick={() => onAddToCart && product.quantity > 0 && onAddToCart(product)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                  }}
                   disabled={product.quantity === 0}
-                  className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
-                    product.quantity > 0
+                  className={`w-full py-2 px-4 rounded-lg font-medium transition-all ${
+                    addedProduct === (product._id || product.id)
+                      ? 'bg-green-500 text-white scale-105'
+                      : product.quantity > 0
                       ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                       : 'bg-gray-300 text-gray-600 cursor-not-allowed'
                   }`}
                 >
-                  {product.quantity > 0 ? '🛒 Add to Cart' : 'Out of Stock'}
+                  {addedProduct === (product._id || product.id)
+                    ? '✅ Added to Cart!'
+                    : product.quantity > 0
+                    ? '🛒 Add to Cart'
+                    : 'Out of Stock'}
                 </button>
               </div>
             </div>

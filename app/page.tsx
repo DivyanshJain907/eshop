@@ -53,10 +53,10 @@ export default function LandingPage() {
             <div className="space-y-8">
               <div>
                 <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-                  Your Trusted <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-blue-600">eShop</span>
+                  Your Trusted <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-blue-600">Jain Sales Corporation</span>
                 </h2>
                 <p className="text-xl text-gray-600">
-                  Discover amazing products, manage your inventory efficiently, and grow your business with eShop's powerful tools.
+                  Discover amazing products, manage your inventory efficiently, and grow your business with Jain Sales Corporation's powerful tools.
                 </p>
               </div>
 
@@ -110,7 +110,7 @@ export default function LandingPage() {
       <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-bold text-gray-900 mb-4">Why Choose eShop?</h3>
+            <h3 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Jain Sales Corporation?</h3>
             <p className="text-xl text-gray-600">Everything you need for a seamless shopping experience</p>
           </div>
 
@@ -195,7 +195,7 @@ export default function LandingPage() {
             {/* About */}
             <div>
               <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                <span className="text-2xl">🛒</span> eShop
+                <span className="text-2xl">🛒</span> Jain Sales Corporation
               </h3>
               <p className="text-sm text-gray-400 leading-relaxed">
                 Your trusted online shopping destination for quality products and excellent customer service.
@@ -295,7 +295,7 @@ export default function LandingPage() {
                 className="w-full px-4 py-3 bg-gray-800 text-white font-bold flex items-center justify-between hover:bg-gray-700 transition-colors"
               >
                 <span className="flex items-center gap-2">
-                  <span className="text-lg">🛒</span> eShop
+                  <span className="text-lg">🛒</span> Jain Sales Corporation
                 </span>
                 <span className={`transform transition-transform ${expandedSection === 'about' ? 'rotate-180' : ''}`}>
                   ▼
@@ -430,7 +430,7 @@ export default function LandingPage() {
           <div className="border-t border-gray-800 pt-6 md:pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-xs md:text-sm text-gray-400">
-                © 2025 eShop. All rights reserved.
+                © 2025 Jain Sales Corporation. All rights reserved.
               </p>
               <div className="flex flex-wrap gap-3 md:gap-4 text-xs md:text-sm text-gray-400 justify-center md:justify-end">
                 <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>

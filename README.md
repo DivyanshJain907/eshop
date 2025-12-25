@@ -1,6 +1,6 @@
-# eShop - Complete Inventory Management System
+# Jain Sales Corporation - Complete Inventory Management System
 
-A modern, fully functional eShop dashboard with **complete user authentication** built with Next.js, React, TypeScript, MongoDB, and bcrypt. This application allows users to register, login, manage product inventory, track prices, and record sales with a secure, intuitive interface backed by MongoDB.
+A modern, fully functional Jain Sales Corporation dashboard with **complete user authentication** built with Next.js, React, TypeScript, MongoDB, and bcrypt. This application allows users to register, login, manage product inventory, track prices, and record sales with a secure, intuitive interface backed by MongoDB.
 
 ## 🆕 NEW: Complete Authentication System
 

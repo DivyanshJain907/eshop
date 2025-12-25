@@ -1,3 +1,47 @@
+// PATCH: Update payment fields for a direct sale
+export async function PATCH(request: NextRequest) {
+  try {
+    const token = request.cookies.get('token')?.value;
+    if (!token) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+
+    const { saleId, amountPaid, paymentMethod, notes } = await request.json();
+    if (!saleId || amountPaid === undefined) {
+      return NextResponse.json({ message: 'Missing saleId or amountPaid' }, { status: 400 });
+    }
+
+    await connectDB();
+    const sale = await DirectSale.findById(saleId);
+    if (!sale) {
+      return NextResponse.json({ message: 'Sale not found' }, { status: 404 });
+    }
+
+    // Update payment fields
+    sale.amountPaid = (sale.amountPaid || 0) + amountPaid;
+    sale.remainingAmount = Math.max(0, (sale.totalAmount || 0) - sale.amountPaid);
+    if (sale.amountPaid >= sale.totalAmount) {
+      sale.paymentStatus = 'fully-paid';
+    } else if (sale.amountPaid > 0) {
+      sale.paymentStatus = 'partially-paid';
+    } else {
+      sale.paymentStatus = 'pending';
+    }
+    sale.paymentHistory = sale.paymentHistory || [];
+    sale.paymentHistory.push({
+      amount: amountPaid,
+      paymentMethod: paymentMethod || 'cash',
+      date: new Date(),
+      notes: notes || '',
+    });
+    await sale.save();
+    return NextResponse.json({ success: true, sale });
+  } catch (error: any) {
+    console.error('Error updating direct sale payment:', error);
+    return NextResponse.json({ message: 'Error updating payment', error: error.message }, { status: 500 });
+  }
+}
 import { connectDB } from '@/lib/db';
 import Product from '@/lib/models/Product';
 import DirectSale from '@/lib/models/DirectSale';

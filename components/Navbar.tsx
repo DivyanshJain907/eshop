@@ -44,7 +44,7 @@ export default function Navbar({ isAuthenticated = false, userName, userRole }: 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="text-3xl transition-transform group-hover:scale-110">🛒</div>
-            <h1 className="text-2xl font-bold text-gray-900 hidden sm:block">eShop</h1>
+            <h1 className="text-2xl font-bold text-gray-900 hidden sm:block">Jain Sales Corporation</h1>
           </Link>
 
           {/* Desktop Navigation */}
@@ -105,7 +105,7 @@ export default function Navbar({ isAuthenticated = false, userName, userRole }: 
                   Profile
                 </Link>
                 <div className="ml-2 pl-2 border-l border-gray-300">
-                  <span className="text-sm text-gray-600 font-medium">👤 {userName}</span>
+                    <span className="text-sm text-black font-medium">👤 {userName}</span>
                 </div>
               </>
             )}
@@ -158,7 +158,7 @@ export default function Navbar({ isAuthenticated = false, userName, userRole }: 
             ) : (
               <>
                 {userName && (
-                  <div className="px-4 py-2 text-sm text-gray-600 font-medium bg-gray-50 rounded-lg">
+                    <div className="px-4 py-2 text-sm text-black font-medium bg-gray-50 rounded-lg">
                     👤 {userName}
                   </div>
                 )}

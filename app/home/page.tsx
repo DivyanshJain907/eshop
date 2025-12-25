@@ -55,13 +55,19 @@ export default function CustomerHome() {
       );
 
       if (existingItem) {
-        return prevItems.map((item) =>
+        // Item already exists, increase quantity
+        const updatedCart = prevItems.map((item) =>
           (item._id || item.id) === (product._id || product.id)
             ? { ...item, cartQuantity: item.cartQuantity + 1 }
             : item
         );
+        // Switch to cart tab after a brief delay to show the update
+        setTimeout(() => setActiveTab('cart'), 300);
+        return updatedCart;
       }
 
+      // New item added
+      setTimeout(() => setActiveTab('cart'), 300);
       return [...prevItems, { ...product, cartQuantity: 1 }];
     });
   };

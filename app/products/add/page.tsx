@@ -44,33 +44,59 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-blue-50">
       <UserHeader />
       
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="text-4xl">📦</div>
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+        {/* Form Card */}
+        <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100">
+          {/* Form Header */}
+          <div className="bg-linear-to-r from-indigo-600 to-blue-600 px-8 py-6">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <span>✨</span> Create Your Product
+            </h2>
+            <p className="text-indigo-100 mt-2">Fill in all the details below to add your product to the inventory</p>
+          </div>
+
+          {/* Form Content */}
+          <AddProductForm onSuccess={handleProductSuccess} />
+        </div>
+
+        {/* Help Section */}
+        <div className="mt-12 bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-8">
+          <div className="flex items-start gap-4">
+            <div className="text-3xl">💡</div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Add New Product</h1>
-              <p className="text-gray-600 mt-1">Create a new product with tiered pricing for different customer segments</p>
+              <h3 className="text-lg font-bold text-amber-900 mb-2">Quick Tips for Better Results</h3>
+              <ul className="space-y-2 text-amber-800">
+                <li className="flex items-start gap-2">
+                  <span className="font-bold">•</span>
+                  <span><strong>Base Price:</strong> Set your base/retail price. Tier prices are auto-calculated based on discounts.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-bold">•</span>
+                  <span><strong>Quantity Tiers:</strong> Retail (1-9), Wholesale (10-49), Super Wholesale (50+)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-bold">•</span>
+                  <span><strong>Stock Threshold:</strong> Set a minimum stock level for low inventory alerts</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-bold">•</span>
+                  <span><strong>Product Images:</strong> Upload clear, high-quality product photos for better customer engagement</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-xl overflow-hidden border border-gray-100">
-          <AddProductForm onSuccess={handleProductSuccess} />
-        </div>
-
         {/* Back Button */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-12 flex justify-center">
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-linear-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-lg font-semibold transition shadow-lg hover:shadow-xl"
           >
-            ← Back to Products
+            <span>←</span> Back to Products
           </Link>
         </div>
       </div>

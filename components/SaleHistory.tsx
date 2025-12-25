@@ -1,6 +1,43 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+interface PaymentModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (amount: number, paymentMethod: string, notes?: string) => void;
+  maxAmount: number;
+}
+
+function PaymentModal({ open, onClose, onSubmit, maxAmount }: PaymentModalProps) {
+  const [amount, setAmount] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [notes, setNotes] = useState('');
+  useEffect(() => { if (!open) { setAmount(''); setPaymentMethod('cash'); setNotes(''); } }, [open]);
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+        <h3 className="text-lg font-bold mb-4">Update Payment</h3>
+        <label className="block mb-2 text-sm font-semibold">Amount Received</label>
+        <input type="number" min="1" max={maxAmount} value={amount} onChange={e => setAmount(e.target.value)} className="w-full border px-3 py-2 rounded mb-3" placeholder={`Max: ₹${maxAmount.toFixed(2)}`} />
+        <label className="block mb-2 text-sm font-semibold">Payment Method</label>
+        <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full border px-3 py-2 rounded mb-3">
+          <option value="cash">Cash</option>
+          <option value="card">Card</option>
+          <option value="upi">UPI</option>
+          <option value="bank-transfer">Bank Transfer</option>
+          <option value="cheque">Cheque</option>
+        </select>
+        <label className="block mb-2 text-sm font-semibold">Notes (optional)</label>
+        <input type="text" value={notes} onChange={e => setNotes(e.target.value)} className="w-full border px-3 py-2 rounded mb-4" />
+        <div className="flex gap-2 justify-end">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
+          <button onClick={() => { const amt = parseFloat(amount); if (amt > 0 && amt <= maxAmount) onSubmit(amt, paymentMethod, notes); }} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Update</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 interface SaleItem {
   productName: string;
@@ -28,9 +65,35 @@ interface SaleHistoryProps {
   }>;
 }
 
+
 export default function SaleHistory({ sales = [] }: SaleHistoryProps) {
   const [sortedSales, setSortedSales] = useState(sales);
   const [expandedSaleId, setExpandedSaleId] = useState<string | null>(null);
+  const [paymentModal, setPaymentModal] = useState<{ open: boolean; saleId: string | null; maxAmount: number }>({ open: false, saleId: null, maxAmount: 0 });
+  const [loading, setLoading] = useState(false);
+  // Update payment handler
+  const handleUpdatePayment = async (saleId: string, amount: number, paymentMethod: string, notes?: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/direct-sales', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ saleId, amountPaid: amount, paymentMethod, notes }),
+      });
+      if (res.ok) {
+        // Refresh the page or data
+        window.location.reload();
+      } else {
+        alert('Failed to update payment');
+      }
+    } catch (e) {
+      alert('Error updating payment');
+    } finally {
+      setLoading(false);
+      setPaymentModal({ open: false, saleId: null, maxAmount: 0 });
+    }
+  };
 
   useEffect(() => {
     setSortedSales(
@@ -208,7 +271,26 @@ export default function SaleHistory({ sales = [] }: SaleHistoryProps) {
                         </div>
 
                         {/* Payment Information */}
-                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border-2 border-orange-200">
+                        <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border-2 border-orange-200">
+                                                    {/* Update Payment Button */}
+                                                    {typeof sale.remainingAmount === 'number' && sale.remainingAmount > 0 && (
+                                                      <button
+                                                        className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold shadow"
+                                                        onClick={() => setPaymentModal({ open: true, saleId: sale._id || '', maxAmount: sale.remainingAmount ?? 0 })}
+                                                        disabled={loading}
+                                                      >
+                                                        {loading ? 'Updating...' : 'Update Payment'}
+                                                      </button>
+                                                    )}
+                                {/* Payment Modal */}
+                                <PaymentModal
+                                  open={paymentModal.open}
+                                  onClose={() => setPaymentModal({ open: false, saleId: null, maxAmount: 0 })}
+                                  onSubmit={(amount, paymentMethod, notes) => {
+                                    if (paymentModal.saleId) handleUpdatePayment(paymentModal.saleId, amount, paymentMethod, notes);
+                                  }}
+                                  maxAmount={paymentModal.maxAmount}
+                                />
                           <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span>💳</span> Payment Details
                           </h4>

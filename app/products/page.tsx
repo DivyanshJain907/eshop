@@ -63,6 +63,20 @@ export default function ProductsPage() {
     }
   };
 
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (response.ok) {
+        setRefresh((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -115,7 +129,8 @@ export default function ProductsPage() {
             <div className="overflow-x-auto">
               <ProductTable 
                 products={products} 
-                onQuantityChange={handleProductQuantityChange} 
+                onQuantityChange={handleProductQuantityChange}
+                onDeleteProduct={handleDeleteProduct}
               />
             </div>
           )}

@@ -171,19 +171,19 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
 
   return (
     <form onSubmit={handleSubmit} className="divide-y">
-      {/* Form Header */}
-      <div className="p-6 bg-linear-to-r from-indigo-50 to-blue-50 border-b">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Details</h2>
-        <p className="text-gray-600 text-sm">Fill in all the required fields marked with *</p>
-      </div>
-
       {error && (
-        <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
-          <strong>Error:</strong> {error}
+        <div className="p-6 bg-red-50 border-b-2 border-red-500">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <h4 className="font-bold text-red-900 mb-1">Error Adding Product</h4>
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="p-6 space-y-8 max-h-[calc(90vh-200px)] overflow-y-auto">
+      <div className="p-6 space-y-8">
         {/* Basic Information Section */}
         <div>
           <div className="flex items-center gap-2 mb-4">
@@ -348,7 +348,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Base Price ($) <span className="text-red-500">*</span>
+                Base Price (Rs.) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -366,18 +366,21 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
         </div>
 
         {/* Pricing Tiers */}
-        <div className="border-t pt-6">
-          <div className="flex items-center gap-2 mb-6">
+        <div className="border-t pt-6 space-y-6">
+          <div className="flex items-center gap-2 mb-8">
             <span className="text-2xl">🎯</span>
-            <h3 className="text-lg font-bold text-gray-900">Pricing Tiers</h3>
+            <h3 className="text-lg font-bold text-gray-900">Pricing Tiers & Discounts</h3>
+            <span className="ml-auto text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">Prices auto-calculate</span>
           </div>
 
           {/* Retail Tier */}
-          <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
-            <h4 className="text-md font-bold text-green-900 mb-4 flex items-center gap-2">
-              🛍️ Retail Tier
-              <span className="text-sm font-normal text-green-800">(1-9 units)</span>
-            </h4>
+          <div className="bg-linear-to-br from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-200 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h4 className="text-lg font-bold text-green-900 flex items-center gap-2">
+                <span>🛍️</span> Retail Tier
+              </h4>
+              <span className="text-sm font-semibold text-green-700 bg-white px-3 py-1 rounded-full border border-green-300">Min: 1-9 units</span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-green-900 mb-2">
@@ -414,18 +417,20 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
                   Final Price
                 </label>
                 <div className="w-full px-3 py-2 border-2 border-green-500 rounded-lg bg-green-100 text-green-900 font-bold text-lg">
-                  ${prices.retailPrice}
+                  Rs. {prices.retailPrice}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Wholesale Tier */}
-          <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-            <h4 className="text-md font-bold text-blue-900 mb-4 flex items-center gap-2">
-              🏪 Wholesale Tier
-              <span className="text-sm font-normal text-blue-800">(10-49 units)</span>
-            </h4>
+          <div className="bg-linear-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border-2 border-blue-200 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h4 className="text-lg font-bold text-blue-900 flex items-center gap-2">
+                <span>🏪</span> Wholesale Tier
+              </h4>
+              <span className="text-sm font-semibold text-blue-700 bg-white px-3 py-1 rounded-full border border-blue-300">Min: 10-49 units</span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-blue-900 mb-2">
@@ -462,18 +467,20 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
                   Final Price
                 </label>
                 <div className="w-full px-3 py-2 border-2 border-blue-500 rounded-lg bg-blue-100 text-blue-900 font-bold text-lg">
-                  ${prices.wholesalePrice}
+                  Rs. {prices.wholesalePrice}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Super Wholesale Tier */}
-          <div className="p-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg">
-            <h4 className="text-md font-bold text-purple-900 mb-4 flex items-center gap-2">
-              🏭 Super Wholesale Tier
-              <span className="text-sm font-normal text-purple-800">(50+ units)</span>
-            </h4>
+          <div className="bg-linear-to-br from-purple-50 to-pink-50 p-6 rounded-xl border-2 border-purple-200 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h4 className="text-lg font-bold text-purple-900 flex items-center gap-2">
+                <span>🏭</span> Super Wholesale Tier
+              </h4>
+              <span className="text-sm font-semibold text-purple-700 bg-white px-3 py-1 rounded-full border border-purple-300">Min: 50+ units</span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-purple-900 mb-2">
@@ -510,7 +517,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
                   Final Price
                 </label>
                 <div className="w-full px-3 py-2 border-2 border-purple-500 rounded-lg bg-purple-100 text-purple-900 font-bold text-lg">
-                  ${prices.superWholesalePrice}
+                  Rs. {prices.superWholesalePrice}
                 </div>
               </div>
             </div>
@@ -519,19 +526,19 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
       </div>
 
       {/* Form Footer */}
-      <div className="p-6 bg-gray-50 flex gap-3 border-t">
+      <div className="p-6 bg-linear-to-r from-gray-50 to-blue-50 border-t-2 flex gap-4 border-gray-200">
         <button
           type="submit"
           disabled={isLoading}
-          className="flex-1 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-400 text-white py-3 rounded-lg font-semibold transition shadow-lg"
+          className="flex-1 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white py-4 rounded-lg font-bold transition shadow-lg hover:shadow-xl transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed text-lg"
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="animate-spin">⏳</span> Adding Product...
+              <span className="animate-spin inline-block">⏳</span> Adding Product...
             </span>
           ) : (
             <span className="flex items-center justify-center gap-2">
-              ✓ Add Product
+              <span>✨</span> Add Product to Inventory
             </span>
           )}
         </button>
@@ -560,9 +567,11 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
             setUploadedImages([]);
             setError('');
           }}
-          className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition"
+          className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-4 rounded-lg font-semibold transition transform hover:scale-105 text-lg"
         >
-          ↻ Clear Form
+          <span className="flex items-center justify-center gap-2">
+            <span>↻</span> Clear Form
+          </span>
         </button>
       </div>
     </form>

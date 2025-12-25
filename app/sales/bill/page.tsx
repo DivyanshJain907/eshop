@@ -127,18 +127,18 @@ export default function BillPage() {
           <div className="mb-6 border-b-4 border-gray-900 pb-4 px-6 pt-6">
             <div className="flex justify-between items-start mb-3">
               <div>
-                <p className="text-xs font-bold text-gray-900">GSTIN : 05AAMHS1989L1ZD</p>
+                <p className="text-xs font-bold text-black">GSTIN : 05AAMHS1989L1ZD</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-bold text-gray-900">Original Copy</p>
+                <p className="text-xs font-bold text-black">Original Copy</p>
               </div>
             </div>
             <div className="text-center mb-4">
-              <p className="text-xs font-bold text-gray-900 mb-1">TAX INVOICE</p>
-              <h1 className="text-3xl font-bold text-gray-900">JAIN SALES CORPORATION</h1>
-              <p className="text-xs text-gray-900 mt-1">PREET VIHAR COLONY, RUDRAPUR</p>
+              <p className="text-xs font-bold text-black mb-1">TAX INVOICE</p>
+              <h1 className="text-3xl font-bold text-black">JAIN SALES CORPORATION</h1>
+              <p className="text-xs text-black mt-1">PREET VIHAR COLONY, RUDRAPUR</p>
             </div>
-            <div className="text-center text-xs text-gray-900 space-y-0.5">
+            <div className="text-center text-xs text-black space-y-0.5">
               <p>MOB.NO.7744835784,9412235537</p>
               <p>PAN : AAMHS1989L</p>
               <p>Tel. : 7744835784,9412235537 email : jainsalesmbd@gmail.com</p>
@@ -150,8 +150,8 @@ export default function BillPage() {
           <div className="grid grid-cols-2 gap-6 mb-6 border-t-2 border-b-2 border-gray-300 py-3 px-6">
             {/* Party Details */}
             <div>
-              <p className="text-xs font-bold text-gray-900 mb-2">Party Details :</p>
-              <div className="text-sm text-gray-900 space-y-1">
+              <p className="text-xs font-bold text-black mb-2">Party Details :</p>
+              <div className="text-sm text-black space-y-1">
                 <p className="font-semibold">{billData.customerName}</p>
                 {billData.shopName && <p>{billData.shopName}</p>}
                 <p>Mobile: {billData.customerMobile}</p>
@@ -159,7 +159,7 @@ export default function BillPage() {
             </div>
 
             {/* Invoice Details */}
-            <div className="text-sm text-gray-900">
+            <div className="text-sm text-black">
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <p className="text-xs font-bold">Invoice No.</p>
@@ -245,7 +245,7 @@ export default function BillPage() {
 
           {/* Amount in Words */}
           <div className="mb-4 p-2 bg-gray-50 border border-gray-300 mx-6 text-xs">
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-black">
               Amount in Words: <span className="font-normal capitalize">{amountInWords(billData.totalAmount || 0)}</span>
             </p>
           </div>
@@ -254,27 +254,23 @@ export default function BillPage() {
           {billData.amountPaid !== undefined && (
             <div className="mb-6 px-6">
               <div className="border-2 border-blue-300 bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-900 mb-3">💳 Payment Information</h4>
+                <h4 className="font-bold text-black mb-3">💳 Payment Information</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-600 font-semibold">Total Amount</p>
-                    <p className="text-lg font-bold text-gray-900">₹{billData.totalAmount?.toFixed(2)}</p>
+                    <p className="text-black font-semibold">Total Amount</p>
+                    <p className="text-lg font-bold text-black">₹{billData.totalAmount?.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-semibold">Amount Paid</p>
-                    <p className="text-lg font-bold text-green-700">₹{billData.amountPaid?.toFixed(2)}</p>
+                    <p className="text-black font-semibold">Amount Paid</p>
+                    <p className="text-lg font-bold text-black">₹{billData.amountPaid?.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-semibold">Remaining Amount</p>
-                    <p className="text-lg font-bold text-orange-700">₹{billData.remainingAmount?.toFixed(2)}</p>
+                    <p className="text-black font-semibold">Remaining Amount</p>
+                    <p className="text-lg font-bold text-black">₹{billData.remainingAmount?.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-semibold">Payment Status</p>
-                    <p className={`text-lg font-bold ${
-                      billData.paymentStatus === 'fully-paid' ? 'text-green-700' :
-                      billData.paymentStatus === 'partially-paid' ? 'text-orange-700' :
-                      'text-red-700'
-                    }`}>
+                    <p className="text-black font-semibold">Payment Status</p>
+                    <p className="text-lg font-bold text-black">
                       {billData.paymentStatus === 'fully-paid' ? '✓ Fully Paid' :
                        billData.paymentStatus === 'partially-paid' ? '⚠ Partially Paid' :
                        '⏳ Pending'}
@@ -282,8 +278,8 @@ export default function BillPage() {
                   </div>
                   {billData.paymentMethod && (
                     <div>
-                      <p className="text-gray-600 font-semibold">Payment Method</p>
-                      <p className="text-lg font-bold text-gray-900 capitalize">{billData.paymentMethod}</p>
+                      <p className="text-black font-semibold">Payment Method</p>
+                      <p className="text-lg font-bold text-black capitalize">{billData.paymentMethod}</p>
                     </div>
                   )}
                 </div>
@@ -293,10 +289,10 @@ export default function BillPage() {
 
           {/* Bank Details Section */}
           <div className="mb-4 border-t-2 border-b-2 border-gray-300 py-2 px-6">
-            <p className="text-xs font-bold text-gray-900">
+            <p className="text-xs font-bold text-black">
               Bank Details : <span className="font-normal">KOTAK MAHENDRA BANK A/C NO.8211628846 IFSC KKBK0000144</span>
             </p>
-            <p className="text-xs font-normal text-gray-900 ml-32">
+            <p className="text-xs font-normal text-black ml-32">
               PUNJAB NATIONAL BANK A/C NO.08330021000201140 IFSC PUNB0083300
             </p>
           </div>
@@ -305,9 +301,9 @@ export default function BillPage() {
           <div className="grid grid-cols-3 gap-2 border border-gray-300 min-h-40 text-xs">
             {/* Left Column - Terms & Conditions */}
             <div className="border-r border-gray-300 p-2">
-              <p className="text-xs font-bold text-gray-900 mb-1">Terms & Conditions</p>
-              <p className="text-xs text-gray-900 font-bold mb-1">E.& O.E.</p>
-              <ul className="text-xs text-gray-900 space-y-0.5">
+              <p className="text-xs font-bold text-black mb-1">Terms & Conditions</p>
+              <p className="text-xs text-black font-bold mb-1">E.& O.E.</p>
+              <ul className="text-xs text-black space-y-0.5">
                 <li>1. Goods once sold will not be taken back.</li>
                 <li>2. Interest @ 18% p.a. will be charged if the payment is not made with in the stipulated time.</li>
                 <li>3. Subject to 'Uttarakhand' Jurisdiction only.</li>
@@ -316,7 +312,7 @@ export default function BillPage() {
 
             {/* Middle Column - QR Code */}
             <div className="border-r border-gray-300 p-2 flex flex-col items-center justify-center">
-              <p className="text-xs font-bold text-gray-900 mb-1">E-Invoice QR Code</p>
+              <p className="text-xs font-bold text-black mb-1">E-Invoice QR Code</p>
               <div className="flex items-center justify-center">
                 <QRCodeCanvas 
                   value={`Invoice: ${billData.saleId?.toString().slice(-8).toUpperCase() || 'N/A'} | Amount: ₹${billData.totalAmount?.toFixed(2) || '0.00'} | Customer: ${billData.customerName}`}
@@ -331,11 +327,11 @@ export default function BillPage() {
             {/* Right Column - Signature */}
             <div className="p-2 flex flex-col justify-between">
               <div>
-                <p className="text-xs font-bold text-gray-900 mb-1">Receiver's Signature :</p>
+                <p className="text-xs font-bold text-black mb-1">Receiver's Signature :</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-bold text-gray-900 mb-8">for JAIN SALES CORPORATION</p>
-                <p className="text-xs font-bold text-gray-900 border-t border-gray-300 pt-1">Authorised Signatory</p>
+                <p className="text-xs font-bold text-black mb-8">for JAIN SALES CORPORATION</p>
+                <p className="text-xs font-bold text-black border-t border-gray-300 pt-1">Authorised Signatory</p>
               </div>
             </div>
           </div>

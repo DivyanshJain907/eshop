@@ -109,7 +109,8 @@ export async function GET(request: NextRequest) {
 
       // Fetch products with field projection (only necessary fields)
       const products = await Product.find(filter)
-        .select('name price quantity image category createdAt updatedAt') // Exclude heavy fields
+        .select('name price quantity image images category retailDiscount retailPrice discount wholesalePrice superDiscount superWholesalePrice minRetailQuantity minWholesaleQuantity minSuperWholesaleQuantity createdBy createdAt updatedAt')
+        .populate('createdBy', 'name shopName')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -204,7 +205,9 @@ export async function POST(request: NextRequest) {
         token,
         process.env.JWT_SECRET || 'your-secret-key'
       );
+      console.log('🔑 Decoded token:', decoded);
     } catch (jwtError) {
+      console.error('❌ JWT verification error:', jwtError);
       return NextResponse.json(
         { error: 'Invalid token' },
         { status: 401 }
@@ -246,7 +249,9 @@ export async function POST(request: NextRequest) {
     // Check user role in database
     try {
       const user = await User.findById(decoded.id);
+      console.log('👤 User from DB:', user);
       if (!user || (user.role !== 'employee' && user.role !== 'admin')) {
+        console.warn('🚫 Unauthorized attempt by user:', user ? user.role : 'not found');
         return NextResponse.json(
           { error: 'Unauthorized - Only employees and admins can add products' },
           { status: 403 }

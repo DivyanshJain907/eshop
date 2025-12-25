@@ -21,7 +21,7 @@ export default function ReturnsPage() {
         <div className="bg-white rounded-lg shadow-md p-8 mb-12 border-l-4 border-green-600">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Overview</h2>
           <p className="text-gray-600 mb-4">
-            At eShop, we stand behind our products. If you're not satisfied with your purchase, we offer flexible return and refund options within our booking window and beyond.
+            At Jain Sales Corporation, we stand behind our products. If you're not satisfied with your purchase, we offer flexible return and refund options within our booking window and beyond.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">

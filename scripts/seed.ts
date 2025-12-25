@@ -199,7 +199,7 @@ async function seedDatabase() {
     const products = await Product.insertMany(sampleProducts);
     console.log(`\n✅ ${products.length} products created successfully!`);
     products.forEach((p: any) => {
-      console.log(`   - ${p.name}: $${p.price}`);
+      console.log(`   - ${p.name}: Rs. ${p.price}`);
     });
 
     await mongoose.disconnect();

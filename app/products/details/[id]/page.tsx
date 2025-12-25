@@ -95,9 +95,30 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-            {/* Product Image */}
-            <div className="flex items-center justify-center bg-gray-100 rounded-lg h-96">
-              {product.image ? (
+            {/* Product Images Gallery */}
+            <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg h-96">
+              {product.images && product.images.length > 0 ? (
+                <div className="w-full h-full flex flex-col items-center justify-center">
+                  <div className="flex gap-2 mb-2 overflow-x-auto max-w-full">
+                    {product.images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`${product.name} photo ${idx + 1}`}
+                        className="w-32 h-32 object-cover rounded-lg border-2 border-indigo-300 bg-white"
+                        style={{ minWidth: '8rem', minHeight: '8rem' }}
+                      />
+                    ))}
+                  </div>
+                  {/* Main large preview (first image) */}
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-64 object-contain rounded-lg border-2 border-indigo-400 bg-white"
+                    style={{ maxWidth: '100%', maxHeight: '16rem' }}
+                  />
+                </div>
+              ) : product.image ? (
                 <img
                   src={product.image}
                   alt={product.name}

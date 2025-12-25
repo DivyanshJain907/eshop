@@ -21,6 +21,10 @@ export default function SalesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedItemForDiscount, setSelectedItemForDiscount] = useState<string | null>(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [stockFilter, setStockFilter] = useState('');
+  const [priceFilter, setPriceFilter] = useState('');
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -34,6 +38,18 @@ export default function SalesPage() {
       router.push('/');
     }
   }, [user, isLoading, router]);
+
+  // Prevent body scroll when cart is open
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isCartOpen]);
 
   // Fetch products
   useEffect(() => {
@@ -139,11 +155,37 @@ export default function SalesPage() {
     router.push('/sales/checkout');
   };
 
-  const filteredProducts = products.filter(
-    (p) =>
+  const filteredProducts = products.filter((p) => {
+    // Text search filter
+    const matchesSearch =
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+      (p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // Category filter
+    const matchesCategory = !categoryFilter || (p.category && p.category.toLowerCase() === categoryFilter.toLowerCase());
+
+    // Stock filter
+    let matchesStock = true;
+    if (stockFilter === 'in-stock') {
+      matchesStock = (p.quantity || 0) > 0;
+    } else if (stockFilter === 'low-stock') {
+      matchesStock = (p.quantity || 0) > 0 && (p.quantity || 0) <= 5;
+    } else if (stockFilter === 'out-stock') {
+      matchesStock = (p.quantity || 0) === 0;
+    }
+
+    // Price filter
+    let matchesPrice = true;
+    if (priceFilter) {
+      const price = p.price || 0;
+      if (priceFilter === '0-100') matchesPrice = price <= 100;
+      else if (priceFilter === '100-500') matchesPrice = price > 100 && price <= 500;
+      else if (priceFilter === '500-1000') matchesPrice = price > 500 && price <= 1000;
+      else if (priceFilter === '1000+') matchesPrice = price > 1000;
+    }
+
+    return matchesSearch && matchesCategory && matchesStock && matchesPrice;
+  });
 
   const cartTotal = cartItems.reduce((sum, item) => {
     const itemTotal = item.price * item.cartQuantity;
@@ -155,6 +197,36 @@ export default function SalesPage() {
     const itemTotal = item.price * item.cartQuantity;
     const customDiscount = item.customDiscount || 0;
     return itemTotal * (1 - customDiscount / 100);
+  };
+
+  const calculateDiscount = (item: CartItem) => {
+    const itemTotal = item.price * item.cartQuantity;
+    const customDiscount = item.customDiscount || 0;
+    return (itemTotal * customDiscount) / 100;
+  };
+
+  // Update discount for a specific item
+  const updateDiscount = (productId: string, discount: number) => {
+    // Ensure discount is between 0 and 100
+    const validDiscount = Math.max(0, Math.min(100, discount));
+    setCartItems(
+      cartItems.map((item) =>
+        (item._id || item.id) === productId 
+          ? { ...item, customDiscount: validDiscount }
+          : item
+      )
+    );
+  };
+
+  // Get all unique categories from products
+  const uniqueCategories = Array.from(
+    new Set(products.map(p => p.category).filter(Boolean))
+  ).sort();
+
+  // Helper function to get cart quantity of a product
+  const getCartQuantity = (productId: string) => {
+    const cartItem = cartItems.find(item => item._id === productId || item.id === productId);
+    return cartItem ? cartItem.cartQuantity : 0;
   };
 
   if (isLoading) {
@@ -175,7 +247,7 @@ export default function SalesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <UserHeader />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
             {error}
@@ -183,42 +255,144 @@ export default function SalesPage() {
         )}
 
         {/* Direct Sales Portal */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="w-full">
           {/* Products Section */}
-          <div className="lg:col-span-2 lg:order-1 order-2">
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl">🏪</div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">Direct Sales Portal</h1>
-                  <p className="text-gray-600">Sell items directly to customers</p>
+          <div className="w-full">
+            {/* Header Section with Enhanced Design */}
+            <div className="mb-8 bg-linear-to-br from-indigo-600 via-blue-500 to-cyan-500 rounded-2xl p-8 shadow-2xl border border-indigo-400 relative overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full -ml-24 -mb-24"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="text-6xl drop-shadow-lg">🏪</div>
+                  <div>
+                    <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                      Direct Sales Portal
+                    </h1>
+                    <p className="text-indigo-100 text-sm md:text-base mt-2">💼 Sell directly with custom pricing & real-time discounts</p>
+                  </div>
+                </div>
+                
+                {/* Quick Stats */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white bg-opacity-95 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-shadow">
+                    <p className="text-gray-600 text-xs font-bold uppercase tracking-wide">Products Available</p>
+                    <p className="text-3xl font-bold text-indigo-600 mt-2">{products.length}</p>
+                  </div>
+                  <div className="bg-white bg-opacity-95 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-shadow">
+                    <p className="text-gray-600 text-xs font-bold uppercase tracking-wide">Items in Cart</p>
+                    <p className="text-3xl font-bold text-blue-600 mt-2">{cartItems.length}</p>
+                  </div>
+                  <div className="bg-white bg-opacity-95 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-shadow">
+                    <p className="text-gray-600 text-xs font-bold uppercase tracking-wide">Cart Value</p>
+                    <p className="text-3xl font-bold text-green-600 mt-2">₹{cartTotal.toFixed(0)}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Search */}
-            <div className="mb-6">
-              <input
-                type="text"
-                placeholder="Search products by name or category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+            {/* Search & Filter Section */}
+            <div className="mb-8 space-y-4 bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+              {/* Main Search Bar */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <span className="text-2xl">🔍</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search products by name or category..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm text-base text-gray-900 placeholder-gray-500 bg-white transition-all"
+                />
+              </div>
+
+              {/* Filter Options */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                {/* Category Filter */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">📂 Category</label>
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white font-medium transition-all hover:border-indigo-300"
+                  >
+                    <option value="">All Categories</option>
+                    {uniqueCategories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Stock Filter */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">📦 Stock Status</label>
+                  <select
+                    value={stockFilter}
+                    onChange={(e) => setStockFilter(e.target.value)}
+                    className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white font-medium transition-all hover:border-indigo-300"
+                  >
+                    <option value="">All Items</option>
+                    <option value="in-stock">In Stock Only</option>
+                    <option value="low-stock">Low Stock</option>
+                    <option value="out-stock">Out of Stock</option>
+                  </select>
+                </div>
+
+                {/* Price Filter */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">💰 Price Range</label>
+                  <select
+                    value={priceFilter}
+                    onChange={(e) => setPriceFilter(e.target.value)}
+                    className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white font-medium transition-all hover:border-indigo-300"
+                  >
+                    <option value="">All Prices</option>
+                    <option value="0-100">Rs. 0 - 100</option>
+                    <option value="100-500">Rs. 100 - 500</option>
+                    <option value="500-1000">Rs. 500 - 1000</option>
+                    <option value="1000+">Rs. 1000+</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white rounded-lg shadow p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredProducts.length === 0 ? (
-                <div className="col-span-full text-center py-8 text-gray-500">
-                  No products found
+                <div className="col-span-full text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300">
+                  <p className="text-gray-600 text-lg font-medium">No products found</p>
+                  <p className="text-gray-500 mt-2">Try adjusting your search filters</p>
                 </div>
               ) : (
-                filteredProducts.map((product) => (
+                filteredProducts.map((product) => {
+                  const productId = (product._id || product.id) ?? '';
+                  const cartQuantity = getCartQuantity(productId);
+                  const isInCart = cartQuantity > 0;
+                  return (
                   <div
                     key={product._id || product.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className={`bg-white border-2 rounded-xl p-6 hover:shadow-xl transition-all duration-300 group flex flex-col ${
+                      isInCart 
+                        ? 'border-green-400 bg-gradient-to-br from-white to-green-50' 
+                        : 'border-gray-200 hover:border-indigo-300'
+                    }`}
                   >
+                    {/* Supplier/Company Name */}
+                    <div className="mb-3">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Supplier</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        {typeof product.createdBy === 'object' && product.createdBy 
+                          ? (product.createdBy.shopName || product.createdBy.name || 'Unknown Supplier')
+                          : 'Unknown Supplier'
+                        }
+                      </p>
+                    </div>
+
                     <div className="flex justify-between items-start mb-3">
                       {product.image ? (
                         <img 
@@ -231,13 +405,20 @@ export default function SalesPage() {
                           📦
                         </div>
                       )}
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                        product.quantity > 0
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {product.quantity > 0 ? `${product.quantity} left` : 'Out of stock'}
-                      </span>
+                      <div className="flex flex-col gap-2 items-end">
+                        <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                          product.quantity > 0
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {product.quantity > 0 ? `${product.quantity} left` : 'Out of stock'}
+                        </span>
+                        {isInCart && (
+                          <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                            ✅ {cartQuantity} in cart
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <h3 className="font-semibold text-gray-900 mb-1">{product.name}</h3>
                     <p className="text-sm text-gray-600 mb-2">{product.category}</p>
@@ -275,186 +456,246 @@ export default function SalesPage() {
                       Add to Cart
                     </button>
                   </div>
-                ))
+                );
+                })
               )}
             </div>
           </div>
 
-          {/* Cart Section - Show on right desktop, below on mobile */}
-          <div className="lg:col-span-1 lg:order-2 order-1">
-            <div className="bg-white rounded-lg shadow p-6 h-fit sticky top-24">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                🛒 Cart ({cartItems.length})
-              </h2>
+          {/* Small Floating Cart Button */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="fixed bottom-8 right-8 bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full p-6 shadow-2xl transform hover:scale-125 transition-all z-40 flex flex-col items-center justify-center border-4 border-white"
+          >
+            <span className="text-4xl">🛒</span>
+            <div className="mt-2 text-center">
+              <p className="text-xs font-bold">{cartItems.length}</p>
+              <p className="text-xs">Items</p>
+              {cartTotal > 0 && <p className="text-xs font-bold">₹{cartTotal.toFixed(0)}</p>}
+            </div>
+          </button>
 
-              {cartItems.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">Cart is empty</div>
-              ) : (
-                <>
-                  {/* Cart Items */}
-                  <div className="space-y-3 mb-6 max-h-96 overflow-y-auto">
+          {/* Cart Modal - Full Page Clean UI */}
+          {isCartOpen && (
+            <div className="fixed inset-0 bg-gradient-to-br from-gray-50 to-gray-100 z-50 flex flex-col overflow-hidden">
+              {/* Modal Header */}
+              <div className="bg-linear-to-r from-green-600 to-emerald-700 text-white p-5 flex justify-between items-center shrink-0 shadow-lg border-b-4 border-emerald-800">
+                <div className="flex items-center gap-3">
+                  <span className="text-5xl drop-shadow-xl">🛒</span>
+                  <div>
+                    <h2 className="text-3xl font-bold text-white drop-shadow">Shopping Cart</h2>
+                    <p className="text-sm text-green-50 font-semibold mt-0.5 drop-shadow">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} selected</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsCartOpen(false)}
+                  className="text-white hover:bg-white hover:bg-opacity-30 p-2 rounded-full transition text-4xl hover:scale-110 transform"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="flex-1 overflow-y-auto p-6">
+                {cartItems.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full min-h-96">
+                    <p className="text-7xl mb-4">🛒</p>
+                    <p className="text-gray-600 text-2xl font-bold">Cart is Empty</p>
+                    <p className="text-gray-500 text-base mt-3">Add products to start selling</p>
+                  </div>
+                ) : (
+                  <div className="max-w-7xl mx-auto space-y-3">
                     {cartItems.map((item) => (
-                      <div key={item._id || item.id} className="border border-gray-200 rounded p-3 bg-gray-50">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-gray-900 text-sm">{item.name}</h4>
-                          <button
-                            onClick={() => removeFromCart(item._id || item.id || '')}
-                            className="text-red-600 hover:text-red-800 font-bold"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <button
-                            onClick={() => updateQuantity(item._id || item.id || '', item.cartQuantity - 1)}
-                            className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                          >
-                            −
-                          </button>
-                          <input
-                            type="number"
-                            value={item.cartQuantity}
-                            onChange={(e) =>
-                              updateQuantity(item._id || item.id || '', parseInt(e.target.value) || 1)
-                            }
-                            className="w-12 text-center border border-gray-300 rounded"
-                          />
-                          <button
-                            onClick={() => updateQuantity(item._id || item.id || '', item.cartQuantity + 1)}
-                            className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                          >
-                            +
-                          </button>
-                          <span className="text-xs text-gray-600 ml-auto">Qty: {item.cartQuantity}</span>
-                        </div>
-
-                        {/* Discount Section */}
-                        <div className="border-t border-gray-200 pt-2 mt-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-semibold text-gray-700">💰 Discount Applied</span>
-                            <button
-                              onClick={() =>
-                                setSelectedItemForDiscount(
-                                  selectedItemForDiscount === (item._id || item.id)
-                                    ? null
-                                    : (item._id || item.id || '')
-                                )
-                              }
-                              className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
-                            >
-                              {selectedItemForDiscount === (item._id || item.id) ? '✕ Close' : '✎ Edit'}
-                            </button>
+                      <div key={item._id || item.id} className="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-md hover:shadow-lg hover:border-green-300 transition-all">
+                        <div className="flex gap-4">
+                          {/* Product Image */}
+                          <div className="shrink-0">
+                            {item.image && item.image !== '📦' ? (
+                              <img 
+                                src={item.image} 
+                                alt={item.name}
+                                className="w-24 h-24 object-cover rounded-lg bg-gray-100 border border-gray-200"
+                              />
+                            ) : (
+                              <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center text-4xl border border-gray-200">
+                                📦
+                              </div>
+                            )}
                           </div>
 
-                          {selectedItemForDiscount === (item._id || item.id) ? (
-                            <div className="bg-indigo-50 p-3 rounded border border-indigo-200 mb-2">
-                              <label className="text-xs font-semibold text-gray-700 block mb-2">
-                                Adjust Discount Percentage
-                              </label>
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  value={item.customDiscount || 0}
-                                  onChange={(e) => {
-                                    const discount = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
-                                    setCartItems(
-                                      cartItems.map((ci) =>
-                                        (ci._id || ci.id) === (item._id || item.id)
-                                          ? { ...ci, customDiscount: discount }
-                                          : ci
-                                      )
-                                    );
-                                  }}
-                                  className="w-16 px-2 py-1 border border-gray-300 rounded text-sm font-bold"
-                                  placeholder="0"
-                                />
-                                <span className="text-sm font-semibold text-gray-700">%</span>
+                          {/* Item Details */}
+                          <div className="flex-1">
+                            {/* Item Header */}
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1">
+                                <h3 className="text-base font-bold text-gray-900 mb-1">{item.name}</h3>
+                                <div className="flex flex-wrap gap-2 items-center mb-1">
+                                  <p className="text-sm text-gray-600 font-medium bg-blue-50 px-2 py-1 rounded-md inline-block">📦 {item.category || 'Uncategorized'}</p>
+                                  <span className="text-xs bg-gray-100 text-gray-700 font-semibold px-2 py-0.5 rounded-full border border-gray-200 ml-1">Stock: {item.quantity}</span>
+                                </div>
+                                {/* Discount Info - Improved UI */}
+                                {(item.retailDiscount || item.discount || item.superDiscount) && (
+                                  <div className="mt-2 flex flex-wrap gap-2">
+                                    {item.retailDiscount && (
+                                      <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full text-xs shadow-sm border border-blue-200">
+                                        <span className="text-base">🛍️</span> Retail: {item.retailDiscount}%
+                                      </span>
+                                    )}
+                                    {item.discount && (
+                                      <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 font-semibold px-2 py-0.5 rounded-full text-xs shadow-sm border border-green-200">
+                                        <span className="text-base">🏪</span> Wholesale: {item.discount}%
+                                      </span>
+                                    )}
+                                    {item.superDiscount && (
+                                      <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-full text-xs shadow-sm border border-purple-200">
+                                        <span className="text-base">⭐</span> Super WS: {item.superDiscount}%
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                {/* How many more for next discount - Improved UI */}
+                                {item.minWholesaleQuantity && item.discount && item.cartQuantity < item.minWholesaleQuantity && (
+                                  <div className="flex items-center gap-1 text-xs text-green-800 mt-2 bg-green-50 border border-green-200 rounded px-2 py-1 w-fit font-semibold">
+                                    <span className="text-base">⬆️</span> Add <span className="font-bold">{item.minWholesaleQuantity - item.cartQuantity}</span> more for <span className="text-green-700">wholesale</span> discount
+                                  </div>
+                                )}
+                                {item.minSuperWholesaleQuantity && item.superDiscount && item.cartQuantity < item.minSuperWholesaleQuantity && (
+                                  <div className="flex items-center gap-1 text-xs text-purple-800 mt-2 bg-purple-50 border border-purple-200 rounded px-2 py-1 w-fit font-semibold">
+                                    <span className="text-base">⬆️</span> Add <span className="font-bold">{item.minSuperWholesaleQuantity - item.cartQuantity}</span> more for <span className="text-purple-700">super wholesale</span> discount
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-right">
+                                <p className="text-xl font-bold text-green-600 bg-green-50 px-3 py-1 rounded-lg mb-2">₹{item.price.toFixed(2)}</p>
+                                <button
+                                  onClick={() => removeFromCart(item._id || item.id || '')}
+                                  className="text-red-500 hover:text-red-700 font-bold text-2xl mt-1 hover:bg-red-100 px-2 py-1 rounded transition"
+                                >
+                                  ✕
+                                </button>
                               </div>
                             </div>
-                          ) : (
-                            <div className="bg-green-50 p-2 rounded border border-green-200">
-                              <p className="text-sm font-bold text-green-700">
-                                ✓ {item.customDiscount && item.customDiscount > 0 ? `${item.customDiscount}%` : '0%'} off
-                              </p>
-                              <p className="text-xs text-green-600">Auto-applied tier discount</p>
-                            </div>
-                          )}
-                        </div>
 
-                        {/* Price Calculation */}
-                        <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
-                          <p className="text-xs text-gray-600">
-                            Base: ₹{(item.price * item.cartQuantity).toFixed(2)}
-                          </p>
-                          {item.customDiscount && item.customDiscount > 0 && (
-                            <>
-                              <p className="text-xs text-red-600">
-                                Discount: -₹{((item.price * item.cartQuantity * item.customDiscount) / 100).toFixed(2)}
-                              </p>
-                              <p className="text-sm font-semibold text-indigo-600">
-                                Total: ₹{calculateItemTotal(item).toFixed(2)}
-                              </p>
-                            </>
-                          )}
-                          {(!item.customDiscount || item.customDiscount === 0) && (
-                            <p className="text-sm font-semibold text-indigo-600">
-                              Total: ₹{(item.price * item.cartQuantity).toFixed(2)}
-                            </p>
-                          )}
+                            {/* Quantity Controls and Breakdown */}
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg p-3 w-fit border-2 border-gray-300">
+                                <button
+                                  onClick={() => updateQuantity(item._id || item.id || '', item.cartQuantity - 1)}
+                                  className="px-4 py-2 bg-white border border-gray-400 rounded hover:bg-gray-50 font-bold text-base text-black transition"
+                                >
+                                  −
+                                </button>
+                                <input
+                                  type="number"
+                                  value={item.cartQuantity}
+                                  onChange={(e) =>
+                                    updateQuantity(item._id || item.id || '', parseInt(e.target.value) || 1)
+                                  }
+                                  className="w-16 text-center border-2 border-gray-400 rounded px-2 py-2 font-bold text-base bg-white text-black"
+                                />
+                                <button
+                                  onClick={() => updateQuantity(item._id || item.id || '', item.cartQuantity + 1)}
+                                  className="px-4 py-2 bg-white border border-gray-400 rounded hover:bg-gray-50 font-bold text-base text-black transition"
+                                >
+                                  +
+                                </button>
+                              </div>
+
+                              {/* Price Breakdown */}
+                              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 space-y-2 text-sm flex-1 border-2 border-blue-300">
+                                <div className="flex justify-between font-bold text-gray-800">
+                                  <span>Subtotal:</span>
+                                  <span className="text-indigo-600">₹{(item.price * item.cartQuantity).toFixed(2)}</span>
+                                </div>
+                                
+                                {/* Discount Editor */}
+                                <div className="flex justify-between items-center bg-white rounded-lg p-2.5 border-2 border-green-300">
+                                  <label className="text-gray-800 flex items-center gap-2 font-semibold">
+                                    💰 Discount
+                                  </label>
+                                  <div className="flex items-center gap-1">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      max="100"
+                                      value={item.customDiscount || 0}
+                                      onChange={(e) =>
+                                        updateDiscount(item._id || item.id || '', parseFloat(e.target.value) || 0)
+                                      }
+                                      className="w-14 text-center border-2 border-green-400 rounded px-2 py-1 font-bold text-base bg-white text-black"
+                                    />
+                                    <span className="text-gray-800 font-bold text-base">%</span>
+                                  </div>
+                                </div>
+
+                                {(item.customDiscount || 0) > 0 && (
+                                  <div className="flex justify-between text-red-700 font-bold bg-red-100 px-3 py-2 rounded-lg">
+                                    <span>Discount:</span>
+                                    <span>-₹{calculateDiscount(item).toFixed(2)}</span>
+                                  </div>
+                                )}
+                                
+                                <div className="border-t-2 border-blue-300 pt-2 flex justify-between font-bold text-green-700 bg-green-100 px-3 py-2 rounded-lg">
+                                  <span>Total:</span>
+                                  <span>₹{calculateItemTotal(item).toFixed(2)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
+                )}
+              </div>
 
-                  {/* Cart Summary */}
-                  <div className="border-t border-gray-200 pt-4 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Subtotal:</span>
-                      <span className="font-semibold">
-                        ₹{cartItems.reduce((sum, item) => sum + item.price * item.cartQuantity, 0).toFixed(2)}
-                      </span>
-                    </div>
-                    {cartItems.some((item) => item.customDiscount && item.customDiscount > 0) && (
-                      <div className="flex justify-between text-sm text-red-600">
-                        <span>Total Discount:</span>
-                        <span className="font-semibold">
-                          -₹
-                          {cartItems
-                            .reduce((sum, item) => {
-                              const itemTotal = item.price * item.cartQuantity;
-                              const discount = item.customDiscount || 0;
-                              return sum + (itemTotal * discount) / 100;
-                            }, 0)
-                            .toFixed(2)}
-                        </span>
+              {/* Modal Footer - Summary */}
+              {cartItems.length > 0 && (
+                <div className="border-t-4 border-gray-400 bg-white p-4 shrink-0 shadow-lg">
+                  <div className="max-w-7xl mx-auto">
+                    {/* Summary Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                      <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg p-3.5 border-2 border-gray-400">
+                        <p className="text-sm text-gray-700 font-bold mb-2">Subtotal</p>
+                        <p className="text-2xl font-bold text-gray-900">₹{cartItems.reduce((sum, item) => sum + (item.price * item.cartQuantity), 0).toFixed(2)}</p>
                       </div>
-                    )}
-                    <div className="bg-indigo-50 border-2 border-indigo-200 rounded p-3 mt-3">
-                      <p className="text-sm text-gray-600 mb-1">Final Total</p>
-                      <p className="text-2xl font-bold text-indigo-600">₹{cartTotal.toFixed(2)}</p>
+                      <div className="bg-gradient-to-br from-red-100 to-red-200 rounded-lg p-3.5 border-2 border-red-400">
+                        <p className="text-sm text-red-700 font-bold mb-2">Total Discount</p>
+                        <p className="text-2xl font-bold text-red-700">-₹{(cartItems.reduce((sum, item) => sum + calculateDiscount(item), 0)).toFixed(2)}</p>
+                      </div>
+                      <div className="bg-linear-to-br from-green-500 to-emerald-700 rounded-lg p-3.5 text-white shadow-lg border-2 border-emerald-800">
+                        <p className="text-sm font-bold mb-2 text-white drop-shadow">Final Amount</p>
+                        <p className="text-2xl font-bold drop-shadow">₹{cartTotal.toFixed(2)}</p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        onClick={processSale}
+                        disabled={isProcessing}
+                        className="flex-1 py-3 px-4 bg-linear-to-r from-green-600 to-emerald-700 text-white rounded-lg font-bold text-base hover:from-green-700 hover:to-emerald-800 transition disabled:opacity-50 shadow-md"
+                      >
+                        {isProcessing ? '⏳ Processing...' : '✅ Complete Sale'}
+                      </button>
+                      <button
+                        onClick={() => setIsCartOpen(false)}
+                        className="flex-1 py-3 px-4 bg-blue-100 text-blue-800 rounded-lg font-bold text-base hover:bg-blue-200 transition border-2 border-blue-400"
+                      >
+                        ← Continue Shopping
+                      </button>
+                      <button
+                        onClick={() => setCartItems([])}
+                        className="flex-1 py-3 px-4 bg-red-100 text-red-800 rounded-lg font-bold text-base hover:bg-red-200 transition border-2 border-red-400"
+                      >
+                        🗑️ Clear Cart
+                      </button>
                     </div>
                   </div>
-
-                  {/* Action Buttons */}
-                  <button
-                    onClick={processSale}
-                    disabled={isProcessing || cartItems.length === 0}
-                    className="w-full mt-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-bold transition-colors"
-                  >
-                    {isProcessing ? '⏳ Processing...' : '✓ Complete Sale'}
-                  </button>
-                  <button
-                    onClick={() => setCartItems([])}
-                    className="w-full mt-2 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors"
-                  >
-                    Clear Cart
-                  </button>
-                </>
+                </div>
               )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -67,6 +67,34 @@ export default function CheckoutPage() {
     setError('');
 
     try {
+      // Check if phone number already exists in database
+      const checkResponse = await fetch(`/api/customers/check-mobile?mobileNumber=${customerDetails.mobileNumber}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (checkResponse.ok) {
+        const data = await checkResponse.json();
+        console.log('Mobile check response:', data);
+        
+        // Check if any customer with this phone number exists
+        if (data.exists === true && data.customer) {
+          console.log('Customer exists:', data.customer);
+          // Check if the name matches
+          if (data.customer.name.toLowerCase().trim() !== customerDetails.name.toLowerCase().trim()) {
+            const errorMsg = `This mobile number is already registered with name "${data.customer.name}". Please use a different number or use the registered name.`;
+            console.log('Name mismatch error:', errorMsg);
+            setError(errorMsg);
+            setIsProcessing(false);
+            return;
+          }
+        }
+      } else {
+        console.error('Mobile check failed:', checkResponse.status);
+        throw new Error('Failed to verify mobile number');
+      }
+
+      // Proceed with the sale
       const response = await fetch('/api/direct-sales', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -143,26 +171,26 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <UserHeader />
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="mb-6 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-semibold transition-colors"
+          className="mb-6 px-5 py-2.5 bg-gray-300 hover:bg-gray-400 text-gray-900 rounded-lg font-bold transition-colors text-base shadow-md"
         >
           ← Back to Sales
         </button>
 
         {/* Header */}
-        <div className="bg-indigo-600 rounded-lg shadow-lg p-8 text-white mb-8">
-          <h1 className="text-3xl font-bold">👤 Customer Details</h1>
-          <p className="text-indigo-100 mt-2">Complete the checkout process</p>
+        <div className="bg-linear-to-r from-green-600 to-emerald-700 rounded-2xl shadow-2xl p-8 text-white mb-8 border-b-4 border-emerald-800">
+          <h1 className="text-4xl font-bold drop-shadow-lg">👤 Customer Details</h1>
+          <p className="text-green-50 mt-3 text-lg drop-shadow">Complete the checkout and finalize your sale</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg text-red-700">
+          <div className="mb-6 p-5 bg-red-100 border-l-4 border-red-600 rounded-lg text-red-800 shadow-md">
             <div className="flex items-center">
               <span className="text-2xl mr-3">⚠️</span>
-              {error}
+              <span className="font-bold">{error}</span>
             </div>
           </div>
         )}
@@ -170,12 +198,12 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6 border-t-4 border-indigo-600">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-green-600">
               <div className="space-y-6">
                 {/* Customer Name */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Customer Name <span className="text-red-600">*</span>
+                  <label className="block text-base font-bold text-gray-800 mb-3">
+                    👤 Customer Name <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
@@ -184,15 +212,15 @@ export default function CheckoutPage() {
                       setCustomerDetails({ ...customerDetails, name: e.target.value })
                     }
                     placeholder="Enter customer name"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-5 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base text-black"
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Mobile Number <span className="text-red-600">*</span>
-                    <span className="text-xs text-gray-500 ml-1">(10 digits only)</span>
+                  <label className="block text-base font-bold text-gray-800 mb-3">
+                    📱 Mobile Number <span className="text-red-600">*</span>
+                    <span className="text-xs text-gray-600 ml-2 font-normal">(10 digits)</span>
                   </label>
                   <input
                     type="tel"
@@ -206,17 +234,17 @@ export default function CheckoutPage() {
                     placeholder="Enter 10-digit mobile number"
                     maxLength={10}
                     minLength={10}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-5 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base text-black"
                   />
                   {customerDetails.mobileNumber.length > 0 && customerDetails.mobileNumber.length < 10 && (
-                    <p className="text-xs text-red-600 mt-2">Mobile number must be exactly 10 digits</p>
+                    <p className="text-sm text-red-600 mt-2 font-semibold">⚠️ Must be exactly 10 digits</p>
                   )}
                 </div>
 
                 {/* Shop Name (Optional) */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Shop Name <span className="text-gray-500 text-xs">(Optional)</span>
+                  <label className="block text-base font-bold text-gray-800 mb-3">
+                    🏪 Shop Name <span className="text-gray-600 text-xs font-normal">(Optional)</span>
                   </label>
                   <input
                     type="text"
@@ -225,19 +253,19 @@ export default function CheckoutPage() {
                       setCustomerDetails({ ...customerDetails, shopName: e.target.value })
                     }
                     placeholder="Enter shop name (optional)"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-5 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base text-black"
                   />
                 </div>
 
                 {/* Payment Method */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Payment Method <span className="text-red-600">*</span>
+                  <label className="block text-base font-bold text-gray-800 mb-3">
+                    💳 Payment Method <span className="text-red-600">*</span>
                   </label>
                   <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-5 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base font-medium text-black"
                   >
                     <option value="cash">💵 Cash</option>
                     <option value="card">💳 Card</option>
@@ -249,11 +277,11 @@ export default function CheckoutPage() {
 
                 {/* Amount Paid */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Amount Paid <span className="text-gray-500 text-xs">(Leave empty for full payment)</span>
+                  <label className="block text-base font-bold text-gray-800 mb-3">
+                    💰 Amount Paid
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-3 text-gray-700 font-semibold">₹</span>
+                    <span className="absolute left-5 top-4 text-black font-bold text-lg">₹</span>
                     <input
                       type="number"
                       value={amountPaid}
@@ -262,40 +290,47 @@ export default function CheckoutPage() {
                       min="0"
                       max={cartTotal}
                       step="0.01"
-                      className="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full pl-10 pr-32 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base font-semibold text-black"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setAmountPaid(cartTotal)}
+                      className="absolute right-3 top-2.5 bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-1.5 rounded-lg text-sm shadow transition"
+                    >
+                      Full Payment
+                    </button>
                   </div>
                   {amountPaid && (
-                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-sm text-blue-900">
-                        <span className="font-semibold">Total Amount:</span> ₹{cartTotal.toFixed(2)}
+                    <div className="mt-4 p-4 bg-linear-to-r from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg">
+                      <p className="text-base text-blue-900 font-bold mb-2">
+                        💵 Total Amount: <span className="text-blue-700">₹{cartTotal.toFixed(2)}</span>
                       </p>
-                      <p className="text-sm text-blue-900">
-                        <span className="font-semibold">Amount Paid:</span> ₹{parseFloat(amountPaid.toString()).toFixed(2)}
+                      <p className="text-base text-green-900 font-bold mb-2">
+                        ✓ Amount Paid: <span className="text-green-700">₹{parseFloat(amountPaid.toString()).toFixed(2)}</span>
                       </p>
-                      <p className="text-sm text-blue-900">
-                        <span className="font-semibold">Remaining Amount:</span> ₹{(cartTotal - parseFloat(amountPaid.toString())).toFixed(2)}
+                      <p className="text-base text-orange-900 font-bold">
+                        ⏳ Remaining Amount: <span className="text-orange-700">₹{(cartTotal - parseFloat(amountPaid.toString())).toFixed(2)}</span>
                       </p>
                       {parseFloat(amountPaid.toString()) > 0 && parseFloat(amountPaid.toString()) < cartTotal && (
-                        <p className="text-xs text-green-700 mt-2">✓ Partial payment recorded</p>
+                        <p className="text-sm text-green-700 mt-3 font-bold">✓ Partial payment recorded</p>
                       )}
                     </div>
                   )}
                 </div>
 
                 {/* Buttons */}
-                <div className="mt-8 flex gap-3">
+                <div className="mt-10 flex gap-4">
                   <button
                     onClick={() => router.back()}
                     disabled={isProcessing}
-                    className="flex-1 px-4 py-3 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-300 text-gray-900 rounded-lg font-bold transition-colors"
+                    className="flex-1 px-4 py-4 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-300 text-gray-900 rounded-lg font-bold transition-colors text-base shadow-md"
                   >
-                    Cancel
+                    ← Cancel
                   </button>
                   <button
                     onClick={handleCompleteSale}
                     disabled={isProcessing}
-                    className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 px-4 py-4 bg-linear-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 disabled:bg-gray-400 text-white rounded-lg font-bold transition-colors text-base shadow-lg"
                   >
                     {isProcessing ? '⏳ Processing...' : '✓ Complete Sale'}
                   </button>
@@ -306,18 +341,32 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow p-6 border-t-4 border-blue-600 sticky top-24">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">📦 Order Summary</h3>
-              <div className="space-y-3 max-h-64 overflow-y-auto mb-4">
-                {cartItems.map((item) => (
-                  <div key={item._id || item.id} className="text-sm bg-gray-50 p-2 rounded">
-                    <p className="font-medium text-gray-900">{item.name}</p>
-                    <p className="text-gray-600">Qty: {item.cartQuantity}</p>
-                  </div>
-                ))}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-blue-600 sticky top-24">
+              <h3 className="text-xl font-bold text-gray-900 mb-5">📦 Order Summary</h3>
+              <div className="space-y-3 max-h-80 overflow-y-auto mb-6 bg-linear-to-b from-gray-50 to-gray-100 p-4 rounded-lg">
+                {cartItems.map((item) => {
+                  const basePrice = item.price * item.cartQuantity;
+                  const discountPercentage = item.customDiscount || 0;
+                  const discountAmount = basePrice * (discountPercentage / 100);
+                  const finalPrice = basePrice - discountAmount;
+                  
+                  return (
+                    <div key={item._id || item.id} className="text-sm bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm">
+                      <p className="font-bold text-gray-900 text-base">{item.name}</p>
+                      <p className="text-gray-700 font-semibold text-sm">📦 Qty: <span className="text-green-600">{item.cartQuantity}</span></p>
+                      <p className="text-gray-700 font-semibold text-sm">💰 Price: <span className="text-blue-600">₹{basePrice.toFixed(2)}</span></p>
+                      {discountPercentage > 0 && (
+                        <>
+                          <p className="text-gray-700 font-semibold text-sm">🏷️ Discount: <span className="text-red-600">{discountPercentage.toFixed(1)}% (-₹{discountAmount.toFixed(2)})</span></p>
+                          <p className="text-gray-900 font-bold text-sm border-t border-gray-300 pt-2 mt-2">💚 Final: <span className="text-emerald-600">₹{finalPrice.toFixed(2)}</span></p>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              <div className="border-t-2 border-gray-300 pt-4">
-                <div className="flex justify-between font-bold text-lg text-green-600">
+              <div className="border-t-4 border-gray-300 pt-5 bg-linear-to-r from-green-50 to-emerald-50 p-4 rounded-lg">
+                <div className="flex justify-between font-bold text-2xl text-green-700">
                   <span>Total:</span>
                   <span>₹{cartTotal.toFixed(2)}</span>
                 </div>
