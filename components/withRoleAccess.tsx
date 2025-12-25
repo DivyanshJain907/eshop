@@ -1,4 +1,5 @@
 
+import { useAuth } from '../lib/auth-context';
 import { ComponentType } from 'react';
 
 export function withRoleAccess<P extends { user?: any }>(Component: ComponentType<P>) {
