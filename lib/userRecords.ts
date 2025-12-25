@@ -4,7 +4,7 @@ export async function fetchUserSalesRecords({ userId, customerMobile, customerNa
   // Fetch all sales
   const allSales = await fetchSales();
   // Filter by customerMobile or customerName
-  return allSales.filter(sale => {
+  return allSales.filter((sale: any) => {
     if (customerMobile && sale.customerMobile) {
       return sale.customerMobile === customerMobile;
     }
