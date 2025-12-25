@@ -4,9 +4,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export async function fetchProducts(): Promise<Product[]> {
   try {
-    const response = await fetch(`${API_URL}/api/products`);
+    const response = await fetch(`${API_URL}/api/products?limit=100`);
     if (!response.ok) throw new Error('Failed to fetch products');
-    return response.json();
+    const data = await response.json();
+    // Handle both old array format and new paginated format
+    return Array.isArray(data) ? data : (data.products || []);
   } catch (error) {
     console.error('Error fetching products:', error);
     return [];
