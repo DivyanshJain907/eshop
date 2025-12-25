@@ -31,10 +31,10 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
     
-    // Use lean() for faster read-only queries with field projection
-    const user = await User.findById(decoded.id)
-      .select('_id email name phone shopName street city state pincode role')
-      .lean();
+    // Fetch user by ID with field projection
+    const user = await User.findById(decoded.id).select(
+      '_id email name phone shopName street city state pincode role'
+    );
 
     if (!user) {
       return NextResponse.json(
