@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 import { Product } from '@/lib/types';
 import ProductTable from '@/components/ProductTable';
