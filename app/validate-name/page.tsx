@@ -8,7 +8,6 @@ import { useSearchParams } from 'next/navigation';
 interface DirectSaleCustomer {
   customerNames: string[];
   hasOrders: boolean;
-}
 
 export default function ValidateNamePage() {
   return (
