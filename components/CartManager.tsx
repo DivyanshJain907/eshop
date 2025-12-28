@@ -10,13 +10,21 @@ interface CartItem extends Product {
 interface CartManagerProps {
   cartItems?: CartItem[];
   onRemove?: (productId: string) => void;
+  onRemoveFromCart?: (productId: string) => void; // alternate prop name used elsewhere
   onUpdateQuantity?: (productId: string, quantity: number) => void;
+  onUpdateCartQuantity?: (productId: string, quantity: number) => void; // alternate prop name
+  onCheckout?: () => void; // optional checkout callback
+  onContinueShopping?: () => void; // callback for continue shopping
 }
 
 export default function CartManager({
   cartItems = [],
   onRemove,
+  onRemoveFromCart,
   onUpdateQuantity,
+  onUpdateCartQuantity,
+  onCheckout,
+  onContinueShopping,
 }: CartManagerProps) {
   const [items, setItems] = useState<CartItem[]>(cartItems);
   const [total, setTotal] = useState(0);
@@ -33,7 +41,8 @@ export default function CartManager({
 
   const handleRemove = (productId: string) => {
     setItems(items.filter(item => (item._id || item.id) !== productId));
-    onRemove?.(productId);
+    // Support both prop names
+    (onRemove || onRemoveFromCart)?.(productId);
   };
 
   const handleUpdateQuantity = (productId: string, quantity: number) => {
@@ -56,7 +65,8 @@ export default function CartManager({
       (item._id || item.id) === productId ? { ...item, cartQuantity: quantity } : item
     );
     setItems(updated);
-    onUpdateQuantity?.(productId, quantity);
+    // Support both prop names
+    (onUpdateQuantity || onUpdateCartQuantity)?.(productId, quantity);
   };
 
   if (items.length === 0) {
@@ -66,12 +76,12 @@ export default function CartManager({
           <div className="text-5xl mb-4">🛒</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Your Cart is Empty</h2>
           <p className="text-gray-600 mb-6">Add some products to get started</p>
-          <a
-            href="#browse"
-            className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          <button
+            onClick={() => onContinueShopping?.()}
+            className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold transition-colors"
           >
-            Continue Shopping
-          </a>
+            🛍️ Continue Shopping
+          </button>
         </div>
       </div>
     );
@@ -180,11 +190,17 @@ export default function CartManager({
 
       {/* Action Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <button className="px-6 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
-          Continue Shopping
+        <button 
+          onClick={() => onContinueShopping?.()}
+          className="px-6 py-3 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-semibold"
+        >
+          🛍️ Continue Shopping
         </button>
-        <button className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          Proceed to Checkout
+        <button
+          onClick={() => onCheckout?.()}
+          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
+        >
+          ✓ Proceed to Checkout
         </button>
       </div>
     </div>

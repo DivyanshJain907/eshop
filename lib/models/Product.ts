@@ -93,6 +93,41 @@ const productSchema = new mongoose.Schema(
       min: [0, 'Super wholesale price cannot be negative'],
     },
     // Metadata
+    barcode: {
+      type: String,
+      trim: true,
+      index: true,
+      default: '',
+    },
+    productCode: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    modelName: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    brandName: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    mrp: {
+      type: Number,
+      default: 0,
+      min: [0, 'MRP cannot be negative'],
+    },
+    uom: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    attributes: {
+      type: Object,
+      default: {},
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

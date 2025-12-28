@@ -9,7 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { refreshAuth } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
+    identifier: '', // can be email or phone
     password: '',
   });
   const [error, setError] = useState('');
@@ -48,11 +48,17 @@ export default function LoginPage() {
         return;
       }
 
-      // Login successful - redirect based on role
-      setFormData({ email: '', password: '' });
+      // Login successful - redirect based on role and validation requirements
+      setFormData({ identifier: '', password: '' });
       
       // Refresh auth context to get user data
       await refreshAuth();
+      
+      // Check if name validation is required for direct sale customers
+      if (data.requiresNameValidation) {
+        router.push('/validate-name');
+        return;
+      }
       
       // Get updated user data to check role
       const meResponse = await fetch('/api/auth/me', {
@@ -94,18 +100,19 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email Address
+            <label htmlFor="identifier" className="block text-sm font-medium text-gray-700">
+              Email or Phone Number
             </label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              id="identifier"
+              name="identifier"
+              value={formData.identifier}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
-              placeholder="you@example.com"
+              placeholder="you@example.com or 9876543210"
+              autoComplete="username"
             />
           </div>
 

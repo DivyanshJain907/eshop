@@ -22,6 +22,13 @@ export interface Product {
   superDiscount?: number;
   superWholesalePrice?: number;
   // Metadata
+  barcode?: string;
+  productCode?: string;
+  modelName?: string;
+  brandName?: string;
+  mrp?: number;
+  uom?: string;
+  attributes?: Record<string, any>;
   createdBy?: string | { _id?: string; name: string; shopName?: string };
   createdAt?: Date;
   updatedAt?: Date;

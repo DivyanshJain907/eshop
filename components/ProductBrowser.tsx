@@ -116,9 +116,15 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
             >
               {/* Product Image */}
               <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                {product.image ? (
-                  <img 
-                    src={product.image} 
+                {product.images && product.images.length > 0 ? (
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : product.image ? (
+                  <img
+                    src={product.image}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />

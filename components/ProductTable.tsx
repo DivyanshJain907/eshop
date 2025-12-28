@@ -46,20 +46,31 @@ export default function ProductTable({ products = [], onQuantityChange, onDelete
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-blue-600 text-white">
+              <th className="border border-gray-300 px-3 py-2 text-left">ID</th>
               <th className="border border-gray-300 px-3 py-2 text-left">Image</th>
               <th className="border border-gray-300 px-3 py-2 text-left">Product Name</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">Barcode</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">Product Code</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">Model Name</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">Brand</th>
+              <th className="border border-gray-300 px-3 py-2 text-right">MRP</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">UOM</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">Category</th>
+              <th className="border border-gray-300 px-3 py-2 text-left">Attributes</th>
               <th className="border border-gray-300 px-3 py-2 text-right">Price</th>
               <th className="border border-gray-300 px-3 py-2 text-right">Qty</th>
+              <th className="border border-gray-300 px-3 py-2 text-right">Stock Threshold</th>
               <th className="border border-gray-300 px-3 py-2 text-right">Total Value</th>
-              <th className="border border-gray-300 px-3 py-2 text-center" title="Retail Discount">Retail %</th>
-              <th className="border border-gray-300 px-3 py-2 text-center" title="Wholesale Discount">Wholesale %</th>
-              <th className="border border-gray-300 px-3 py-2 text-center" title="Super Wholesale Discount">Super WS %</th>
+              <th className="border border-gray-300 px-3 py-2 text-center bg-blue-50">Retail %</th>
+              <th className="border border-gray-300 px-3 py-2 text-center bg-green-50">Wholesale %</th>
+              <th className="border border-gray-300 px-3 py-2 text-center bg-purple-50">Super WS %</th>
               <th className="border border-gray-300 px-3 py-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
               <tr key={product._id || product.id} className="hover:bg-gray-50 border-b border-gray-300">
+                <td className="border border-gray-300 px-3 py-2 text-xs text-gray-500">{product._id || product.id}</td>
                 <td className="border border-gray-300 px-3 py-2">
                   {product.images && product.images.length > 0 ? (
                     <div className="relative inline-block">
@@ -86,24 +97,32 @@ export default function ProductTable({ products = [], onQuantityChange, onDelete
                     </div>
                   )}
                 </td>
-                <td className="border border-gray-300 px-3 py-2 font-medium text-gray-900 max-w-xs truncate">
-                  {product.name}
+                <td className="border border-gray-300 px-3 py-2 font-medium text-gray-900 max-w-xs truncate">{product.name}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs">{product.barcode || ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs">{product.productCode || ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs">{product.modelName || ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs">{product.brandName || ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-right">{typeof product.mrp === 'number' && !isNaN(product.mrp) ? product.mrp.toFixed(2) : ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs">{product.uom || ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs">{product.category || ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs max-w-xs truncate">
+                  {product.attributes && Object.keys(product.attributes).length > 0
+                    ? Object.entries(product.attributes).map(([k, v]) => `${k}: ${v}`).join(', ')
+                    : ''}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-right text-gray-900 font-medium">
-                  Rs. {product.price.toFixed(2)}
+                  Rs. {typeof product.price === 'number' && !isNaN(product.price) ? product.price.toFixed(2) : 'N/A'}
                 </td>
-                <td
-                  className={`border border-gray-300 px-3 py-2 text-right font-semibold ${
-                    product.quantity < 10 ? 'text-red-600' : 'text-green-600'
-                  }`}
-                >
-                  {product.quantity}
-                  {product.stockThreshold && product.quantity <= product.stockThreshold && (
-                    <div className="text-xs text-red-600 font-bold mt-0.5">⚠️</div>
-                  )}
+                <td className="border border-gray-300 px-3 py-2 text-right font-semibold">
+                  {typeof product.quantity === 'number' && !isNaN(product.quantity) ? product.quantity : 'N/A'}
+                </td>
+                <td className="border border-gray-300 px-3 py-2 text-right font-semibold">
+                  {typeof product.stockThreshold === 'number' && !isNaN(product.stockThreshold) ? product.stockThreshold : ''}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-right text-gray-900 font-medium">
-                  Rs. {(product.price * product.quantity).toFixed(2)}
+                  Rs. {typeof product.price === 'number' && typeof product.quantity === 'number' && !isNaN(product.price) && !isNaN(product.quantity)
+                    ? (product.price * product.quantity).toFixed(2)
+                    : 'N/A'}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-center bg-blue-50">
                   {product.retailDiscount ? (

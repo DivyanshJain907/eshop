@@ -33,7 +33,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/products');
+        const response = await fetch('/api/products?limit=10000');
         if (response.ok) {
           const data = await response.json();
           setProducts(Array.isArray(data) ? data : (data.products || []));

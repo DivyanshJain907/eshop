@@ -1,5 +1,6 @@
 import { connectDB } from '@/lib/db';
 import User from '@/lib/models/User';
+import DirectSale from '@/lib/models/DirectSale';
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
@@ -7,18 +8,25 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const { email, password } = await request.json();
+    const { email, phone, password, identifier } = await request.json();
 
-    // Validation
-    if (!email || !password) {
+    // Accept either email or phone as identifier
+    const loginId = identifier || email || phone;
+
+    if (!loginId || !password) {
       return NextResponse.json(
-        { message: 'Please provide email and password' },
+        { message: 'Please provide email/phone and password' },
         { status: 400 }
       );
     }
 
-    // Check for user
-    const user = await User.findOne({ email }).select('+password');
+    // Find user by email or phone
+    const user = await User.findOne({
+      $or: [
+        { email: loginId },
+        { phone: loginId },
+      ],
+    }).select('+password');
 
     if (!user) {
       return NextResponse.json(
@@ -27,14 +35,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if password matches
-    const isPasswordCorrect = await user.comparePassword(password);
+    // If login is by phone and password matches phone, allow initial login
+    let isPasswordCorrect = false;
+    if (user.phone === loginId && password === user.phone) {
+      isPasswordCorrect = true;
+    } else {
+      isPasswordCorrect = await user.comparePassword(password);
+    }
 
     if (!isPasswordCorrect) {
       return NextResponse.json(
         { message: 'Invalid credentials' },
         { status: 401 }
       );
+    }
+
+    // If logging in with phone and password is phone, prompt to update password
+    let mustUpdatePassword = false;
+    if (user.phone === loginId && password === user.phone) {
+      mustUpdatePassword = true;
+    }
+
+    // Check if phone exists in DirectSale records (for name validation)
+    let requiresNameValidation = false;
+    const directSaleRecords = await DirectSale.findOne({
+      customerMobile: user.phone,
+    });
+    if (directSaleRecords) {
+      requiresNameValidation = true;
     }
 
     // Create JWT token (include role)
@@ -60,6 +88,8 @@ export async function POST(request: NextRequest) {
           state: user.state,
           pincode: user.pincode,
         },
+        mustUpdatePassword,
+        requiresNameValidation,
       },
       { status: 200 }
     );

@@ -128,7 +128,7 @@ export default function UserManagement({ isAdmin = true }: UserManagementProps) 
             onClick={() => setFilterType('all')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-sm ${
               filterType === 'all'
-                ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-md'
+                ? 'bg-linear-to-r from-indigo-600 to-cyan-500 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -138,7 +138,7 @@ export default function UserManagement({ isAdmin = true }: UserManagementProps) 
             onClick={() => setFilterType('registered')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-sm ${
               filterType === 'registered'
-                ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-md'
+                ? 'bg-linear-to-r from-indigo-600 to-cyan-500 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -148,7 +148,7 @@ export default function UserManagement({ isAdmin = true }: UserManagementProps) 
             onClick={() => setFilterType('directSales')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-sm ${
               filterType === 'directSales'
-                ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-md'
+                ? 'bg-linear-to-r from-indigo-600 to-cyan-500 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -178,11 +178,11 @@ export default function UserManagement({ isAdmin = true }: UserManagementProps) 
           {filteredUsers.map((user) => (
             <div
               key={user._id}
-              className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow bg-gradient-to-br from-white via-blue-50 to-cyan-50"
+              className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow bg-linear-to-br from-white via-blue-50 to-cyan-50"
             >
               {/* User Header */}
               <div
-                className="bg-gradient-to-r from-gray-50 to-blue-50 p-5 cursor-pointer hover:bg-blue-100 transition-colors"
+                className="bg-linear-to-r from-gray-50 to-blue-50 p-5 cursor-pointer hover:bg-blue-100 transition-colors"
                 onClick={async () => {
                   const nextId = expandedId === user._id ? null : user._id;
                   setExpandedId(nextId);
@@ -202,11 +202,11 @@ export default function UserManagement({ isAdmin = true }: UserManagementProps) 
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
                       <h3 className="font-bold text-black text-lg">{user.name}</h3>
-                      <span className={`px-3 py-1 rounded-full text-sm font-semibold shadow-sm border ${getRoleColor(user.role)} border-indigo-200 bg-gradient-to-r from-white to-indigo-50`}> 
+                      <span className={`px-3 py-1 rounded-full text-sm font-semibold shadow-sm border ${getRoleColor(user.role)} border-indigo-200 bg-linear-to-r from-white to-indigo-50`}>
                         {user.role === 'admin' ? '🛡️ Admin' : user.role === 'employee' ? '👔 Employee' : '👤 Customer'}
                       </span>
                       {user.isDirectSaleCustomer && (
-                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300 shadow-sm">
+                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-linear-to-r from-green-100 to-green-200 text-green-800 border border-green-300 shadow-sm">
                           🛒 Direct Sale
                         </span>
                       )}
@@ -296,7 +296,7 @@ export default function UserManagement({ isAdmin = true }: UserManagementProps) 
                       {/* Payment Information */}
                       <div>
                         <h4 className="font-bold text-black mb-3">💳 Payment Information</h4>
-                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border-2 border-orange-200 space-y-3">
+                        <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border-2 border-orange-200 space-y-3">
                           <div className="grid grid-cols-3 gap-3">
                             <div className="bg-white rounded-lg p-3 border border-green-200">
                               <p className="text-xs text-gray-600 font-semibold">Total Amount</p>

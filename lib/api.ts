@@ -8,13 +8,44 @@ const getApiUrl = (path: string) => {
 
 export async function fetchProducts(): Promise<Product[]> {
   try {
-    const response = await fetch(getApiUrl('/api/products?limit=100'));
-    if (!response.ok) throw new Error('Failed to fetch products');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+    const response = await fetch(getApiUrl('/api/products?limit=100'), {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      console.error(`❌ API Error: ${response.status} ${response.statusText}`);
+      // Don't throw, let it fall through to return empty array
+      // The API should have demo data fallback
+      return [];
+    }
+
     const data = await response.json();
+    
     // Handle both old array format and new paginated format
-    return Array.isArray(data) ? data : (data.products || []);
-  } catch (error) {
-    console.error('Error fetching products:', error);
+    if (Array.isArray(data)) {
+      console.log(`✅ Fetched ${data.length} products (array format)`);
+      return data;
+    }
+    if (data.products && Array.isArray(data.products)) {
+      console.log(`✅ Fetched ${data.products.length} products`);
+      return data.products;
+    }
+    
+    console.warn('⚠️ Unexpected response format:', data);
+    return [];
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      console.error('⏱️ Fetch timeout - taking too long to get products');
+    } else {
+      console.error('❌ Error fetching products:', error?.message || error);
+    }
     return [];
   }
 }

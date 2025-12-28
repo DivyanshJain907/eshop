@@ -72,6 +72,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const skip = (page - 1) * limit;
 
+    console.log('📦 Products GET request - page:', page, 'limit:', limit, 'category:', category);
+
     const conn = await connectDB();
     
     // If MongoDB is not connected, use demo data
@@ -109,7 +111,7 @@ export async function GET(request: NextRequest) {
 
       // Fetch products with field projection (only necessary fields)
       const products = await Product.find(filter)
-        .select('name price quantity image images category retailDiscount retailPrice discount wholesalePrice superDiscount superWholesalePrice minRetailQuantity minWholesaleQuantity minSuperWholesaleQuantity createdBy createdAt updatedAt')
+        .select('_id name price quantity uom brandName barcode productCode modelName image images category retailDiscount retailPrice discount wholesalePrice superDiscount superWholesalePrice minRetailQuantity minWholesaleQuantity minSuperWholesaleQuantity attributes createdBy createdAt updatedAt mrp stockThreshold')
         .populate('createdBy', 'name shopName')
         .sort({ createdAt: -1 })
         .skip(skip)

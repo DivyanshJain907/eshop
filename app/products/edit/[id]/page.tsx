@@ -4,7 +4,6 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -161,7 +160,6 @@ export default function EditProductPage() {
   if (!product || !formData) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Navbar isAuthenticated={true} userName={user?.name} />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <p className="text-red-600 font-bold">Product not found</p>
           <Link href="/products" className="text-indigo-600 hover:text-indigo-700 mt-4 inline-block">
@@ -174,8 +172,6 @@ export default function EditProductPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-blue-50 flex flex-col">
-      <Navbar isAuthenticated={true} userName={user?.name} />
-      
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
         <div className="mb-8">
@@ -198,7 +194,7 @@ export default function EditProductPage() {
         <div className="bg-white rounded-lg shadow-xl overflow-hidden border-2 border-indigo-200 p-8">
           <div className="space-y-6">
             {/* Basic Info */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-2 border-blue-200">
+            <div className="bg-linear-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-2 border-blue-200">
               <h3 className="text-lg font-bold text-blue-900 mb-4">📝 Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -286,7 +282,7 @@ export default function EditProductPage() {
             </div>
 
             {/* Inventory */}
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-2 border-green-200">
+            <div className="bg-linear-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-2 border-green-200">
               <h3 className="text-lg font-bold text-green-900 mb-4">📦 Inventory Management</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -316,7 +312,7 @@ export default function EditProductPage() {
             </div>
 
             {/* Pricing */}
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
+            <div className="bg-linear-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
               <h3 className="text-lg font-bold text-purple-900 mb-4">💵 Base Price</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -335,7 +331,7 @@ export default function EditProductPage() {
             </div>
 
             {/* Retail Tier */}
-            <div className="bg-gradient-to-r from-blue-50 to-sky-50 p-6 rounded-lg border-2 border-blue-200">
+            <div className="bg-linear-to-r from-blue-50 to-sky-50 p-6 rounded-lg border-2 border-blue-200">
               <h3 className="text-lg font-bold text-blue-900 mb-4">🛍️ Retail Tier</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-blue-100 p-4 rounded-lg border border-blue-300">
@@ -377,7 +373,7 @@ export default function EditProductPage() {
             </div>
 
             {/* Wholesale Tier */}
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-2 border-green-200">
+            <div className="bg-linear-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-2 border-green-200">
               <h3 className="text-lg font-bold text-green-900 mb-4">🏪 Wholesale Tier</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-green-100 p-4 rounded-lg border border-green-300">
@@ -419,7 +415,7 @@ export default function EditProductPage() {
             </div>
 
             {/* Super Wholesale Tier */}
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-lg border-2 border-amber-200">
+            <div className="bg-linear-to-r from-amber-50 to-orange-50 p-6 rounded-lg border-2 border-amber-200">
               <h3 className="text-lg font-bold text-amber-900 mb-4">🏭 Super Wholesale Tier</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-amber-100 p-4 rounded-lg border border-amber-300">
@@ -465,13 +461,13 @@ export default function EditProductPage() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl"
+                className="px-8 py-3 bg-linear-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl"
               >
                 {isSaving ? '⏳ Saving...' : '💾 Save Changes'}
               </button>
               <Link
                 href="/products"
-                className="px-8 py-3 bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl inline-block"
+                className="px-8 py-3 bg-linear-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl inline-block"
               >
                 ← Back to Products
               </Link>

@@ -3,22 +3,20 @@
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import ProductBrowser from '@/components/ProductBrowser';
-import CartManager from '@/components/CartManager';
-import BookingModal from '@/components/BookingModal';
-import BookingHistory from '@/components/BookingHistory';
 import Footer from '@/components/Footer';
 import { Product } from '@/lib/types';
+
+interface TrendingProduct extends Product {
+  soldQuantity?: number;
+  revenue?: number;
+}
 
 export default function CustomerHome() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuth();
-  const [cartItems, setCartItems] = useState<(Product & { cartQuantity: number })[]>([]);
-  const [activeTab, setActiveTab] = useState<'browse' | 'cart' | 'bookings'>('browse');
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [bookingRefresh, setBookingRefresh] = useState(0);
+  const [trendingByCategory, setTrendingByCategory] = useState<{ [key: string]: TrendingProduct[] }>({});
+  const [loadingTrending, setLoadingTrending] = useState(true);
 
   // Redirect if not authenticated or not a customer
   useEffect(() => {
@@ -27,104 +25,137 @@ export default function CustomerHome() {
     }
   }, [isAuthenticated, isLoading, user?.role, router]);
 
-  // Load cart from localStorage
+  // Fetch trending products
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        try {
-          setCartItems(JSON.parse(savedCart));
-        } catch (error) {
-          console.error('Error loading cart:', error);
+    const fetchTrending = async () => {
+      try {
+        setLoadingTrending(true);
+        const response = await fetch('/api/trending');
+        if (response.ok) {
+          const data = await response.json();
+          setTrendingByCategory(data.trendingByCategory || {});
         }
+      } catch (error) {
+        console.error('Error fetching trending products:', error);
+      } finally {
+        setLoadingTrending(false);
       }
-    }
+    };
+    fetchTrending();
   }, []);
 
-  // Save cart to localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('cart', JSON.stringify(cartItems));
-    }
-  }, [cartItems]);
-
-  const handleAddToCart = (product: Product) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find(
-        (item) => (item._id || item.id) === (product._id || product.id)
-      );
-
-      if (existingItem) {
-        // Item already exists, increase quantity
-        const updatedCart = prevItems.map((item) =>
-          (item._id || item.id) === (product._id || product.id)
-            ? { ...item, cartQuantity: item.cartQuantity + 1 }
-            : item
-        );
-        // Switch to cart tab after a brief delay to show the update
-        setTimeout(() => setActiveTab('cart'), 300);
-        return updatedCart;
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', { method: 'POST' });
+      if (response.ok) {
+        router.push('/login');
       }
-
-      // New item added
-      setTimeout(() => setActiveTab('cart'), 300);
-      return [...prevItems, { ...product, cartQuantity: 1 }];
-    });
-  };
-
-  const handleRemoveFromCart = (productId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => (item._id || item.id) !== productId)
-    );
-  };
-
-  const handleUpdateCartQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      handleRemoveFromCart(productId);
-      return;
+    } catch (error) {
+      console.error('Logout error:', error);
     }
-
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        (item._id || item.id) === productId
-          ? { ...item, cartQuantity: quantity }
-          : item
-      )
-    );
   };
-
-  const handleBookingSuccess = () => {
-    setCartItems([]);
-    setBookingRefresh((prev) => prev + 1);
-    setActiveTab('bookings');
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated || user?.role !== 'customer') {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navbar isAuthenticated={true} userName={user?.name} userRole={user?.role} />
+      <Navbar
+        isAuthenticated={true}
+        userName={user?.name}
+        userRole={user?.role}
+        onLogout={handleLogout}
+      />
 
-      {/* Main Content */}
-      <main className="grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        <ProductBrowser onAddToCart={handleAddToCart} />
-      </main>
+      {/* Trending Section - Always visible at top */}
+      {!loadingTrending && Object.keys(trendingByCategory).length > 0 && (
+        <section className="w-full bg-linear-to-r from-indigo-50 to-cyan-50 border-b border-indigo-200 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-3">
+                <span className="text-5xl">🔥</span> Trending Now
+              </h2>
+              <p className="text-lg text-gray-600">Top selling products in each category</p>
+            </div>
+
+          {/* Category Sections */}
+          <div className="space-y-12">
+            {Object.entries(trendingByCategory).map(([category, products]) => (
+              <div key={category}>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4 pb-3 border-b-3 border-indigo-600">
+                  {category}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {products.map((product) => (
+                    <div
+                      key={product._id}
+                      className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-indigo-400 group"
+                    >
+                      {/* Badge */}
+                      <div className="relative h-48 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden group-hover:from-indigo-100 group-hover:to-cyan-100 transition-colors">
+                        <div className="text-7xl drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          {product.image || '📦'}
+                        </div>
+                        {product.soldQuantity && product.soldQuantity > 0 && (
+                          <div className="absolute top-2 right-2 bg-red-500 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg">
+                            ⭐ Sold {product.soldQuantity}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4">
+                        <h4 className="font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-indigo-700 transition-colors">
+                          {product.name}
+                        </h4>
+                        <div className="flex items-baseline gap-2 mb-3">
+                          <span className="text-2xl font-extrabold text-indigo-600">₹{product.price.toFixed(0)}</span>
+                          <span className="text-xs text-gray-500">per unit</span>
+                        </div>
+
+                        {/* Stock Info */}
+                        <div className="mb-3 text-xs">
+                          {product.quantity > 10 ? (
+                            <span className="text-green-700 font-semibold">✓ In Stock</span>
+                          ) : product.quantity > 0 ? (
+                            <span className="text-orange-700 font-semibold">⚠ Only {product.quantity} left</span>
+                          ) : (
+                            <span className="text-red-700 font-semibold">✕ Out of Stock</span>
+                          )}
+                        </div>
+
+                        {/* Discounts */}
+                        {(product.retailDiscount || product.discount || product.superDiscount) && (
+                          <div className="mb-3 text-xs space-y-1">
+                            {product.retailDiscount && (
+                              <div className="text-blue-700 font-semibold">Retail: {product.retailDiscount}% off</div>
+                            )}
+                            {product.discount && (
+                              <div className="text-green-700 font-semibold">Wholesale: {product.discount}% off</div>
+                            )}
+                            {product.superDiscount && (
+                              <div className="text-purple-700 font-semibold">Super WS: {product.superDiscount}% off</div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* View Product Button */}
+                        <button
+                          onClick={() => router.push('/products-browse')}
+                          className="w-full py-2 rounded-lg font-semibold transition-all bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:shadow-lg"
+                        >
+                          👁️ View Products
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
-      <Footer onTabChange={setActiveTab} />
+      <Footer />
     </div>
   );
 }

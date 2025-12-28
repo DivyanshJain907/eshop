@@ -26,15 +26,27 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('📥 Sales API received:', body);
 
-    const { productId, productName, quantity, totalAmount } = body;
+    const { items, totalAmount, customerName, customerPhone } = body;
 
-    if (!productId || !productName || !quantity || totalAmount === undefined) {
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error('❌ Missing items array');
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { message: 'Missing or invalid items array' },
         { status: 400 }
       );
     }
+
+    if (totalAmount === undefined || totalAmount === null) {
+      console.error('❌ Missing totalAmount');
+      return NextResponse.json(
+        { message: 'Missing totalAmount' },
+        { status: 400 }
+      );
+    }
+
+    console.log('✅ Validation passed, saving to database');
 
     const conn = await connectDB();
     
@@ -42,30 +54,65 @@ export async function POST(request: NextRequest) {
       console.log('📌 Recording sale in demo mode');
       const newSale = {
         _id: Date.now().toString(),
-        productId,
-        productName,
-        quantity,
-        totalAmount,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        items: items.map((item: any) => ({
+          productId: item.productId || '',
+          productName: item.productName || 'Unknown Product',
+          quantity: parseInt(item.quantity) || 1,
+          price: parseFloat(item.price) || 0,
+        })),
+        totalAmount: parseFloat(totalAmount.toString()),
+        customerName: customerName || 'Guest',
+        customerPhone: customerPhone || 'N/A',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       demoSales.unshift(newSale);
+      console.log('✅ Sale saved in demo mode:', newSale._id);
       return NextResponse.json(newSale, { status: 201 });
     }
 
-    const sale = new Sale({
-      productId,
-      productName,
-      quantity,
-      totalAmount,
-    });
+    // Try to save to database
+    try {
+      const sale = new Sale({
+        items: items.map((item: any) => ({
+          productId: item.productId || '',
+          productName: item.productName || 'Unknown Product',
+          quantity: parseInt(item.quantity) || 1,
+          price: parseFloat(item.price) || 0,
+        })),
+        totalAmount: parseFloat(totalAmount.toString()),
+        customerName: customerName || 'Guest',
+        customerPhone: customerPhone || 'N/A',
+      });
 
-    await sale.save();
-    return NextResponse.json(sale, { status: 201 });
-  } catch (error) {
-    console.error('Error creating sale:', error);
+      const savedSale = await sale.save();
+      console.log('✅ Sale saved to database:', savedSale._id);
+      return NextResponse.json(savedSale, { status: 201 });
+    } catch (dbError: any) {
+      console.error('⚠️ Database save failed, falling back to demo mode:', dbError.message);
+      // Fall back to demo mode if database fails
+      const newSale = {
+        _id: Date.now().toString(),
+        items: items.map((item: any) => ({
+          productId: item.productId || '',
+          productName: item.productName || 'Unknown Product',
+          quantity: parseInt(item.quantity) || 1,
+          price: parseFloat(item.price) || 0,
+        })),
+        totalAmount: parseFloat(totalAmount.toString()),
+        customerName: customerName || 'Guest',
+        customerPhone: customerPhone || 'N/A',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      demoSales.unshift(newSale);
+      console.log('✅ Sale saved in fallback demo mode:', newSale._id);
+      return NextResponse.json(newSale, { status: 201 });
+    }
+  } catch (error: any) {
+    console.error('❌ Error creating sale:', error);
     return NextResponse.json(
-      { error: 'Failed to create sale' },
+      { message: 'Failed to create sale', error: error.message || 'Unknown error' },
       { status: 500 }
     );
   }

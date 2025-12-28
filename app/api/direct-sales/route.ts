@@ -173,16 +173,23 @@ export async function POST(request: NextRequest) {
     // Record the direct sale in MongoDB
     try {
       await connectDB();
-      
+
+      // Check if customerMobile exists in User DB
+      let existingUser = null;
+      if (customerMobile) {
+        existingUser = await (await import('@/lib/models/User')).default.findOne({ phone: customerMobile });
+      }
+
       // Calculate payment status and remaining amount
       const remainingAmount = totalAmount - amountPaid;
       const paymentStatus = amountPaid === 0 ? 'pending' : amountPaid >= totalAmount ? 'fully-paid' : 'partially-paid';
-      
+
       const newSale = new DirectSale({
         employeeId: decoded.id,
         employeeName: employeeName || 'Unknown Employee',
-        customerName: customerName.trim(),
+        customerName: existingUser ? existingUser.name : customerName.trim(),
         customerMobile: customerMobile || '',
+        customerId: existingUser ? existingUser._id : undefined,
         items,
         totalAmount,
         amountPaid,

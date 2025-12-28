@@ -99,37 +99,37 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <UserHeader />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page Header */}
-        <div className="mb-8">
-          <Link href="/" className="text-indigo-600 hover:text-indigo-700 mb-4 inline-flex items-center gap-2">
-            <span>←</span> Back
+        <div className="mb-10">
+          <Link href="/" className="text-indigo-600 hover:text-indigo-700 mb-4 inline-flex items-center gap-2 font-semibold">
+            <span>←</span> Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Edit Profile</h1>
-          <p className="text-gray-600">Update your profile information</p>
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-3">Edit Profile</h1>
+          <p className="text-lg text-gray-600">Keep your information up to date</p>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           {/* Error/Success Messages */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800">⚠️ {error}</p>
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+              <p className="text-red-800 font-medium">⚠️ {error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-800">✓ {success}</p>
+            <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
+              <p className="text-green-800 font-medium">✓ {success}</p>
             </div>
           )}
 
           {/* Read-Only Information */}
-          <div className="mb-8 p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">🔒 Cannot be Changed</h2>
+          <div className="mb-8 p-6 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl border-2 border-indigo-200">
+            <h2 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">🔒 Secure Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
@@ -137,9 +137,9 @@ export default function EditProfilePage() {
                   type="email"
                   value={user.email}
                   disabled
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
                 />
-                <p className="text-xs text-gray-500 mt-1">Email cannot be changed for security reasons</p>
+                <p className="text-xs text-gray-500 mt-2">Email cannot be changed for security</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
@@ -147,9 +147,9 @@ export default function EditProfilePage() {
                   type="tel"
                   value={user.phone}
                   disabled
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
                 />
-                <p className="text-xs text-gray-500 mt-1">Phone number cannot be changed for security reasons</p>
+                <p className="text-xs text-gray-500 mt-2">Phone number cannot be changed for security</p>
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function EditProfilePage() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition bg-white"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -253,18 +253,18 @@ export default function EditProfilePage() {
                   value={formData.pincode}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition bg-white"
                   placeholder="Enter your pincode"
                 />
               </div>
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-4 pt-6 border-t border-gray-200">
+            <div className="flex gap-4 pt-8 border-t border-gray-200">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -278,7 +278,7 @@ export default function EditProfilePage() {
 
               <Link
                 href="/"
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all"
               >
                 Cancel
               </Link>
@@ -286,9 +286,9 @@ export default function EditProfilePage() {
           </form>
 
           {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-blue-800 text-sm">
-              <strong>Note:</strong> Email and phone number are permanent for security reasons. If you need to change them, please contact support.
+          <div className="mt-8 p-5 bg-gradient-to-r from-blue-50 to-cyan-50 border-l-4 border-blue-500 rounded-lg">
+            <p className="text-blue-900 text-sm font-medium">
+              ℹ️ <strong>Security Note:</strong> Email and phone number cannot be changed for your account security. Contact support if needed.
             </p>
           </div>
         </div>

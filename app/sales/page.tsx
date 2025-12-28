@@ -394,9 +394,15 @@ export default function SalesPage() {
                     </div>
 
                     <div className="flex justify-between items-start mb-3">
-                      {product.image ? (
-                        <img 
-                          src={product.image} 
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-20 h-20 object-cover rounded-lg bg-gray-100"
+                        />
+                      ) : product.image ? (
+                        <img
+                          src={product.image}
                           alt={product.name}
                           className="w-20 h-20 object-cover rounded-lg bg-gray-100"
                         />
