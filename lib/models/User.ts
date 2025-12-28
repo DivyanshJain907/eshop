@@ -92,7 +92,6 @@ const userSchema = new mongoose.Schema(
 );
 
 // Add indexes for performance
-userSchema.index({ email: 1 }); // Already unique, but explicit index
 userSchema.index({ role: 1 }); // Index for filtering by role
 userSchema.index({ createdAt: -1 }); // Index for sorting by creation date
 

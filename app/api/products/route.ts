@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     // Get pagination and filtering params from query string
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
-    const limit = Math.min(100, parseInt(searchParams.get('limit') || '10', 10)); // Max 100 per page
+    const limit = Math.min(10000, parseInt(searchParams.get('limit') || '10000', 10)); // Max 10,000 per page
     const category = searchParams.get('category');
     const search = searchParams.get('search');
     const skip = (page - 1) * limit;
