@@ -48,35 +48,28 @@ export default function LoginPage() {
         return;
       }
 
-      // Login successful - redirect based on role and validation requirements
+      // Login successful
       setFormData({ identifier: '', password: '' });
-      
-      // Refresh auth context to get user data
-      await refreshAuth();
       
       // Check if name validation is required for direct sale customers
       if (data.requiresNameValidation) {
+        // Clear isLoading before redirect for name validation
+        setIsLoading(false);
         router.push('/validate-name');
         return;
       }
       
-      // Get updated user data to check role
-      const meResponse = await fetch('/api/auth/me', {
-        credentials: 'include',
-      });
+      // Refresh auth context and wait for it to complete
+      await refreshAuth();
       
-      if (meResponse.ok) {
-        const userData = await meResponse.json();
-        const userRole = userData.user?.role;
-        
-        // Redirect based on role
-        if (userRole === 'admin' || userRole === 'employee') {
-          router.push('/dashboard');
-        } else {
-          router.push('/');
-        }
+      // Determine redirect based on role from login response
+      const userRole = data.user?.role;
+      
+      // Redirect based on role
+      if (userRole === 'admin' || userRole === 'employee') {
+        router.push('/dashboard');
       } else {
-        router.push('/');
+        router.push('/home');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred');
