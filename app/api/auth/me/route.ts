@@ -62,8 +62,10 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
 
-    // Add cache headers for auth check
-    response.headers.set('Cache-Control', 'private, max-age=60'); // Cache for 60 seconds
+    // Disable caching for auth endpoint to prevent showing old user data
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
     return response;
   } catch (error: any) {
     console.error('Auth check error:', error);

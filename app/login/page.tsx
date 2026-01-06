@@ -59,8 +59,11 @@ export default function LoginPage() {
         return;
       }
       
-      // Refresh auth context and wait for it to complete
+      // Refresh auth context - this will fetch the NEW user's data with the new token
       await refreshAuth();
+      
+      // Wait a moment to ensure auth context is fully updated
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Determine redirect based on role from login response
       const userRole = data.user?.role;
