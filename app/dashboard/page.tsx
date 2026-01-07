@@ -36,7 +36,7 @@ export default function DashboardPage() {
     try {
       setDataLoading(true);
       const [productsRes, usersRes, salesRes, directSalesRes] = await Promise.all([
-        fetch('/api/products?limit=1000'),
+        fetch('/api/products?limit=10000'),
         fetch('/api/users?limit=1000'),
         fetch('/api/sales'),
         fetch('/api/direct-sales')
@@ -52,6 +52,9 @@ export default function DashboardPage() {
       let users = Array.isArray(usersData) ? usersData : (usersData.users || []);
       let sales = Array.isArray(salesData) ? salesData : (salesData.sales || []);
       let directSales = Array.isArray(directSalesData) ? directSalesData : (directSalesData.directSales || []);
+
+      // Get total product count from pagination data (accurate count of ALL products in database)
+      const totalProductsInDB = (productsData.pagination?.total) || products.length;
 
       // Ensure we have arrays
       products = products.filter((p: unknown) => (p as any) && (p as any)._id);
@@ -139,7 +142,7 @@ export default function DashboardPage() {
         totalDue,
         totalInventoryValue,
         customerCount,
-        totalProducts: products.length,
+        totalProducts: totalProductsInDB,
         totalSales: sales.length,
         lowStockProducts: products.filter((p: any) => (p.quantity || 0) <= (p.stockThreshold || 5)).length,
         fullyPaidSales: fullyPaid,
