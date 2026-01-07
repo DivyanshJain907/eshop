@@ -94,7 +94,7 @@ export default function DiscountsPage() {
             (p.superDiscount || 0) !== catDefault.superWholesaleDiscount
           ) {
             existing.productsWithOverrides.push({
-              productId: p._id || p.id,
+              productId: (p._id || p.id || '').toString(),
               productName: p.name,
               retailDiscount: p.retailDiscount || 0,
               wholesaleDiscount: p.discount || 0,
