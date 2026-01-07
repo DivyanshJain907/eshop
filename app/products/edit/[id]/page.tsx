@@ -58,11 +58,42 @@ export default function EditProductPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
+    let updatedData: any = {
+      ...formData,
       [name]: name.includes('quantity') || name.includes('price') || name.includes('discount') || name.includes('threshold') ? 
         (value === '' ? '' : isNaN(Number(value)) ? value : Number(value)) : value,
-    }));
+    };
+
+    // Auto-calculate prices based on discount percentage
+    const basePrice = updatedData.price || 0;
+
+    // Retail Tier auto-calculation
+    if (name === 'retailDiscount') {
+      const retailDiscount = Number(value) || 0;
+      updatedData.retailPrice = basePrice * (1 - retailDiscount / 100);
+    }
+
+    // Wholesale Tier auto-calculation
+    if (name === 'discount') {
+      const wholesaleDiscount = Number(value) || 0;
+      updatedData.wholesalePrice = basePrice * (1 - wholesaleDiscount / 100);
+    }
+
+    // Super Wholesale Tier auto-calculation
+    if (name === 'superDiscount') {
+      const superDiscount = Number(value) || 0;
+      updatedData.superWholesalePrice = basePrice * (1 - superDiscount / 100);
+    }
+
+    // If base price changes, recalculate all tiered prices
+    if (name === 'price') {
+      const newBasePrice = Number(value) || 0;
+      updatedData.retailPrice = newBasePrice * (1 - (updatedData.retailDiscount || 0) / 100);
+      updatedData.wholesalePrice = newBasePrice * (1 - (updatedData.discount || 0) / 100);
+      updatedData.superWholesalePrice = newBasePrice * (1 - (updatedData.superDiscount || 0) / 100);
+    }
+
+    setFormData(updatedData);
   };
 
 
