@@ -76,91 +76,99 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} />
       
       {/* Hero Section */}
-      <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-cyan-500 text-white py-16 shadow-lg">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white py-16 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center mb-2">
-            <span className="text-4xl mr-3">🏷️</span>
-            <h1 className="text-5xl font-extrabold">Browse by Category</h1>
-          </div>
+          <h1 className="text-5xl font-black">📂 Browse by Category</h1>
           <p className="text-indigo-100 text-lg mt-3">Discover our products organized by category</p>
-          <div className="mt-4 flex items-center text-indigo-100">
-            <span className="text-sm">📦 {products.length} total products</span>
+          <div className="mt-4 flex items-center text-indigo-100 text-sm font-semibold">
+            <span>📦 {products.length} total products</span>
             <span className="mx-3">•</span>
-            <span className="text-sm">📂 {categories.length} categories</span>
+            <span>📂 {categories.length} categories</span>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Sidebar - Categories */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <div className="bg-white rounded-2xl shadow-lg border-2 border-indigo-100 overflow-hidden">
-                {/* Category Header */}
-                <div className="bg-linear-to-r from-indigo-600 to-purple-600 text-white px-6 py-5">
-                  <h2 className="text-xl font-bold flex items-center">
-                    <span className="text-2xl mr-2">📂</span>
-                    Categories
-                  </h2>
-                  <p className="text-indigo-100 text-sm mt-1">{categories.length} available</p>
-                </div>
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-12">
+        {/* Categories Grid */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-black text-gray-900 mb-8">All Categories</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category, index) => {
+              const categoryCount = products.filter(
+                p => (p.category || 'Uncategorized') === category
+              ).length;
+              const isSelected = selectedCategory === category;
+              
+              // Color schemes for different categories
+              const colors = [
+                { bg: 'from-blue-500 to-blue-600', light: 'from-blue-50 to-blue-100', icon: '👕' },
+                { bg: 'from-purple-500 to-purple-600', light: 'from-purple-50 to-purple-100', icon: '👞' },
+                { bg: 'from-pink-500 to-pink-600', light: 'from-pink-50 to-pink-100', icon: '🎒' },
+                { bg: 'from-amber-500 to-amber-600', light: 'from-amber-50 to-amber-100', icon: '⌚' },
+                { bg: 'from-green-500 to-green-600', light: 'from-green-50 to-green-100', icon: '🧢' },
+                { bg: 'from-red-500 to-red-600', light: 'from-red-50 to-red-100', icon: '🎩' },
+              ];
+              
+              const color = colors[index % colors.length];
 
-                {/* Category List */}
-                <div className="p-3 max-h-96 overflow-y-auto">
-                  {categories.map((category, index) => {
-                    const categoryCount = products.filter(
-                      p => (p.category || 'Uncategorized') === category
-                    ).length;
-                    const isSelected = selectedCategory === category;
-                    
-                    return (
-                      <button
-                        key={category}
-                        onClick={() => {
-                          setSelectedCategory(category);
-                          setSearchQuery('');
-                        }}
-                        className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 font-medium mb-2 flex items-center justify-between group ${
-                          isSelected
-                            ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105 origin-left'
-                            : 'bg-gray-50 text-gray-900 hover:bg-indigo-50 hover:text-indigo-700'
-                        }`}
-                      >
-                        <span className="flex items-center">
-                          <span className={`text-xl mr-2 transition-transform ${isSelected ? 'scale-110' : ''}`}>
-                            {index % 5 === 0 ? '👕' : index % 5 === 1 ? '👞' : index % 5 === 2 ? '🎒' : index % 5 === 3 ? '⌚' : '🧢'}
-                          </span>
-                          {category}
-                        </span>
-                        <span className={`text-sm font-bold px-2.5 py-0.5 rounded-full ${
-                          isSelected 
-                            ? 'bg-white/30' 
-                            : 'bg-indigo-100 text-indigo-700'
-                        }`}>
-                          {categoryCount}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+              return (
+                <button
+                  key={category}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setSearchQuery('');
+                  }}
+                  className={`text-left rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${
+                    isSelected ? 'ring-4 ring-indigo-500' : ''
+                  }`}
+                >
+                  <div className={`bg-gradient-to-br ${color.bg} text-white p-8 relative overflow-hidden`}>
+                    {/* Decorative Background */}
+                    <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full"></div>
+                    <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-white/10 rounded-full"></div>
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <h3 className="text-2xl font-black mb-2 line-clamp-2">{category}</h3>
+                      <p className="text-white/80 text-sm font-semibold">{categoryCount} products</p>
+                    </div>
+
+                    {/* Badge */}
+                    {isSelected && (
+                      <div className="absolute top-3 right-3 bg-white text-indigo-600 rounded-full px-3 py-1 text-xs font-bold">
+                        ✓ Selected
+                      </div>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Main Content - Products */}
-          <div className="lg:col-span-4">
-            {/* Search Bar */}
+        {/* Products Section */}
+        {selectedCategory && (
+          <div>
+            {/* Category Header with Search */}
             <div className="mb-8">
+              <div className="mb-6">
+                <h2 className="text-3xl font-black text-gray-900 mb-2">{selectedCategory}</h2>
+                <p className="text-gray-600">
+                  {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} available
+                  {searchQuery && <span className="ml-2 text-indigo-600 font-semibold">• Filtered by "{searchQuery}"</span>}
+                </p>
+              </div>
+
+              {/* Search Bar */}
               <div className="relative">
                 <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl">🔍</span>
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder="Search in this category..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent bg-white font-medium shadow-sm transition-all"
@@ -168,47 +176,24 @@ export default function CategoryPage() {
               </div>
             </div>
 
-            {/* Category Header */}
-            {selectedCategory && (
-              <div className="mb-8 p-6 bg-white rounded-2xl border-2 border-indigo-100 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
-                      ✨ {selectedCategory}
-                    </h2>
-                    <p className="text-gray-600 text-lg">
-                      {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} available
-                      {searchQuery && <span className="ml-2 text-indigo-600 font-medium">• Filtered by "{searchQuery}"</span>}
-                    </p>
-                  </div>
-                  {filteredProducts.length > 0 && (
-                    <div className="text-right">
-                      <div className="text-4xl font-bold text-indigo-600">{filteredProducts.length}</div>
-                      <div className="text-gray-600 text-sm">Items</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product, index) => (
                   <div
                     key={product._id || product.id}
-                    className="bg-white rounded-2xl shadow-md border-2 border-gray-100 overflow-hidden hover:shadow-2xl hover:border-indigo-400 transition-all duration-300 cursor-pointer group transform hover:-translate-y-2"
+                    className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden hover:shadow-2xl hover:border-indigo-300 transition-all duration-300 cursor-pointer group"
                     style={{
                       animationDelay: `${index * 50}ms`,
                       animation: 'slideUp 0.5s ease-out forwards',
                     }}
+                    onClick={() => {
+                      const id = product._id || product.id;
+                      if (id) handleViewProduct(id);
+                    }}
                   >
-                    {/* Product Image Container */}
-                    <div className="w-full h-56 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden relative"
-                      onClick={() => {
-                        const id = product._id || product.id;
-                        if (id) handleViewProduct(id);
-                      }}>
+                    {/* Product Image */}
+                    <div className="w-full h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden relative">
                       {product.image ? (
                         <img
                           src={product.image}
@@ -222,7 +207,7 @@ export default function CategoryPage() {
                       {/* Stock Badge */}
                       {product.quantity > 0 && (
                         <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                          ✓ In Stock
+                          In Stock
                         </div>
                       )}
                       {product.quantity === 0 && (
@@ -234,25 +219,25 @@ export default function CategoryPage() {
 
                     {/* Product Info */}
                     <div className="p-5">
-                      <h3 className="font-bold text-gray-900 truncate text-lg mb-2 group-hover:text-indigo-600 transition-colors">{product.name}</h3>
+                      <h3 className="font-bold text-gray-900 line-clamp-2 text-lg mb-2 group-hover:text-indigo-600 transition-colors">
+                        {product.name}
+                      </h3>
 
                       {/* Price */}
                       <div className="mb-3">
                         <p className="text-2xl font-extrabold text-indigo-600">
-                          ₹{product.price.toFixed(2)}
+                          ₹{product.price.toFixed(0)}
                         </p>
                       </div>
 
                       {/* Stock Info */}
-                      <div className="mb-4 flex items-center">
+                      <div className="mb-4">
                         {product.quantity > 0 ? (
                           <span className="inline-flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-lg text-xs font-semibold border border-green-200">
-                            <span className="mr-1">📦</span>
                             {product.quantity} in stock
                           </span>
                         ) : (
                           <span className="inline-flex items-center bg-red-50 text-red-700 px-3 py-1 rounded-lg text-xs font-semibold border border-red-200">
-                            <span className="mr-1">❌</span>
                             Out of stock
                           </span>
                         )}
@@ -260,18 +245,18 @@ export default function CategoryPage() {
 
                       {/* Action Button */}
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const id = product._id || product.id;
                           if (id) handleViewProduct(id);
                         }}
-                        className={`w-full py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center group ${
+                        className={`w-full py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center ${
                           product.quantity > 0
-                            ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700'
+                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                         disabled={product.quantity === 0}
                       >
-                        <span className="mr-2">👁️</span>
                         View Details
                       </button>
                     </div>
@@ -287,12 +272,12 @@ export default function CategoryPage() {
                 <p className="text-gray-400 text-sm">
                   {searchQuery 
                     ? `Try adjusting your search for "${searchQuery}"`
-                    : 'Try selecting a different category'}
+                    : 'No products in this category yet'}
                 </p>
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
       <Footer />

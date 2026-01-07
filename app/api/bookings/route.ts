@@ -225,6 +225,7 @@ export async function GET(request: NextRequest) {
     // Fetch bookings with pagination and field projection
     const bookings = await Booking.find(filter)
       .select('userId items totalAmount status createdAt expiresAt') // Only necessary fields
+      .populate('userId', 'name email phone street city state pincode') // Populate user details
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)

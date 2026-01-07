@@ -16,7 +16,9 @@ export default function CustomerHome() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuth();
   const [trendingByCategory, setTrendingByCategory] = useState<{ [key: string]: TrendingProduct[] }>({});
+  const [randomProducts, setRandomProducts] = useState<Product[]>([]);
   const [loadingTrending, setLoadingTrending] = useState(true);
+  const [loadingRandom, setLoadingRandom] = useState(true);
 
   // Redirect if not authenticated or not a customer
   useEffect(() => {
@@ -42,6 +44,28 @@ export default function CustomerHome() {
       }
     };
     fetchTrending();
+  }, []);
+
+  // Fetch random products
+  useEffect(() => {
+    const fetchRandom = async () => {
+      try {
+        setLoadingRandom(true);
+        const response = await fetch('/api/products?limit=12');
+        if (response.ok) {
+          const data = await response.json();
+          const products = Array.isArray(data) ? data : (data.products || []);
+          // Shuffle and get random products
+          const shuffled = products.sort(() => Math.random() - 0.5).slice(0, 8);
+          setRandomProducts(shuffled);
+        }
+      } catch (error) {
+        console.error('Error fetching random products:', error);
+      } finally {
+        setLoadingRandom(false);
+      }
+    };
+    fetchRandom();
   }, []);
 
   const handleLogout = async () => {
@@ -150,6 +174,67 @@ export default function CustomerHome() {
               </div>
             ))}
           </div>
+          </div>
+        </section>
+      )}
+
+      {/* Random Products Section */}
+      {!loadingRandom && randomProducts.length > 0 && (
+        <section className="w-full bg-gradient-to-r from-purple-50 to-pink-50 border-t border-purple-200 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-3">
+                <span className="text-5xl">✨</span> Explore More
+              </h2>
+              <p className="text-lg text-gray-600">Discover our latest collection of products</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {randomProducts.map((product) => (
+                <div
+                  key={product._id}
+                  className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-purple-400 group"
+                >
+                  {/* Product Image */}
+                  <div className="relative h-48 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden group-hover:from-purple-100 group-hover:to-pink-100 transition-colors">
+                    <div className="text-7xl drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      {product.image || '📦'}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4">
+                    <h4 className="font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-purple-700 transition-colors">
+                      {product.name}
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-3">{product.category}</p>
+                    <div className="flex items-baseline gap-2 mb-3">
+                      <span className="text-2xl font-extrabold text-purple-600">₹{product.price.toFixed(0)}</span>
+                      <span className="text-xs text-gray-500">per unit</span>
+                    </div>
+
+                    {/* Stock Info */}
+                    <div className="mb-3 text-xs">
+                      {product.quantity > 10 ? (
+                        <span className="text-green-700 font-semibold">✓ In Stock</span>
+                      ) : product.quantity > 0 ? (
+                        <span className="text-orange-700 font-semibold">⚠ Only {product.quantity} left</span>
+                      ) : (
+                        <span className="text-red-700 font-semibold">✕ Out of Stock</span>
+                      )}
+                    </div>
+
+                    {/* View Product Button */}
+                    <button
+                      onClick={() => router.push('/products-browse')}
+                      className="w-full py-2 rounded-lg font-semibold transition-all bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg"
+                    >
+                      👁️ View Products
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
