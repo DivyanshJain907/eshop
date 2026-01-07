@@ -203,51 +203,54 @@ export default function DashboardPage() {
 
         {/* Main Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Total Revenue Card */}
-          <div className="bg-linear-to-br from-green-50 to-emerald-100 rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <p className="text-green-700 text-sm font-semibold mb-1">Total Revenue</p>
-                <h3 className="text-3xl font-bold text-green-900">
-                  Rs. {dataLoading ? '...' : (dashboardData?.totalRevenue || 0).toFixed(2)}
-                </h3>
+          {/* Financial Metrics - ADMIN ONLY */}
+          {user?.role === 'admin' && (
+            <>
+              {/* Total Revenue Card */}
+              <div className="bg-linear-to-br from-green-50 to-emerald-100 rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <p className="text-green-700 text-sm font-semibold mb-1">Total Revenue</p>
+                    <h3 className="text-3xl font-bold text-green-900">
+                      Rs. {dataLoading ? '...' : (dashboardData?.totalRevenue || 0).toFixed(2)}
+                    </h3>
+                  </div>
+                  <span className="text-4xl">💵</span>
+                </div>
+                <p className="text-xs text-green-700">From all sales transactions</p>
               </div>
-              <span className="text-4xl">💵</span>
-            </div>
-            <p className="text-xs text-green-700">From all sales transactions</p>
-          </div>
 
-          {/* Total Paid Card */}
-          <div className="bg-linear-to-br from-blue-50 to-cyan-100 rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <p className="text-blue-700 text-sm font-semibold mb-1">Amount Received</p>
-                <h3 className="text-3xl font-bold text-blue-900">
-                  Rs. {dataLoading ? '...' : (dashboardData?.totalPaid || 0).toFixed(2)}
-                </h3>
+              {/* Total Paid Card */}
+              <div className="bg-linear-to-br from-blue-50 to-cyan-100 rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <p className="text-blue-700 text-sm font-semibold mb-1">Amount Received</p>
+                    <h3 className="text-3xl font-bold text-blue-900">
+                      Rs. {dataLoading ? '...' : (dashboardData?.totalPaid || 0).toFixed(2)}
+                    </h3>
+                  </div>
+                  <span className="text-4xl">✅</span>
+                </div>
+                <p className="text-xs text-blue-700">Fully & partially paid</p>
               </div>
-              <span className="text-4xl">✅</span>
-            </div>
-            <p className="text-xs text-blue-700">Fully & partially paid</p>
-          </div>
 
-          {/* Total Due Card */}
-          <div className="bg-linear-to-br from-orange-50 to-amber-100 rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <p className="text-orange-700 text-sm font-semibold mb-1">Outstanding Due</p>
-                <h3 className="text-3xl font-bold text-orange-900">
-                  Rs. {dataLoading ? '...' : (dashboardData?.totalDue || 0).toFixed(2)}
-                </h3>
+              {/* Total Due Card */}
+              <div className="bg-linear-to-br from-orange-50 to-amber-100 rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <p className="text-orange-700 text-sm font-semibold mb-1">Outstanding Due</p>
+                    <h3 className="text-3xl font-bold text-orange-900">
+                      Rs. {dataLoading ? '...' : (dashboardData?.totalDue || 0).toFixed(2)}
+                    </h3>
+                  </div>
+                  <span className="text-4xl">⏳</span>
+                </div>
+                <p className="text-xs text-orange-700">Pending payments</p>
               </div>
-              <span className="text-4xl">⏳</span>
-            </div>
-            <p className="text-xs text-orange-700">Pending payments</p>
-          </div>
 
-          {/* Inventory Value Card */}
-          <div className="bg-linear-to-br from-purple-50 to-pink-100 rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
-            <div className="flex justify-between items-start mb-3">
+              {/* Inventory Value Card */}
+              <div className="bg-linear-to-br from-purple-50 to-pink-100 rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+                <div className="flex justify-between items-start mb-3">
               <div>
                 <p className="text-purple-700 text-sm font-semibold mb-1">Inventory Value</p>
                 <h3 className="text-3xl font-bold text-purple-900">
@@ -258,6 +261,8 @@ export default function DashboardPage() {
             </div>
             <p className="text-xs text-purple-700">Total stock value</p>
           </div>
+            </>
+          )}
         </div>
 
         {/* Secondary Metrics Grid */}

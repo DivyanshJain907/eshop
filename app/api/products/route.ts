@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
 
       // Fetch products with field projection (only necessary fields)
       const products = await Product.find(filter)
-        .select('_id name price quantity uom brandName barcode productCode modelName image images category retailDiscount retailPrice discount wholesalePrice superDiscount superWholesalePrice minRetailQuantity minWholesaleQuantity minSuperWholesaleQuantity attributes createdBy createdAt updatedAt stockThreshold')
+        .select('_id name price quantity uom brandName barcode productCode modelName image images category description retailDiscount retailPrice discount wholesalePrice superDiscount superWholesalePrice minRetailQuantity minWholesaleQuantity minSuperWholesaleQuantity attributes createdBy createdAt updatedAt stockThreshold')
         .populate('createdBy', 'name shopName')
         .sort({ createdAt: -1 })
         .skip(skip)

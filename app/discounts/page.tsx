@@ -176,216 +176,277 @@ export default function DiscountsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
       <UserHeader />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="text-4xl">📂</div>
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900">Category Discounts</h1>
-              <p className="text-gray-600 mt-1">Manage discount tiers by product category</p>
+      <div className="flex-1 overflow-auto">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="mb-12">
+            <h1 className="text-5xl font-black text-gray-900">💰 Discount Dashboard</h1>
+            <p className="text-gray-600 mt-2 text-lg">Manage category-wide discount strategies</p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg text-red-700 font-semibold">
+              {error}
             </div>
-          </div>
-        </div>
+          )}
 
-        {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
-          </div>
-        )}
+          {/* Summary Stats */}
+          {!loading && categories.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-purple-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Total Categories</p>
+                <p className="text-4xl font-black text-purple-600 mt-2">{categories.length}</p>
+              </div>
+              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-blue-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Avg Retail Discount</p>
+                <p className="text-4xl font-black text-blue-600 mt-2">
+                  {(categories.reduce((sum, c) => sum + c.retailDiscount, 0) / categories.length).toFixed(1)}%
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-green-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Avg Wholesale Discount</p>
+                <p className="text-4xl font-black text-green-600 mt-2">
+                  {(categories.reduce((sum, c) => sum + c.wholesaleDiscount, 0) / categories.length).toFixed(1)}%
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-amber-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Avg Super WS Discount</p>
+                <p className="text-4xl font-black text-amber-600 mt-2">
+                  {(categories.reduce((sum, c) => sum + c.superWholesaleDiscount, 0) / categories.length).toFixed(1)}%
+                </p>
+              </div>
+            </div>
+          )}
 
-        {/* Categories List */}
-        <div className="space-y-4">
+          {/* Categories Grid */}
           {loading ? (
-            <div className="text-center text-gray-500 py-12">Loading categories...</div>
+            <div className="text-center py-16">
+              <div className="inline-flex items-center gap-3">
+                <div className="animate-spin text-4xl">⏳</div>
+                <p className="text-gray-600 text-lg font-semibold">Loading categories...</p>
+              </div>
+            </div>
           ) : categories.length === 0 ? (
-            <div className="p-8 text-center bg-white rounded-lg shadow">
-              <div className="text-5xl mb-4">📭</div>
-              <p className="text-gray-600 text-lg">No categories found</p>
+            <div className="text-center py-16 bg-white rounded-xl shadow-md">
+              <div className="text-6xl mb-4">📭</div>
+              <p className="text-gray-600 text-xl font-semibold">No categories found</p>
             </div>
           ) : (
-            categories.map((cat) => (
-              <div
-                key={cat.category}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-indigo-500 overflow-hidden"
-              >
-                {editingCategory === cat.category ? (
-                  // Edit Mode
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">
-                        ✏️ Edit Discounts for: {cat.category}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map((cat) => (
+                <div
+                  key={cat.category}
+                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+                >
+                  {editingCategory === cat.category ? (
+                    // Edit Mode
+                    <div className="p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-300 min-h-[500px]">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                        ✏️ Edit: {cat.category}
                       </h3>
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-800 mb-2">
-                          Retail Discount (%)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="0.1"
-                          value={formData.retailDiscount}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              retailDiscount: parseFloat(e.target.value) || 0,
-                            })
-                          }
-                          className="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-                        />
+                      <div className="space-y-6">
+                        <div>
+                          <label className="block text-sm font-bold text-gray-800 mb-2 uppercase tracking-wide">
+                            🛍️ Retail Discount
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              step="0.1"
+                              value={formData.retailDiscount}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  retailDiscount: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-4 py-3 border-2 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold text-blue-600 bg-white"
+                            />
+                            <span className="absolute right-4 top-3 text-lg font-bold text-blue-600">%</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-bold text-gray-800 mb-2 uppercase tracking-wide">
+                            🏪 Wholesale Discount
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              step="0.1"
+                              value={formData.wholesaleDiscount}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  wholesaleDiscount: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-4 py-3 border-2 border-green-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-lg font-semibold text-green-600 bg-white"
+                            />
+                            <span className="absolute right-4 top-3 text-lg font-bold text-green-600">%</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-bold text-gray-800 mb-2 uppercase tracking-wide">
+                            ⭐ Super Wholesale Discount
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              step="0.1"
+                              value={formData.superWholesaleDiscount}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  superWholesaleDiscount: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-4 py-3 border-2 border-amber-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-lg font-semibold text-amber-600 bg-white"
+                            />
+                            <span className="absolute right-4 top-3 text-lg font-bold text-amber-600">%</span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-800 mb-2">
-                          Wholesale Discount (%)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="0.1"
-                          value={formData.wholesaleDiscount}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              wholesaleDiscount: parseFloat(e.target.value) || 0,
-                            })
-                          }
-                          className="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-800 mb-2">
-                          Super Wholesale Discount (%)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="0.1"
-                          value={formData.superWholesaleDiscount}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              superWholesaleDiscount: parseFloat(e.target.value) || 0,
-                            })
-                          }
-                          className="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white text-gray-900"
-                        />
+                      <div className="flex gap-3 pt-8">
+                        <button
+                          onClick={handleSave}
+                          disabled={saving}
+                          className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold rounded-lg transition-colors transform hover:scale-105"
+                        >
+                          {saving ? '⏳ Saving...' : '✅ Save Changes'}
+                        </button>
+                        <button
+                          onClick={handleCancel}
+                          className="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold rounded-lg transition-colors"
+                        >
+                          ❌ Cancel
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex gap-3 pt-4">
-                      <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-400 font-semibold transition-colors"
-                      >
-                        {saving ? 'Saving...' : '✅ Save'}
-                      </button>
-                      <button
-                        onClick={handleCancel}
-                        className="px-6 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 font-semibold transition-colors"
-                      >
-                        ❌ Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  // View Mode
-                  <div>
-                    <div
-                      className="p-6 flex items-center justify-between cursor-pointer hover:bg-gray-50"
-                      onClick={() =>
-                        setExpandedCategory(expandedCategory === cat.category ? null : cat.category)
-                      }
-                    >
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-900">{cat.category}</h3>
-                        <p className="text-sm text-gray-500 mt-1">
+                  ) : (
+                    // View Mode
+                    <div>
+                      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                        <h3 className="text-2xl font-black">{cat.category}</h3>
+                        <p className="text-indigo-100 mt-2 font-semibold">
                           {cat.productCount} products
                           {cat.productsWithOverrides.length > 0 && (
-                            <span className="ml-2 text-orange-600 font-semibold">
-                              ({cat.productsWithOverrides.length} with custom discounts)
+                            <span className="ml-2 bg-orange-500 px-3 py-1 rounded-full text-sm font-bold inline-block mt-2">
+                              {cat.productsWithOverrides.length} custom
                             </span>
                           )}
                         </p>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-8 mr-8">
-                        <div className="text-center">
-                          <p className="text-xs text-gray-500 mb-1">Retail</p>
-                          <p className="text-2xl font-bold text-blue-600">{cat.retailDiscount}%</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-xs text-gray-500 mb-1">Wholesale</p>
-                          <p className="text-2xl font-bold text-green-600">{cat.wholesaleDiscount}%</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-xs text-gray-500 mb-1">Super WS</p>
-                          <p className="text-2xl font-bold text-amber-600">
-                            {cat.superWholesaleDiscount}%
-                          </p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(cat);
-                        }}
-                        className="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 font-semibold transition-colors whitespace-nowrap ml-4"
-                      >
-                        ✏️ Edit
-                      </button>
-
-                      <div className="ml-4 text-gray-400">
-                        {expandedCategory === cat.category ? '▼' : '▶'}
-                      </div>
-                    </div>
-
-                    {/* Expanded Products with Overrides */}
-                    {expandedCategory === cat.category && cat.productsWithOverrides.length > 0 && (
-                      <div className="border-t border-gray-200 bg-gray-50 p-6">
-                        <h4 className="text-lg font-bold text-gray-900 mb-4">
-                          📌 Products with Custom Discounts
-                        </h4>
-                        <div className="space-y-3">
-                          {cat.productsWithOverrides.map((product) => (
-                            <div
-                              key={product.productId}
-                              className="bg-white p-4 rounded-lg border border-orange-200 flex items-center justify-between"
-                            >
-                              <div className="flex-1">
-                                <p className="font-semibold text-gray-900">{product.productName}</p>
-                                <p className="text-sm text-gray-500 mt-1">
-                                  Custom: {product.retailDiscount}% / {product.wholesaleDiscount}% /
-                                  {product.superWholesaleDiscount}%
-                                </p>
-                              </div>
-                              <a
-                                href={`/products/edit/${product.productId}`}
-                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-colors whitespace-nowrap"
-                              >
-                                Edit Product
-                              </a>
+                      <div className="p-6">
+                        {/* Discount Tiers with Progress Bars */}
+                        <div className="space-y-4 mb-6">
+                          <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-bold text-gray-700">🛍️ Retail</span>
+                              <span className="text-2xl font-black text-blue-600">{cat.retailDiscount}%</span>
                             </div>
-                          ))}
+                            <div className="w-full bg-blue-200 rounded-full h-3 overflow-hidden">
+                              <div
+                                className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.min(cat.retailDiscount, 100)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-bold text-gray-700">🏪 Wholesale</span>
+                              <span className="text-2xl font-black text-green-600">{cat.wholesaleDiscount}%</span>
+                            </div>
+                            <div className="w-full bg-green-200 rounded-full h-3 overflow-hidden">
+                              <div
+                                className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.min(cat.wholesaleDiscount, 100)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          <div className="bg-amber-50 p-4 rounded-lg border-2 border-amber-200">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-bold text-gray-700">⭐ Super Wholesale</span>
+                              <span className="text-2xl font-black text-amber-600">{cat.superWholesaleDiscount}%</span>
+                            </div>
+                            <div className="w-full bg-amber-200 rounded-full h-3 overflow-hidden">
+                              <div
+                                className="bg-gradient-to-r from-amber-500 to-amber-600 h-3 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.min(cat.superWholesaleDiscount, 100)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditClick(cat);
+                            }}
+                            className="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors transform hover:scale-105"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() =>
+                              setExpandedCategory(expandedCategory === cat.category ? null : cat.category)
+                            }
+                            className="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-lg transition-colors"
+                          >
+                            {expandedCategory === cat.category ? '▼ Hide' : '▶ Show'} Details
+                          </button>
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))
+
+                      {/* Expanded Products with Overrides */}
+                      {expandedCategory === cat.category && cat.productsWithOverrides.length > 0 && (
+                        <div className="border-t-2 border-gray-200 bg-gray-50 p-6">
+                          <h4 className="text-lg font-black text-gray-900 mb-4">
+                            📌 {cat.productsWithOverrides.length} Products with Custom Discounts
+                          </h4>
+                          <div className="space-y-3">
+                            {cat.productsWithOverrides.map((product) => (
+                              <div
+                                key={product.productId}
+                                className="bg-white p-4 rounded-lg border-l-4 border-orange-500 hover:shadow-md transition-shadow"
+                              >
+                                <p className="font-bold text-gray-900">{product.productName}</p>
+                                <p className="text-sm text-gray-600 mt-1 font-semibold">
+                                  {product.retailDiscount}% • {product.wholesaleDiscount}% • {product.superWholesaleDiscount}%
+                                </p>
+                                <a
+                                  href={`/products/edit/${product.productId}`}
+                                  className="inline-block mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-bold text-sm transition-colors"
+                                >
+                                  Edit Product →
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
