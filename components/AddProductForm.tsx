@@ -22,6 +22,9 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
     image: '',
     images: '',
     category: '',
+    barcode: '',
+    productCode: '',
+    modelName: '',
     // Retail
     minRetailQuantity: '1',
     retailDiscount: '0',
@@ -113,6 +116,9 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
             image: formData.image || '📦',
             images: imageArray,
             category: formData.category.trim(),
+            barcode: formData.barcode.trim(),
+            productCode: formData.productCode.trim(),
+            modelName: formData.modelName.trim(),
             // Retail
             minRetailQuantity: parseInt(formData.minRetailQuantity, 10),
             retailDiscount: parseFloat(formData.retailDiscount),
@@ -142,6 +148,9 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
           image: '',
           images: '',
           category: '',
+          barcode: '',
+          productCode: '',
+          modelName: '',
           minRetailQuantity: '1',
           retailDiscount: '0',
           retailPrice: '',
@@ -243,6 +252,48 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
                 <option value="Borosil Lara" />
               </datalist>
               <p className="text-xs text-gray-500 mt-1">Type custom category or use suggestions</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                🏷️ Barcode
+              </label>
+              <input
+                type="text"
+                name="barcode"
+                value={formData.barcode}
+                onChange={handleChange}
+                placeholder="e.g., 8901234567890"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                📦 Product Code
+              </label>
+              <input
+                type="text"
+                name="productCode"
+                value={formData.productCode}
+                onChange={handleChange}
+                placeholder="e.g., PRD-001-2024"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                🏭 Model Name
+              </label>
+              <input
+                type="text"
+                name="modelName"
+                value={formData.modelName}
+                onChange={handleChange}
+                placeholder="e.g., Model X Pro 2024"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
+              />
             </div>
           </div>
         </div>
@@ -554,6 +605,9 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
               image: '',
               images: '',
               category: '',
+              barcode: '',
+              productCode: '',
+              modelName: '',
               minRetailQuantity: '1',
               retailDiscount: '0',
               retailPrice: '',
