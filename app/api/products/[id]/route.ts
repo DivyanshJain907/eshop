@@ -51,6 +51,11 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
+    // Ensure stockThreshold is a number
+    if (body.stockThreshold !== undefined) {
+      body.stockThreshold = Number(body.stockThreshold) || 0;
+    }
+
     const product = await Product.findByIdAndUpdate(
       id,
       body,

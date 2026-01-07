@@ -40,6 +40,7 @@ export default function EditProductPage() {
         setProduct(data);
         setFormData({
           ...data,
+          stockThreshold: data.stockThreshold || 0,
           images: Array.isArray(data.images) ? data.images : data.image ? [data.image] : [],
         });
         setImagePreviews(Array.isArray(data.images) ? data.images : data.image ? [data.image] : []);
@@ -60,8 +61,8 @@ export default function EditProductPage() {
     const { name, value } = e.target;
     let updatedData: any = {
       ...formData,
-      [name]: name.includes('quantity') || name.includes('price') || name.includes('discount') || name.includes('threshold') ? 
-        (value === '' ? '' : isNaN(Number(value)) ? value : Number(value)) : value,
+      [name]: name.includes('quantity') || name.includes('price') || name.includes('discount') || name.includes('Threshold') || name.includes('threshold') ? 
+        (value === '' ? 0 : isNaN(Number(value)) ? value : Number(value)) : value,
     };
 
     // Auto-calculate prices based on discount percentage
@@ -258,6 +259,25 @@ export default function EditProductPage() {
                     <option value="Dreamz" />
                     <option value="Bergner" />
                     <option value="Borosil Lara" />
+                  </datalist>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">📏 UOM (Unit of Measure)</label>
+                  <input
+                    type="text"
+                    name="uom"
+                    value={formData.uom || ''}
+                    onChange={handleChange}
+                    list="uomList"
+                    className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                  />
+                  <datalist id="uomList">
+                    <option value="Pieces" />
+                    <option value="Pack" />
+                    <option value="Box" />
+                    <option value="Set" />
+                    <option value="EA" />
                   </datalist>
                 </div>
               </div>

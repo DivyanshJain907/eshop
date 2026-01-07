@@ -25,6 +25,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
     barcode: '',
     productCode: '',
     modelName: '',
+    uom: '',
     // Retail
     minRetailQuantity: '1',
     retailDiscount: '0',
@@ -119,6 +120,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
             barcode: formData.barcode.trim(),
             productCode: formData.productCode.trim(),
             modelName: formData.modelName.trim(),
+            uom: formData.uom.trim(),
             // Retail
             minRetailQuantity: parseInt(formData.minRetailQuantity, 10),
             retailDiscount: parseFloat(formData.retailDiscount),
@@ -151,6 +153,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
           barcode: '',
           productCode: '',
           modelName: '',
+          uom: '',
           minRetailQuantity: '1',
           retailDiscount: '0',
           retailPrice: '',
@@ -252,6 +255,29 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
                 <option value="Borosil Lara" />
               </datalist>
               <p className="text-xs text-gray-500 mt-1">Type custom category or use suggestions</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                📏 UOM (Unit of Measure)
+              </label>
+              <input
+                type="text"
+                name="uom"
+                value={formData.uom}
+                onChange={handleChange}
+                placeholder="e.g., Kg, Liter, Pieces, Pcs"
+                list="uomList"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
+              />
+              <datalist id="uomList">
+                <option value="Pieces" />
+                <option value="Pack" />
+                <option value="Box" />
+                <option value="Set" />
+                <option value="EA" />
+              </datalist>
+              <p className="text-xs text-gray-500 mt-1">Enter unit of measurement</p>
             </div>
 
             <div>
@@ -608,6 +634,7 @@ export default function AddProductForm({ onAddProduct, onSuccess }: AddProductPr
               barcode: '',
               productCode: '',
               modelName: '',
+              uom: '',
               minRetailQuantity: '1',
               retailDiscount: '0',
               retailPrice: '',

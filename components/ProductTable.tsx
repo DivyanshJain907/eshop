@@ -114,32 +114,38 @@ export default function ProductTable({ products = [], onQuantityChange, onDelete
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-center bg-blue-50 text-gray-900">
                   {product.retailDiscount ? (
-                    <div className="text-blue-700 font-semibold">{product.retailDiscount}%</div>
+                    <div>
+                      <div className="text-blue-700 font-semibold">{product.retailDiscount}%</div>
+                      <div className="text-xs text-gray-600">
+                        Rs. {(product.price * (1 - (product.retailDiscount || 0) / 100)).toFixed(0)}
+                      </div>
+                    </div>
                   ) : (
                     <span className="text-gray-400">-</span>
-                  )}
-                  {product.retailDiscount && product.retailPrice && (
-                    <div className="text-xs text-gray-600">Rs. {product.retailPrice.toFixed(0)}</div>
                   )}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-center bg-green-50 text-gray-900">
                   {product.discount ? (
-                    <div className="text-green-700 font-semibold">{product.discount}%</div>
+                    <div>
+                      <div className="text-green-700 font-semibold">{product.discount}%</div>
+                      <div className="text-xs text-gray-600">
+                        Rs. {(product.price * (1 - (product.discount || 0) / 100)).toFixed(0)}
+                      </div>
+                    </div>
                   ) : (
                     <span className="text-gray-400">-</span>
-                  )}
-                  {product.discount && product.wholesalePrice && (
-                    <div className="text-xs text-gray-600">Rs. {product.wholesalePrice.toFixed(0)}</div>
                   )}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-center bg-purple-50 text-gray-900">
                   {product.superDiscount ? (
-                    <div className="text-purple-700 font-semibold">{product.superDiscount}%</div>
+                    <div>
+                      <div className="text-purple-700 font-semibold">{product.superDiscount}%</div>
+                      <div className="text-xs text-gray-600">
+                        Rs. {(product.price * (1 - (product.superDiscount || 0) / 100)).toFixed(0)}
+                      </div>
+                    </div>
                   ) : (
                     <span className="text-gray-400">-</span>
-                  )}
-                  {product.superDiscount && product.superWholesalePrice && (
-                    <div className="text-xs text-gray-600">Rs. {product.superWholesalePrice.toFixed(0)}</div>
                   )}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-center flex gap-2 justify-center">
