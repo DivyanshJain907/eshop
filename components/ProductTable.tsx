@@ -52,7 +52,6 @@ export default function ProductTable({ products = [], onQuantityChange, onDelete
               <th className="border border-gray-300 px-3 py-2 text-left text-gray-900">Product Code</th>
               <th className="border border-gray-300 px-3 py-2 text-left text-gray-900">Model Name</th>
               <th className="border border-gray-300 px-3 py-2 text-left text-gray-900">Category</th>
-              <th className="border border-gray-300 px-3 py-2 text-right text-gray-900">MRP</th>
               <th className="border border-gray-300 px-3 py-2 text-left text-gray-900">UOM</th>
               <th className="border border-gray-300 px-3 py-2 text-right text-gray-900">Price</th>
               <th className="border border-gray-300 px-3 py-2 text-right text-gray-900">Qty</th>
@@ -97,8 +96,7 @@ export default function ProductTable({ products = [], onQuantityChange, onDelete
                 <td className="border border-gray-300 px-3 py-2 text-xs text-gray-900">{product.barcode || ''}</td>
                 <td className="border border-gray-300 px-3 py-2 text-xs text-gray-900">{product.productCode || ''}</td>
                 <td className="border border-gray-300 px-3 py-2 text-xs text-gray-900">{product.modelName || ''}</td>
-                <td className="border border-gray-300 px-3 py-2 text-xs text-gray-900">{product.brandName || ''}</td>
-                <td className="border border-gray-300 px-3 py-2 text-right text-gray-900">{typeof product.mrp === 'number' && !isNaN(product.mrp) ? product.mrp.toFixed(2) : ''}</td>
+                <td className="border border-gray-300 px-3 py-2 text-xs text-gray-900">{product.category || ''}</td>
                 <td className="border border-gray-300 px-3 py-2 text-xs text-gray-900">{product.uom || ''}</td>
                 <td className="border border-gray-300 px-3 py-2 text-right text-gray-900 font-medium">
                   Rs. {typeof product.price === 'number' && !isNaN(product.price) ? product.price.toFixed(2) : 'N/A'}
