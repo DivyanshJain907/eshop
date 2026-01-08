@@ -17,6 +17,7 @@ export default function CategoryPage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,6 +40,15 @@ export default function CategoryPage() {
     };
 
     loadData();
+  }, []);
+
+  // Load cart from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cartData = localStorage.getItem('cart');
+      const items = cartData ? JSON.parse(cartData) : [];
+      setCartItems(items);
+    }
   }, []);
 
   // Filter products by category and search
@@ -76,11 +86,11 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
-      <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} />
+    <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100">
+      <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} cartCount={cartItems.length} />
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white py-16 shadow-lg">
+      <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 text-white py-16 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-5xl font-black">📂 Browse by Category</h1>
           <p className="text-indigo-100 text-lg mt-3">Discover our products organized by category</p>
@@ -126,7 +136,7 @@ export default function CategoryPage() {
                     isSelected ? 'ring-4 ring-indigo-500' : ''
                   }`}
                 >
-                  <div className={`bg-gradient-to-br ${color.bg} text-white p-8 relative overflow-hidden`}>
+                  <div className={`bg-linear-to-br ${color.bg} text-white p-8 relative overflow-hidden`}>
                     {/* Decorative Background */}
                     <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full"></div>
                     <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-white/10 rounded-full"></div>
@@ -193,7 +203,7 @@ export default function CategoryPage() {
                     }}
                   >
                     {/* Product Image */}
-                    <div className="w-full h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden relative">
+                    <div className="w-full h-56 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden relative">
                       {product.image ? (
                         <img
                           src={product.image}
@@ -252,7 +262,7 @@ export default function CategoryPage() {
                         }}
                         className={`w-full py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center ${
                           product.quantity > 0
-                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700'
+                            ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                         disabled={product.quantity === 0}

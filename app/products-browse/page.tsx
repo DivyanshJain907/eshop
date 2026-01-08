@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
@@ -11,6 +11,7 @@ import { Product } from '@/lib/types';
 
 export default function CustomerProductsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isAuthenticated, isLoading, user } = useAuth();
   const [cartItems, setCartItems] = useState<(Product & { cartQuantity: number })[]>([]);
   const [activeView, setActiveView] = useState<'browse' | 'cart'>('browse');
@@ -25,23 +26,38 @@ export default function CustomerProductsPage() {
   // Load cart from localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        try {
-          setCartItems(JSON.parse(savedCart));
-        } catch (error) {
-          console.error('Error loading cart:', error);
+      // Check if cart view should be opened via query parameter
+      const view = searchParams.get('view');
+      if (view === 'cart') {
+        setActiveView('cart');
+      } else {
+        // Load activeView from localStorage
+        const savedView = localStorage.getItem('productsPageView') as 'browse' | 'cart' | null;
+        if (savedView) {
+          setActiveView(savedView);
         }
       }
-    }
-  }, []);
 
-  // Save cart to localStorage
+      // Load cart with 24-hour expiration
+      const cartData = localStorage.getItem('cart');
+      const items = cartData ? JSON.parse(cartData) : [];
+      setCartItems(items);
+    }
+  }, [searchParams]);
+
+  // Save cart to localStorage with timestamp
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('cart', JSON.stringify(cartItems));
     }
   }, [cartItems]);
+
+  // Save activeView to localStorage (persistence)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('productsPageView', activeView);
+    }
+  }, [activeView]);
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prevItems) => {

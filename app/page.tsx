@@ -18,7 +18,7 @@ export default function LandingPage() {
       if (user?.role === 'admin' || user?.role === 'employee') {
         router.push('/dashboard');
       } else {
-        router.push('/home');
+        router.push('/products-browse');
       }
     }
   }, [isAuthenticated, isLoading, user?.role, router]);

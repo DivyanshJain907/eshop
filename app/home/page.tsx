@@ -19,6 +19,7 @@ export default function CustomerHome() {
   const [randomProducts, setRandomProducts] = useState<Product[]>([]);
   const [loadingTrending, setLoadingTrending] = useState(true);
   const [loadingRandom, setLoadingRandom] = useState(true);
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
   // Redirect if not authenticated or not a customer
   useEffect(() => {
@@ -68,6 +69,15 @@ export default function CustomerHome() {
     fetchRandom();
   }, []);
 
+  // Load cart from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cartData = localStorage.getItem('cart');
+      const items = cartData ? JSON.parse(cartData) : [];
+      setCartItems(items);
+    }
+  }, []);
+
   const handleLogout = async () => {
     try {
       const response = await fetch('/api/auth/logout', { method: 'POST' });
@@ -85,6 +95,7 @@ export default function CustomerHome() {
         isAuthenticated={true}
         userName={user?.name}
         userRole={user?.role}
+        cartCount={cartItems.length}
         onLogout={handleLogout}
       />
 
@@ -180,7 +191,7 @@ export default function CustomerHome() {
 
       {/* Random Products Section */}
       {!loadingRandom && randomProducts.length > 0 && (
-        <section className="w-full bg-gradient-to-r from-purple-50 to-pink-50 border-t border-purple-200 py-8">
+        <section className="w-full bg-linear-to-r from-purple-50 to-pink-50 border-t border-purple-200 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-8">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-3">

@@ -182,7 +182,7 @@ export default function BookingConfirmationPage() {
   if (orderPlaced) {
     return (
       <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-        <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} />
+        <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} cartCount={cartItems.length} />
         
         <div className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md w-full text-center border-t-4 border-green-500">
@@ -250,7 +250,7 @@ export default function BookingConfirmationPage() {
   // Checkout form
   return (
     <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-      <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} />
+      <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} cartCount={cartItems.length} />
       
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
         {/* Header */}

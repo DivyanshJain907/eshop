@@ -180,7 +180,7 @@ export default function ShippingInfoPage() {
           <h3 className="text-xl font-bold text-gray-900 mb-3">Ready to get started?</h3>
           <p className="text-gray-600 mb-6">Browse products and place your booking today.</p>
           <Link
-            href="/home"
+            href="/products-browse"
             className="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
           >
             Start Shopping

@@ -24,6 +24,7 @@ export default function MyOrdersPage() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const [orders, setOrders] = useState<DirectSaleOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || user?.role !== 'customer')) {
@@ -57,6 +58,15 @@ export default function MyOrdersPage() {
     }
   }, [user?.phone]);
 
+  // Load cart from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cartData = localStorage.getItem('cart');
+      const items = cartData ? JSON.parse(cartData) : [];
+      setCartItems(items);
+    }
+  }, []);
+
   const handleLogout = async () => {
     try {
       const response = await fetch('/api/auth/logout', { method: 'POST' });
@@ -89,6 +99,7 @@ export default function MyOrdersPage() {
         isAuthenticated={true}
         userName={user?.name}
         userRole={user?.role}
+        cartCount={cartItems.length}
         onLogout={handleLogout}
       />
 

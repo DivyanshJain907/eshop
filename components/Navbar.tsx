@@ -48,7 +48,6 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
 
   // Check if link is active
   const isActive = (href: string) => {
-    if (href === '/home' && pathname === '/home') return true;
     if (href === '/products-browse' && pathname === '/products-browse') return true;
     if (href === '/products' && (pathname === '/products' || pathname.startsWith('/products/'))) return true;
     if (href === '/category' && pathname === '/category') return true;
@@ -131,12 +130,6 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
             ) : (
               <>
                 <Link
-                  href="/home"
-                  className={getLinkStyles('/home')}
-                >
-                  Home
-                </Link>
-                <Link
                   href="/products-browse"
                   className={getLinkStyles('/products-browse')}
                 >
@@ -168,6 +161,25 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
                 >
                   📦 Orders
                 </Link>
+
+                {/* Cart Icon for Customers */}
+                {userRole === 'customer' && (
+                  <Link
+                    href="/products-browse?view=cart"
+                    className={`relative px-4 py-2 font-semibold transition-all rounded-lg duration-200 flex items-center gap-2 ${
+                      isActive('/products-browse')
+                        ? 'bg-indigo-600 text-white shadow-md'
+                        : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
+                    }`}
+                  >
+                    🛒 Cart
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {cartCount > 9 ? '9+' : cartCount}
+                      </span>
+                    )}
+                  </Link>
+                )}
 
                 {/* User Profile Dropdown */}
                 <div className="ml-4 relative" ref={userMenuRef}>
@@ -259,16 +271,6 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
                   </div>
                 )}
                 <button
-                  onClick={() => handleNavClick('/home')}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold ${
-                    isActive('/home')
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
-                  }`}
-                >
-                  🏠 Home
-                </button>
-                <button
                   onClick={() => handleNavClick('/products-browse')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold ${
                     isActive('/products-browse')
@@ -332,6 +334,27 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
                 >
                   📦 Orders
                 </button>
+
+                {/* Cart Button for Customers (Mobile) */}
+                {userRole === 'customer' && (
+                  <button
+                    onClick={() => handleNavClick('/products-browse?view=cart')}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold relative ${
+                      isActive('/products-browse')
+                        ? 'bg-indigo-600 text-white'
+                        : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>🛒 Cart</span>
+                      {cartCount > 0 && (
+                        <span className="bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center ml-2">
+                          {cartCount > 9 ? '9+' : cartCount}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                )}
 
                 {/* Mobile Logout Button */}
                 <button

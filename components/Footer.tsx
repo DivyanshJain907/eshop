@@ -49,11 +49,6 @@ export default function Footer({ onTabChange }: FooterProps) {
             <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/home" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                  <span>→</span> Home
-                </Link>
-              </li>
-              <li>
                 <button 
                   onClick={() => handleQuickLinkClick('browse')}
                   className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 w-full"
@@ -180,11 +175,6 @@ export default function Footer({ onTabChange }: FooterProps) {
             {expandedSection === 'quick' && (
               <div className="px-4 py-3 bg-gray-800/50 text-sm">
                 <ul className="space-y-2">
-                  <li>
-                    <Link href="/home" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                      <span>→</span> Home
-                    </Link>
-                  </li>
                   <li>
                     <button 
                       onClick={() => handleQuickLinkClick('browse')}
