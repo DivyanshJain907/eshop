@@ -6,11 +6,21 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import { Product } from '@/lib/types';
+
+interface Category {
+  name: string;
+  productCount: number;
+  icon: string;
+}
 
 export default function LandingPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuth();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Redirect authenticated users to their respective dashboard
   useEffect(() => {
@@ -22,6 +32,57 @@ export default function LandingPage() {
       }
     }
   }, [isAuthenticated, isLoading, user?.role, router]);
+
+  // Fetch featured products and categories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch products
+        const productsRes = await fetch('/api/products?limit=4');
+        if (productsRes.ok) {
+          const data = await productsRes.json();
+          // Handle both array and nested structure responses
+          const productsList = Array.isArray(data) ? data : (data.products || []);
+          setProducts(productsList.slice(0, 4));
+        }
+
+        // Fetch all products to count categories
+        const allProductsRes = await fetch('/api/products');
+        if (allProductsRes.ok) {
+          const allData = await allProductsRes.json();
+          const allProducts: Product[] = Array.isArray(allData) ? allData : (allData.products || []);
+          
+          // Group by category and count
+          const categoryMap = new Map<string, number>();
+          allProducts.forEach((product) => {
+            if (product.category) {
+              categoryMap.set(product.category, (categoryMap.get(product.category) || 0) + 1);
+            }
+          });
+
+          // Get top 4 categories
+          const topCategories = Array.from(categoryMap.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 4)
+            .map(([name, count]) => ({
+              name,
+              productCount: count,
+              icon: ['📱', '💻', '⌚', '🎧', '📷', '🖨️', '⌨️', '🖱️'][Math.floor(Math.random() * 8)],
+            }));
+
+          setCategories(topCategories);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!isLoading && !isAuthenticated) {
+      fetchData();
+    }
+  }, [isLoading, isAuthenticated]);
 
   if (isLoading) {
     return (
@@ -41,148 +102,173 @@ export default function LandingPage() {
 
   // Landing Page for unauthenticated users
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-blue-50 flex flex-col">
+    <div className="min-h-screen bg-black flex flex-col">
       {/* Navigation */}
       <Navbar isAuthenticated={false} />
 
-      {/* Hero Section */}
-      <section className="grow flex items-center">
-        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-                  Your Trusted <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-blue-600">Jain Sales Corporation</span>
-                </h2>
-                <p className="text-xl text-gray-600">
-                  Discover amazing products, manage your inventory efficiently, and grow your business with Jain Sales Corporation's powerful tools.
-                </p>
-              </div>
+      {/* Luxury Hero Section */}
+      <section className="relative py-32 overflow-hidden">
+        {/* Background with gradient and pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-90"></div>
+        <div className="absolute inset-0" style={{
+          backgroundImage: `linear-gradient(45deg, rgba(212,175,55,0.03) 0%, rgba(212,175,55,0) 100%)`
+        }}></div>
+        
+        {/* Luxury decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-yellow-500/10 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-yellow-500/5 to-transparent rounded-full blur-3xl"></div>
 
-              {/* Features List */}
-              <ul className="space-y-4">
-                <li className="flex items-center gap-3">
-                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
-                  <span className="text-gray-700">Browse thousands of products</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
-                  <span className="text-gray-700">24-hour booking and reservation system</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
-                  <span className="text-gray-700">Track your orders in real-time</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 rounded-full">✓</span>
-                  <span className="text-gray-700">Secure and reliable transactions</span>
-                </li>
-              </ul>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Luxury badge */}
+          <div className="mb-8 inline-block">
+            <span className="text-yellow-500 text-sm font-serif tracking-widest uppercase">✨ Premium Collection</span>
+          </div>
 
-              {/* CTA Buttons */}
-              <div className="flex gap-4 pt-4">
-                <Link href="/register" className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl">
-                  Get Started
-                </Link>
-                <Link href="/login" className="px-8 py-3 border-2 border-indigo-600 text-indigo-600 rounded-lg font-bold hover:bg-indigo-50 transition-colors">
-                  Sign In
-                </Link>
-              </div>
-            </div>
+          <h1 className="text-6xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+            Experience <span className="text-yellow-500">Luxury</span> Shopping
+          </h1>
+          <p className="text-2xl text-gray-300 mb-12 font-light max-w-2xl mx-auto">
+            Curated selection of premium products. Elevate your lifestyle with Jain Sales Corporation
+          </p>
 
-            {/* Right Illustration */}
-            <div className="hidden md:block">
-              <div className="relative w-full h-96 bg-linear-to-br from-indigo-200 to-blue-200 rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden">
-                <div className="text-center">
-                  <div className="text-8xl mb-4">📦</div>
-                  <p className="text-2xl font-bold text-indigo-900">Ready to Shop?</p>
-                </div>
-                <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-300 rounded-full opacity-30"></div>
-                <div className="absolute bottom-10 left-10 w-32 h-32 bg-blue-300 rounded-full opacity-30"></div>
-              </div>
-            </div>
+          <div className="flex gap-6 justify-center">
+            <button 
+              onClick={() => router.push('/login')} 
+              className="px-10 py-4 bg-yellow-500 text-black font-serif font-bold text-lg rounded-sm hover:bg-yellow-400 transition-all shadow-2xl hover:shadow-yellow-500/50 uppercase tracking-wider"
+            >
+              Explore Collection
+            </button>
+            <button 
+              onClick={() => router.push('/register')} 
+              className="px-10 py-4 border-2 border-yellow-500 text-yellow-500 font-serif font-bold text-lg rounded-sm hover:bg-yellow-500/10 transition-all uppercase tracking-wider"
+            >
+              Become a Member
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white py-20">
+      {/* Featured Products Section */}
+      <section className="py-24 bg-black border-t border-yellow-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Jain Sales Corporation?</h3>
-            <p className="text-xl text-gray-600">Everything you need for a seamless shopping experience</p>
+            <span className="text-yellow-500 text-sm font-serif tracking-widest uppercase">Curated Selection</span>
+            <h2 className="text-5xl font-serif font-bold text-white mt-4 mb-3">Signature Products</h2>
+            <p className="text-gray-400 text-lg">Handpicked premium selections</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="p-8 bg-linear-to-br from-indigo-50 to-blue-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-              <div className="text-5xl mb-4">🛍️</div>
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Wide Selection</h4>
-              <p className="text-gray-600">
-                Browse through our extensive catalog of quality products from trusted sellers.
-              </p>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-2 border-yellow-500/30 border-t-yellow-500"></div>
             </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {products.map((product) => (
+                <button
+                  key={product._id || product.id}
+                  onClick={() => router.push('/login')}
+                  className="group relative bg-gray-900 border border-yellow-500/20 overflow-hidden hover:border-yellow-500/60 transition-all duration-300"
+                >
+                  {/* Product Image */}
+                  <div className="relative w-full h-56 bg-gray-800 flex items-center justify-center overflow-hidden">
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    ) : (
+                      <div className="text-5xl opacity-30">✨</div>
+                    )}
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                  </div>
 
-            {/* Feature 2 */}
-            <div className="p-8 bg-linear-to-br from-green-50 to-emerald-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-              <div className="text-5xl mb-4">⏰</div>
-              <h4 className="text-xl font-bold text-gray-900 mb-3">24-Hour Lock System</h4>
-              <p className="text-gray-600">
-                Book your products with our innovative 24-hour reservation system for guaranteed availability.
-              </p>
-            </div>
+                  {/* Product Info */}
+                  <div className="p-6 bg-gradient-to-b from-gray-900 to-black">
+                    <p className="text-yellow-500 text-xs font-serif tracking-widest uppercase mb-2">{product.category}</p>
+                    <h3 className="font-serif font-bold text-white mb-3 text-lg group-hover:text-yellow-500 transition-colors">{product.name}</h3>
+                    
+                    {/* Price */}
+                    <div className="flex gap-3 items-baseline mb-4 border-t border-yellow-500/20 pt-3">
+                      <span className="text-2xl font-serif text-yellow-500 font-bold">₹{product.retailPrice}</span>
+                      {product.wholesalePrice && (
+                        <span className="text-sm text-gray-500 line-through">₹{product.wholesalePrice}</span>
+                      )}
+                    </div>
 
-            {/* Feature 3 */}
-            <div className="p-8 bg-linear-to-br from-purple-50 to-pink-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-              <div className="text-5xl mb-4">🔒</div>
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Secure & Safe</h4>
-              <p className="text-gray-600">
-                Your transactions are protected with industry-leading security standards and encryption.
-              </p>
+                    {/* Stock */}
+                    <div className="text-sm text-gray-400 mb-4">
+                      <span className={product.quantity > 0 ? 'text-green-400' : 'text-red-400'}>
+                        {product.quantity > 0 ? `${product.quantity} in stock` : 'Out of stock'}
+                      </span>
+                    </div>
+
+                    {/* CTA */}
+                    <span className="text-yellow-500 font-serif font-bold text-sm uppercase tracking-wider group-hover:text-white transition-colors">View Details →</span>
+                  </div>
+                </button>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-linear-to-r from-indigo-600 to-blue-600">
+      {/* Top Categories Section */}
+      <section className="py-24 bg-gradient-to-b from-gray-900 to-black border-t border-yellow-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center text-white">
-            <div>
-              <div className="text-5xl font-bold mb-2">10K+</div>
-              <p className="text-indigo-100">Products Available</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">50K+</div>
-              <p className="text-indigo-100">Happy Customers</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">100K+</div>
-              <p className="text-indigo-100">Orders Completed</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">24/7</div>
-              <p className="text-indigo-100">Customer Support</p>
-            </div>
+          <div className="text-center mb-16">
+            <span className="text-yellow-500 text-sm font-serif tracking-widest uppercase">Shop</span>
+            <h2 className="text-5xl font-serif font-bold text-white mt-4 mb-3">Premium Categories</h2>
+            <p className="text-gray-400 text-lg">Browse our exclusive collections</p>
           </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-2 border-yellow-500/30 border-t-yellow-500"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  onClick={() => router.push('/login')}
+                  className="group relative bg-gradient-to-br from-gray-900 to-gray-950 border border-yellow-500/20 p-8 hover:border-yellow-500/60 transition-all duration-300 overflow-hidden"
+                >
+                  {/* Hover effect background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  
+                  <div className="relative">
+                    <h3 className="text-2xl font-serif font-bold text-white mb-3 group-hover:text-yellow-500 transition-colors">{category.name}</h3>
+                    <p className="text-gray-400 mb-6 text-lg font-light">{category.productCount} <span className="text-yellow-500">items</span></p>
+                    <span className="text-yellow-500 font-serif font-bold text-sm uppercase tracking-wider group-hover:text-white transition-colors">Browse Collection →</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-4xl font-bold text-gray-900 mb-4">Ready to Start Shopping?</h3>
-          <p className="text-xl text-gray-600 mb-8">
-            Join thousands of satisfied customers and discover amazing products today.
+      <section className="relative py-32 overflow-hidden border-t border-yellow-500/20">
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black opacity-90"></div>
+        <div className="absolute top-0 left-1/2 w-96 h-96 bg-gradient-to-b from-yellow-500/10 to-transparent rounded-full blur-3xl transform -translate-x-1/2"></div>
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">Join the Elite</h2>
+          <p className="text-xl text-gray-300 mb-12 font-light">
+            Gain exclusive access to premium products and special member benefits
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="px-8 py-4 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl text-lg">
-              Create Your Account
-            </Link>
-            <Link href="/login" className="px-8 py-4 border-2 border-indigo-600 text-indigo-600 rounded-lg font-bold hover:bg-indigo-50 transition-colors text-lg">
-              Already Have an Account?
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <button 
+              onClick={() => router.push('/login')} 
+              className="px-10 py-4 bg-yellow-500 text-black font-serif font-bold text-lg rounded-sm hover:bg-yellow-400 transition-all shadow-2xl hover:shadow-yellow-500/50 uppercase tracking-wider"
+            >
+              Start Exploring
+            </button>
+            <button 
+              onClick={() => router.push('/register')} 
+              className="px-10 py-4 border-2 border-yellow-500 text-yellow-500 font-serif font-bold text-lg rounded-sm hover:bg-yellow-500/10 transition-all uppercase tracking-wider"
+            >
+              Create Account
+            </button>
           </div>
         </div>
       </section>
