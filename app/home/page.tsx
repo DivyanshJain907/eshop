@@ -56,8 +56,9 @@ export default function CustomerHome() {
         if (response.ok) {
           const data = await response.json();
           const products = Array.isArray(data) ? data : (data.products || []);
-          // Shuffle and get random products
-          const shuffled = products.sort(() => Math.random() - 0.5).slice(0, 8);
+          // Filter out 0 price products, shuffle and get random products
+          const validProducts = products.filter((p: Product) => (p.retailPrice || p.price || 0) > 0);
+          const shuffled = validProducts.sort(() => Math.random() - 0.5).slice(0, 8);
           setRandomProducts(shuffled);
         }
       } catch (error) {

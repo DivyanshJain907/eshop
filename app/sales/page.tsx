@@ -75,14 +75,16 @@ export default function SalesPage() {
       if (response.ok) {
         const data = await response.json();
         const newProducts = Array.isArray(data) ? data : (data.products || []);
-        const totalCount = data.pagination?.total || newProducts.length;
+        // Filter out 0 price products
+        const validProducts = newProducts.filter((p: Product) => (p.retailPrice || p.price || 0) > 0);
+        const totalCount = data.pagination?.total || validProducts.length;
 
         if (page === 1) {
-          setProducts(newProducts);
-          setAllProducts(newProducts);
+          setProducts(validProducts);
+          setAllProducts(validProducts);
         } else {
-          setProducts([...products, ...newProducts]);
-          setAllProducts([...allProducts, ...newProducts]);
+          setProducts([...products, ...validProducts]);
+          setAllProducts([...allProducts, ...validProducts]);
         }
         setTotalProducts(totalCount);
         setCurrentPage(page);

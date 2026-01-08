@@ -37,7 +37,8 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
 
   useEffect(() => {
     let filtered = products.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (product.retailPrice || product.price || 0) > 0  // Exclude 0 price products
     );
 
     // Sort products

@@ -53,7 +53,7 @@ export default function CategoryPage() {
 
   // Filter products by category and search
   useEffect(() => {
-    let filtered = products;
+    let filtered = products.filter(p => (p.retailPrice || p.price || 0) > 0); // Exclude 0 price products
 
     if (selectedCategory) {
       filtered = filtered.filter(

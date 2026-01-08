@@ -43,7 +43,9 @@ export default function LandingPage() {
           const data = await productsRes.json();
           // Handle both array and nested structure responses
           const productsList = Array.isArray(data) ? data : (data.products || []);
-          setProducts(productsList.slice(0, 4));
+          // Filter out 0 price products and get first 4
+          const validProducts = productsList.filter((p: Product) => (p.retailPrice || p.price || 0) > 0).slice(0, 4);
+          setProducts(validProducts);
         }
 
         // Fetch all products to count categories
