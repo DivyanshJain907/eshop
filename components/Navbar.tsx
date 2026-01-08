@@ -152,12 +152,21 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
                     💰 Discounts
                   </Link>
                 )}
-                <Link
-                  href="/bookings"
-                  className={getLinkStyles('/bookings')}
-                >
-                  Bookings
-                </Link>
+                {userRole === 'admin' || userRole === 'employee' ? (
+                  <Link
+                    href="/bookings"
+                    className={getLinkStyles('/bookings')}
+                  >
+                    Bookings
+                  </Link>
+                ) : (
+                  <Link
+                    href="/my-bookings"
+                    className={getLinkStyles('/my-bookings')}
+                  >
+                    My Bookings
+                  </Link>
+                )}
                 <Link
                   href="/orders"
                   className={getLinkStyles('/orders')}
@@ -318,14 +327,14 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
                   </button>
                 )}
                 <button
-                  onClick={() => handleNavClick('/bookings')}
+                  onClick={() => userRole === 'customer' ? handleNavClick('/my-bookings') : handleNavClick('/bookings')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold ${
-                    isActive('/bookings')
+                    isActive(userRole === 'customer' ? '/my-bookings' : '/bookings')
                       ? 'bg-indigo-600 text-white'
                       : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
                   }`}
                 >
-                  📅 Bookings
+                  📅 {userRole === 'customer' ? 'My Bookings' : 'Bookings'}
                 </button>
                 <button
                   onClick={() => handleNavClick('/orders')}
