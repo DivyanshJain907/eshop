@@ -136,6 +136,39 @@ export default function BookingConfirmationPage() {
       setDeliveryTime(deliveryDateTime);
       setOrderPlaced(true);
 
+      // Create booking record for customer
+      console.log('📅 Creating booking for customer...');
+      const bookingData = {
+        items: cartItems.map((item) => ({
+          productId: item._id || item.id,
+          productName: item.name,
+          quantity: item.cartQuantity,
+          price: item.price,
+        })),
+        totalAmount: total,
+      };
+
+      try {
+        const bookingResponse = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(bookingData),
+        });
+
+        const bookingResponseData = await bookingResponse.json();
+        console.log('📅 Booking response:', bookingResponseData);
+
+        if (!bookingResponse.ok) {
+          console.warn('⚠️ Booking creation failed, but sale was created:', bookingResponseData);
+        } else {
+          console.log('✅ Booking created successfully:', bookingResponseData.booking?.id);
+        }
+      } catch (bookingError) {
+        console.warn('⚠️ Error creating booking:', bookingError);
+        // Don't throw - the sale was already created successfully
+      }
+
       // Save order confirmation data
       localStorage.setItem('orderConfirmation', JSON.stringify({
         orderId: saleData._id,
