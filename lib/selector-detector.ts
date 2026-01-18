@@ -1,4 +1,7 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
+import type { Browser, Page, LaunchOptions } from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
+import fs from 'node:fs';
 
 export interface DetectedSelectors {
   productContainer: string;
@@ -8,6 +11,50 @@ export interface DetectedSelectors {
   productImage: string;
   productUrl?: string;
   confidence: number;
+}
+
+async function launchBrowser(): Promise<Browser> {
+  const isVercel = !!process.env.VERCEL;
+  let launchOptions: LaunchOptions = {
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+    ],
+    timeout: 120000,
+  };
+
+  if (isVercel) {
+    const executablePath = await chromium.executablePath();
+    launchOptions = {
+      ...launchOptions,
+      executablePath,
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+    };
+  } else {
+    const envExecutablePath = process.env.CHROME_EXECUTABLE_PATH || undefined;
+    if (envExecutablePath) {
+      launchOptions = { ...launchOptions, executablePath: envExecutablePath };
+    } else {
+      const candidates = [
+        'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+        'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+      ];
+      const found = candidates.find((p) => fs.existsSync(p));
+      if (!found) {
+        throw new Error('Chrome executable not found. Set CHROME_EXECUTABLE_PATH env var.');
+      }
+      launchOptions = { ...launchOptions, executablePath: found };
+    }
+  }
+
+  return await puppeteer.launch(launchOptions);
 }
 
 /**
@@ -20,16 +67,7 @@ export async function autoDetectSelectors(searchUrl: string): Promise<DetectedSe
   try {
     console.log(`🔍 Auto-detecting selectors for: ${searchUrl}`);
 
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu',
-      ],
-    });
+    browser = await launchBrowser();
 
     page = await browser.newPage();
     await page.setUserAgent(
