@@ -1,4 +1,7 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
+import type { Browser, Page, LaunchOptions } from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
+import fs from 'node:fs';
 import CompetitorConfig from './models/CompetitorConfig';
 import ComparisonCache from './models/ComparisonCache';
 
@@ -35,12 +38,9 @@ export interface CompetitorConfigType {
  * Launch a headless browser instance
  */
 async function launchBrowser(): Promise<Browser> {
-  const executablePath = puppeteer.executablePath();
-  console.log(`🔧 Using Chrome at: ${executablePath}`);
-
-  return await puppeteer.launch({
+  const isVercel = !!process.env.VERCEL;
+  let launchOptions: LaunchOptions = {
     headless: true,
-    executablePath: executablePath,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -52,9 +52,40 @@ async function launchBrowser(): Promise<Browser> {
       '--disable-features=VizDisplayCompositor',
       '--window-size=1920,1080',
     ],
-    ignoreDefaultArgs: ['--disable-extensions'],
     timeout: 120000,
-  });
+  };
+
+  if (isVercel) {
+    const executablePath = await chromium.executablePath();
+    console.log(`🔧 Using Chromium at: ${executablePath}`);
+    launchOptions = {
+      ...launchOptions,
+      executablePath,
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+    };
+  } else {
+    const envExecutablePath = process.env.CHROME_EXECUTABLE_PATH || undefined;
+    if (envExecutablePath) {
+      console.log(`🔧 Using Chrome at: ${envExecutablePath}`);
+      launchOptions = { ...launchOptions, executablePath: envExecutablePath };
+    } else {
+      const candidates = [
+        'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+        'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+      ];
+      const found = candidates.find((p) => fs.existsSync(p));
+      if (!found) {
+        throw new Error('Chrome executable not found. Set CHROME_EXECUTABLE_PATH env var.');
+      }
+      console.log(`🔧 Using Chrome at: ${found}`);
+      launchOptions = { ...launchOptions, executablePath: found };
+    }
+  }
+
+  return await puppeteer.launch(launchOptions);
 }
 
 /**
