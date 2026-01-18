@@ -202,13 +202,27 @@ export default function UserHeader() {
             >
               🎯 Discounts
             </Link>
+            <Link
+              href="/compare"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
+            >
+              🔍 Compare Products
+            </Link>
             {user.role === 'admin' && (
-              <Link
-                href="/users"
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
-              >
-                👥 Users
-              </Link>
+              <>
+                <Link
+                  href="/admin/competitors"
+                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
+                >
+                  ⚙️ Manage Competitors
+                </Link>
+                <Link
+                  href="/users"
+                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md text-sm font-medium transition"
+                >
+                  👥 Users
+                </Link>
+              </>
             )}
           </div>
         </nav>

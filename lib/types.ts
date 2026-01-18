@@ -68,3 +68,64 @@ export interface AuthResponse {
   user?: User;
   token?: string;
 }
+
+// Product Comparison Types
+export interface ComparisonProduct {
+  name: string;
+  price: number;
+  priceText: string;
+  image: string;
+  url: string;
+  competitor: string;
+}
+
+export interface CompetitorSelectors {
+  productContainer: string;
+  productName: string;
+  productBrand: string;
+  productPrice: string;
+  productImage: string;
+  productUrl: string;
+}
+
+export interface CompetitorConfig {
+  _id?: string;
+  name: string;
+  baseUrl: string;
+  searchUrl: string;
+  selectors: CompetitorSelectors;
+  maxResults: number;
+  timeout: number;
+  isActive: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ComparisonCache {
+  _id?: string;
+  searchQuery: string;
+  competitorName: string;
+  results: ComparisonProduct[];
+  expiresAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ComparisonSearchResponse {
+  success: boolean;
+  productName?: string;
+  results?: ComparisonProduct[];
+  totalResults?: number;
+  duration?: string;
+  message?: string;
+  error?: string;
+}
+
+export interface SelectorDetectionResponse {
+  success: boolean;
+  selectors?: CompetitorSelectors;
+  confidence?: number;
+  message?: string;
+  warning?: string;
+  error?: string;
+}

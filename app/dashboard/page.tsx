@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import UserHeader from '@/components/UserHeader';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CompetitorStats from '@/components/CompetitorStats';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -314,6 +315,9 @@ export default function DashboardPage() {
             </p>
             <p className="text-xs text-gray-500">Transactions completed</p>
           </div>
+
+          {/* Competitor Stats Card - Admin Only */}
+          {user?.role === 'admin' && <CompetitorStats />}
         </div>
 
         {/* Payment Status Grid */}
