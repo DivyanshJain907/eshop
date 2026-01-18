@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { autoDetectSelectors } from '@/lib/selector-detector';
 
+export const runtime = 'nodejs';
+export const maxDuration = 120;
+
 // POST /api/compare/detect-selectors - Auto-detect CSS selectors from a website
 export async function POST(request: NextRequest) {
   try {

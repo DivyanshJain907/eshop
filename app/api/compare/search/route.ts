@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { scrapeAllCompetitors } from '@/lib/scraper';
 
+export const runtime = 'nodejs';
+export const maxDuration = 120;
+
 // POST /api/compare/search - Search and compare products across competitors
 export async function POST(request: NextRequest) {
   try {

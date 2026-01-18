@@ -39,6 +39,11 @@ export interface CompetitorConfigType {
  */
 async function launchBrowser(): Promise<Browser> {
   const isVercel = !!process.env.VERCEL;
+  const browserWSEndpoint = process.env.BROWSERLESS_WS_ENDPOINT;
+  if (browserWSEndpoint) {
+    console.log('🔧 Using remote browser via BROWSERLESS_WS_ENDPOINT');
+    return await puppeteer.connect({ browserWSEndpoint });
+  }
   let launchOptions: LaunchOptions = {
     headless: true,
     args: [
