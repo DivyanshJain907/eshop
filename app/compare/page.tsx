@@ -25,6 +25,11 @@ export default function ComparePage() {
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
   const [sortBy, setSortBy] = useState<'price' | 'name'>('price');
   const [duration, setDuration] = useState('');
+  const [nameFilter, setNameFilter] = useState('');
+  const [brandFilter, setBrandFilter] = useState('');
+  const [competitorFilter, setCompetitorFilter] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -73,7 +78,24 @@ export default function ComparePage() {
   };
 
   // Sort results
-  const sortedResults = [...results].sort((a, b) => {
+  const filteredResults = results.filter((product) => {
+    const matchesName = nameFilter
+      ? product.name.toLowerCase().includes(nameFilter.toLowerCase())
+      : true;
+    const matchesBrand = brandFilter
+      ? (product.brandName || '').toLowerCase() === brandFilter.toLowerCase()
+      : true;
+    const matchesCompetitor = competitorFilter
+      ? product.competitor.toLowerCase() === competitorFilter.toLowerCase()
+      : true;
+    const min = minPrice ? Number(minPrice) : undefined;
+    const max = maxPrice ? Number(maxPrice) : undefined;
+    const matchesMin = min !== undefined && !Number.isNaN(min) ? product.price >= min : true;
+    const matchesMax = max !== undefined && !Number.isNaN(max) ? product.price <= max : true;
+    return matchesName && matchesBrand && matchesCompetitor && matchesMin && matchesMax;
+  });
+
+  const sortedResults = [...filteredResults].sort((a, b) => {
     if (sortBy === 'price') {
       return a.price - b.price;
     } else {
@@ -122,7 +144,7 @@ export default function ComparePage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="e.g., Glass Bowl, Dinner Set, Water Bottle"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder:text-gray-500"
                 disabled={isSearching}
               />
             </div>
@@ -175,7 +197,8 @@ export default function ComparePage() {
             <div className="bg-white rounded-xl shadow-md p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <span className="text-sm text-black">
-                  Found <strong>{results.length}</strong> products {duration && `in ${duration}`}
+                  Found <strong>{filteredResults.length}</strong> of{' '}
+                  <strong>{results.length}</strong> products {duration && `in ${duration}`}
                 </span>
               </div>
 
@@ -189,7 +212,7 @@ export default function ComparePage() {
                     id="sort"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'price' | 'name')}
-                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm text-black focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="price">Price (Low to High)</option>
                     <option value="name">Name (A-Z)</option>
@@ -219,6 +242,96 @@ export default function ComparePage() {
                     Table View
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="bg-white rounded-xl shadow-md p-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-black mb-1">Search Name</label>
+                  <input
+                    type="text"
+                    value={nameFilter}
+                    onChange={(e) => setNameFilter(e.target.value)}
+                    placeholder="Filter by name"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-black mb-1">Brand</label>
+                  <select
+                    value={brandFilter}
+                    onChange={(e) => setBrandFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-black"
+                  >
+                    <option value="">All Brands</option>
+                    {Array.from(new Set(results.map((p) => p.brandName).filter(Boolean)))
+                      .sort()
+                      .map((brand) => (
+                        <option key={brand} value={brand}>
+                          {brand}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-black mb-1">Competitor</label>
+                  <select
+                    value={competitorFilter}
+                    onChange={(e) => setCompetitorFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-black"
+                  >
+                    <option value="">All Competitors</option>
+                    {Array.from(new Set(results.map((p) => p.competitor)))
+                      .sort()
+                      .map((competitor) => (
+                        <option key={competitor} value={competitor}>
+                          {competitor}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-black mb-1">Min Price</label>
+                  <input
+                    type="number"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                    placeholder="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-black mb-1">Max Price</label>
+                  <input
+                    type="number"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                    placeholder="10000"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-500"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNameFilter('');
+                    setBrandFilter('');
+                    setCompetitorFilter('');
+                    setMinPrice('');
+                    setMaxPrice('');
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Clear all filters
+                </button>
               </div>
             </div>
 

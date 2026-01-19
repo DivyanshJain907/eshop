@@ -256,7 +256,7 @@ export default function CompetitorsAdminPage() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder:text-gray-500"
                     placeholder="e.g., Borosil"
                     required
                     disabled={!!editingId}
@@ -274,7 +274,7 @@ export default function CompetitorsAdminPage() {
                     type="url"
                     value={formData.baseUrl}
                     onChange={(e) => setFormData({ ...formData, baseUrl: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder:text-gray-500"
                     placeholder="https://www.example.com"
                     required
                   />
@@ -290,7 +290,7 @@ export default function CompetitorsAdminPage() {
                     type="text"
                     value={formData.searchUrl}
                     onChange={(e) => setFormData({ ...formData, searchUrl: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder:text-gray-500"
                     placeholder="https://www.example.com/search?q={query}"
                     required
                   />
