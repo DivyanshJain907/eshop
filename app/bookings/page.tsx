@@ -25,10 +25,10 @@ export default function BookingsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="text-amber-100">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-black">Loading...</p>
         </div>
       </div>
     );
@@ -39,39 +39,48 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50">
       <UserHeader />
-      
-      {/* Luxury Header Section */}
-      <div className="relative py-16 overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-3xl"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center">
-            <div className="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-amber-500/20 to-amber-600/20 rounded-full border border-amber-500/50 backdrop-blur-md">
-              <span className="text-amber-300 text-sm font-semibold">✨ Premium Booking Management</span>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-black mb-4 text-transparent bg-gradient-to-r from-amber-200 via-white to-amber-100 bg-clip-text">
+
+      {/* Hero */}
+      <div className="relative overflow-hidden">
+        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
+        <div className="absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-purple-200/40 blur-3xl" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative">
+          <div className="flex flex-col gap-4">
+            <span className="inline-flex items-center gap-2 rounded-full bg-blue-600/10 text-blue-700 px-4 py-2 text-sm font-semibold w-fit">
+              📅 Booking Center
+            </span>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
               Booking Management
             </h1>
-            <p className="text-xl text-amber-100/80 max-w-2xl mx-auto">
-              Manage your luxury bookings with elegance and precision
+            <p className="text-black max-w-2xl">
+              Review, approve, and track bookings with a clean overview and quick actions.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20">
-        {/* Booking Management Section */}
-        <div className="relative">
-          {/* Glass effect background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-blue-500/5 rounded-3xl blur-2xl"></div>
-          
-          <div className="relative bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-amber-500/20 p-8 md:p-12">
-            <BookingManagement />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        {/* Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <p className="text-xs text-gray-500">Overview</p>
+            <p className="text-sm font-semibold text-gray-900 mt-1">All bookings in one place</p>
           </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <p className="text-xs text-gray-500">Status</p>
+            <p className="text-sm font-semibold text-gray-900 mt-1">Track pending and confirmed</p>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <p className="text-xs text-gray-500">Actions</p>
+            <p className="text-sm font-semibold text-gray-900 mt-1">Approve or manage quickly</p>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8">
+          <BookingManagement />
         </div>
       </div>
     </div>
