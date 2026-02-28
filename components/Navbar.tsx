@@ -102,83 +102,83 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
     <header
       className={`sticky top-0 z-50 transition-all duration-300 bg-white border-b border-gray-200 ${isScrolled ? 'shadow-md' : 'shadow-sm'}`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="text-2xl transition-transform group-hover:scale-110">🛒</div>
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="text-xl md:text-2xl transition-transform group-hover:scale-110">🛒</div>
             <div className="hidden sm:block">
               <span className="text-lg font-bold text-gray-900">Jain Sales</span>
               <p className="text-xs text-gray-500">Corporation</p>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Navigation Links */}
+          <nav className="flex items-center gap-1 md:gap-2 overflow-x-auto scrollbar-hide mx-2 md:mx-6 flex-1 min-w-0 justify-start md:justify-center">
             {!isAuthenticated ? (
-              <>
+              <div className="flex items-center gap-2 ml-auto">
                 <Link
                   href="/login"
-                  className="px-5 py-2 text-gray-600 font-medium hover:text-blue-600 transition-colors rounded-lg hover:bg-gray-50 text-sm"
+                  className="shrink-0 px-4 md:px-5 py-2 text-gray-600 font-medium hover:text-blue-600 transition-colors rounded-lg hover:bg-gray-50 text-xs md:text-sm"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-sm text-sm"
+                  className="shrink-0 px-4 md:px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-sm text-xs md:text-sm"
                 >
                   Register
                 </Link>
-              </>
+              </div>
             ) : (
               <>
                 <Link
                   href="/products-browse"
-                  className={getLinkStyles('/products-browse')}
+                  className={`shrink-0 text-xs md:text-sm whitespace-nowrap ${getLinkStyles('/products-browse')}`}
                 >
                   Products
                 </Link>
                 <Link
                   href="/category"
-                  className={getLinkStyles('/category')}
+                  className={`shrink-0 text-xs md:text-sm whitespace-nowrap ${getLinkStyles('/category')}`}
                 >
                   Categories
                 </Link>
                 {(userRole === 'admin' || userRole === 'employee') && (
                   <Link
                     href="/discounts"
-                    className={getLinkStyles('/discounts')}
+                    className={`shrink-0 text-xs md:text-sm whitespace-nowrap ${getLinkStyles('/discounts')}`}
                   >
-                    💰 Discounts
+                    Discounts
                   </Link>
                 )}
                 {userRole === 'admin' || userRole === 'employee' ? (
                   <Link
                     href="/bookings"
-                    className={getLinkStyles('/bookings')}
+                    className={`shrink-0 text-xs md:text-sm whitespace-nowrap ${getLinkStyles('/bookings')}`}
                   >
                     Bookings
                   </Link>
                 ) : (
                   <Link
                     href="/my-bookings"
-                    className={getLinkStyles('/my-bookings')}
+                    className={`shrink-0 text-xs md:text-sm whitespace-nowrap ${getLinkStyles('/my-bookings')}`}
                   >
                     My Bookings
                   </Link>
                 )}
                 <Link
                   href="/orders"
-                  className={getLinkStyles('/orders')}
+                  className={`shrink-0 text-xs md:text-sm whitespace-nowrap ${getLinkStyles('/orders')}`}
                 >
-                  📦 Orders
+                  Orders
                 </Link>
 
                 {/* Cart Icon for Customers */}
                 {userRole === 'customer' && (
                   <Link
                     href="/products-browse?view=cart"
-                    className={`relative px-4 py-2 font-semibold transition-all rounded-lg duration-200 flex items-center gap-2 ${
+                    className={`shrink-0 relative px-3 md:px-4 py-2 font-semibold transition-all rounded-lg duration-200 flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap ${
                       isActive('/products-browse')
                         ? 'bg-indigo-600 text-white shadow-md'
                         : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
@@ -192,195 +192,43 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
                     )}
                   </Link>
                 )}
-
-                {/* User Profile Dropdown */}
-                <div className="ml-4 relative" ref={userMenuRef}>
-                  <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center gap-2 pl-4 border-l border-gray-200 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg"
-                  >
-                    <span className="w-9 h-9 rounded-full bg-linear-to-br from-indigo-200 to-cyan-200 flex items-center justify-center text-lg font-bold text-indigo-700 border-2 border-indigo-300 shadow">
-                      {avatar}
-                    </span>
-                    <span className="text-base font-semibold text-gray-900">{userName}</span>
-                    <span className={`text-xl transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}>▼</span>
-                  </button>
-
-                  {/* User Dropdown Menu */}
-                  {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900">{userName}</p>
-                        <p className="text-xs text-gray-500 capitalize">{userRole}</p>
-                      </div>
-                      <button
-                        onClick={handleLogout}
-                        disabled={isLoggingOut}
-                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors text-sm font-semibold disabled:opacity-50"
-                      >
-                        {isLoggingOut ? '⏳ Logging out...' : '🚪 Logout'}
-                      </button>
-                    </div>
-                  )}
-                </div>
               </>
             )}
           </nav>
 
-          {/* Mobile: Show Sign In / Register directly for unauthenticated users */}
-          {!isAuthenticated && (
-            <div className="flex md:hidden items-center gap-2">
-              <Link
-                href="/login"
-                className="px-4 py-1.5 text-gray-600 font-medium hover:text-blue-600 transition-colors text-sm"
+          {/* User Profile — right side, outside scrolling nav */}
+          {isAuthenticated && (
+            <div className="relative shrink-0" ref={userMenuRef}>
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-1.5 md:gap-2 pl-3 md:pl-4 border-l border-gray-200 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg"
               >
-                Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="px-4 py-1.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all text-sm"
-              >
-                Register
-              </Link>
+                <span className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-linear-to-br from-indigo-200 to-cyan-200 flex items-center justify-center text-sm md:text-base font-bold text-indigo-700 border-2 border-indigo-300 shadow">
+                  {avatar}
+                </span>
+                <span className="hidden md:inline text-sm font-semibold text-gray-900 max-w-[120px] truncate">{userName}</span>
+                <span className={`text-xs md:text-sm text-gray-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}>▾</span>
+              </button>
+
+              {/* User Dropdown Menu */}
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-semibold text-gray-900">{userName}</p>
+                    <p className="text-xs text-gray-500 capitalize">{userRole}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors text-sm font-semibold disabled:opacity-50"
+                  >
+                    {isLoggingOut ? '⏳ Logging out...' : '🚪 Logout'}
+                  </button>
+                </div>
+              )}
             </div>
           )}
-
-          {/* Mobile Menu Button (only for authenticated users) */}
-          {isAuthenticated && (
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-label="Toggle menu"
-            >
-              <div className="w-6 h-5 flex flex-col justify-between">
-                <span
-                  className={`h-0.5 bg-gray-700 transition-all ${
-                    isOpen ? 'rotate-45 translate-y-2' : ''
-                  }`}
-                />
-                <span
-                  className={`h-0.5 bg-gray-700 transition-all ${
-                    isOpen ? 'opacity-0' : ''
-                  }`}
-                />
-                <span
-                  className={`h-0.5 bg-gray-700 transition-all ${
-                    isOpen ? '-rotate-45 -translate-y-2' : ''
-                  }`}
-                />
-              </div>
-            </button>
-          )}
         </div>
-
-        {/* Mobile Menu (authenticated users only) */}
-        {isOpen && isAuthenticated && (
-          <nav className="md:hidden pb-4 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200 bg-white rounded-xl shadow-lg mt-2 border border-gray-200">
-                {userName && (
-                  <div className="px-4 py-3 text-base font-semibold bg-gray-50 rounded-lg flex items-center gap-2 border-b border-gray-200">
-                    <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-700 border border-blue-200">{avatar}</span>
-                    <div className="flex-1">
-                      <div className="text-gray-900">{userName}</div>
-                      <div className="text-xs text-gray-500 capitalize">{userRole}</div>
-                    </div>
-                  </div>
-                )}
-                <button
-                  onClick={() => handleNavClick('/products-browse')}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 font-semibold text-sm ${
-                    isActive('/products-browse')
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                  }`}
-                >
-                  📦 Products
-                </button>
-                {(userRole === 'admin' || userRole === 'employee') && (
-                  <button
-                    onClick={() => handleNavClick('/products')}
-                    className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 font-semibold text-sm ${
-                      isActive('/products')
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                    }`}
-                  >
-                    ⚙️ Manage Products
-                  </button>
-                )}
-                <button
-                  onClick={() => handleNavClick('/category')}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 font-semibold text-sm ${
-                    isActive('/category')
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                  }`}
-                >
-                  🏷️ Categories
-                </button>
-                {(userRole === 'admin' || userRole === 'employee') && (
-                  <button
-                    onClick={() => handleNavClick('/discounts')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold ${
-                      isActive('/discounts')
-                        ? 'bg-indigo-600 text-white'
-                        : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
-                    }`}
-                  >
-                    💰 Discounts
-                  </button>
-                )}
-                <button
-                  onClick={() => userRole === 'customer' ? handleNavClick('/my-bookings') : handleNavClick('/bookings')}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold ${
-                    isActive(userRole === 'customer' ? '/my-bookings' : '/bookings')
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
-                  }`}
-                >
-                  📅 {userRole === 'customer' ? 'My Bookings' : 'Bookings'}
-                </button>
-                <button
-                  onClick={() => handleNavClick('/orders')}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold ${
-                    isActive('/orders')
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
-                  }`}
-                >
-                  📦 Orders
-                </button>
-
-                {/* Cart Button for Customers (Mobile) */}
-                {userRole === 'customer' && (
-                  <button
-                    onClick={() => handleNavClick('/products-browse?view=cart')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors duration-200 font-semibold relative ${
-                      isActive('/products-browse')
-                        ? 'bg-indigo-600 text-white'
-                        : 'text-gray-700 hover:text-indigo-700 hover:bg-indigo-50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span>🛒 Cart</span>
-                      {cartCount > 0 && (
-                        <span className="bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center ml-2">
-                          {cartCount > 9 ? '9+' : cartCount}
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                )}
-
-                {/* Mobile Logout Button */}
-                <button
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm font-semibold border-t border-gray-200 mt-2 disabled:opacity-50"
-                >
-                  {isLoggingOut ? '⏳ Logging out...' : '🚪 Logout'}
-                </button>
-          </nav>
-        )}
       </div>
     </header>
   );

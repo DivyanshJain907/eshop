@@ -85,44 +85,59 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Browse Products</h2>
-
-      {/* Search and Filter Bar */}
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      {/* Search and Sort Bar — single row on all screens */}
+      <div className="mb-4 flex items-center gap-2">
         {/* Search Input */}
-        <div className="relative">
+        <div className="relative flex-1 min-w-0">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-9 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
           />
-          <span className="absolute right-3 top-2.5 text-gray-400">🔍</span>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Sort Dropdown */}
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as 'name' | 'price-low' | 'price-high')}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="name">Sort by Name</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-        </select>
-      </div>
+        <div className="relative shrink-0">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'name' | 'price-low' | 'price-high')}
+            className="appearance-none pl-3 pr-7 py-2 bg-gray-50 border border-gray-200 rounded-full text-xs sm:text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all cursor-pointer"
+          >
+            <option value="name">A–Z</option>
+            <option value="price-low">Price ↑</option>
+            <option value="price-high">Price ↓</option>
+          </select>
+          <svg className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
 
-      {/* Product Count */}
-      <div className="mb-4 text-sm text-gray-600">
-        Showing {displayedProducts.length} of {filteredProducts.length} products
+        {/* Product count — desktop only */}
+        <span className="text-xs text-gray-400 whitespace-nowrap hidden sm:inline shrink-0">
+          {filteredProducts.length} items
+        </span>
       </div>
 
       {/* Products Grid */}
       {displayedProducts.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 mb-8">
             {displayedProducts.map((product) => (
             <div
               key={product._id || product.id}
@@ -130,7 +145,7 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
               onClick={() => setSelectedProduct(product)}
             >
               {/* Product Image */}
-              <div className="relative w-full h-36 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-32 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0]}
@@ -154,25 +169,25 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
               </div>
 
               {/* Product Info */}
-              <div className="p-3 sm:p-4">
-                <h3 className="font-semibold text-gray-900 text-xs sm:text-sm leading-tight line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">{product.name}</h3>
+              <div className="p-2 sm:p-4">
+                <h3 className="font-semibold text-gray-900 text-[11px] sm:text-sm leading-tight line-clamp-2 mb-1.5 sm:mb-2 group-hover:text-blue-600 transition-colors">{product.name}</h3>
 
                 {/* Price */}
-                <div className="mb-2">
-                  {product.price > 0 && (
+                <div className="mb-1.5 sm:mb-2">
+                  {product.price > 0 && product.price > (product.retailPrice || product.price) && (
                     <div className="text-[10px] sm:text-xs text-gray-400 line-through">₹{Number(product.price).toFixed(0)}</div>
                   )}
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-base sm:text-lg font-bold text-gray-900">₹{Number(product.retailPrice || product.price).toFixed(0)}</span>
+                  <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+                    <span className="text-sm sm:text-lg font-bold text-gray-900">₹{Number(product.retailPrice || product.price).toFixed(0)}</span>
                     {product.price > 0 && product.price > (product.retailPrice || product.price) && (
-                      <span className="text-[10px] sm:text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
-                        {Math.round(((product.price - (product.retailPrice || product.price)) / product.price) * 100)}% off
+                      <span className="text-[9px] sm:text-xs font-semibold text-green-600 bg-green-50 px-1 sm:px-1.5 py-0.5 rounded">
+                        {Math.round(((product.price - (product.retailPrice || product.price)) / product.price) * 100)}%
                       </span>
                     )}
                   </div>
-                  {/* Wholesale price hint */}
+                  {/* Wholesale price hint — desktop only */}
                   {product.wholesalePrice && product.wholesalePrice > 0 && product.wholesalePrice < product.price && (
-                    <div className="mt-1 text-[10px] sm:text-xs text-blue-600 font-medium">
+                    <div className="mt-0.5 text-[10px] sm:text-xs text-blue-600 font-medium hidden sm:block">
                       Wholesale: ₹{Number(product.wholesalePrice).toFixed(0)} <span className="text-green-600">({Math.round(((product.price - product.wholesalePrice) / product.price) * 100)}% off)</span>
                     </div>
                   )}
@@ -196,7 +211,7 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
                     handleAddToCart(product);
                   }}
                   disabled={product.quantity === 0}
-                  className={`w-full py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                  className={`w-full py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[11px] sm:text-sm font-semibold transition-all duration-200 ${
                     addedProduct === (product._id || product.id)
                       ? 'bg-green-500 text-white scale-[1.02]'
                       : product.quantity > 0
@@ -220,9 +235,10 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
             <div className="flex justify-center mt-8 pb-4">
               <button
                 onClick={() => setCurrentPage(currentPage + 1)}
-                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-lg transition-all hover:scale-105 transform flex items-center gap-2"
+                className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-full shadow transition-all hover:shadow-md active:scale-95 flex items-center gap-2"
               >
-                📥 Load More Products ({displayedProducts.length}/{filteredProducts.length})
+                Load More
+                <span className="text-xs text-gray-400">({displayedProducts.length}/{filteredProducts.length})</span>
               </button>
             </div>
           )}

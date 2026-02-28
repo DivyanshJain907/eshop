@@ -160,7 +160,7 @@ export default function ProductBrowserWrapper() {
       />
 
       {/* View Navigation */}
-      <main className="grow w-full px-4 sm:px-6 lg:px-8 py-6">
+      <main className="grow w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
 
         {/* View Content */}
         <div className="bg-white min-h-96">
@@ -194,7 +194,6 @@ export default function ProductBrowserWrapper() {
         </button>
       )}
 
-      {activeView !== 'cart' && <Footer />}
     </div>
   );
 }
