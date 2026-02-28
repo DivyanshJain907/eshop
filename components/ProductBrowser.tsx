@@ -253,148 +253,163 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
 
       {/* Product Details Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            {/* Close Button */}
-            <div className="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">{selectedProduct.name}</h2>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={() => setSelectedProduct(null)}>
+          <div
+            className="bg-white w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header — product image with overlay info */}
+            <div className="relative shrink-0">
+              {/* Main Image */}
+              <div className="w-full h-52 sm:h-64 bg-gray-100">
+                {selectedProduct.images && selectedProduct.images.length > 0 ? (
+                  <img
+                    src={selectedProduct.images[0]}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => setSelectedImageIndex(0)}
+                  />
+                ) : selectedProduct.image ? (
+                  <img
+                    src={selectedProduct.image}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => setSelectedImageIndex(0)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-5xl opacity-30">📦</div>
+                )}
+              </div>
+
+              {/* Close button */}
               <button
                 onClick={() => setSelectedProduct(null)}
-                className="text-2xl text-gray-500 hover:text-gray-700 font-bold"
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 text-white flex items-center justify-center text-sm hover:bg-black/60 transition-colors backdrop-blur-sm"
               >
                 ✕
               </button>
-            </div>
 
-            {/* Modal Content */}
-            <div className="p-6">
-              {/* Images Gallery */}
-              {selectedProduct.images && selectedProduct.images.length > 0 ? (
-                <div className="mb-6">
-                  <p className="text-sm font-semibold text-gray-600 mb-3 uppercase">Product Images</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {selectedProduct.images.map((image, index) => (
-                      <div 
-                        key={index} 
-                        className="bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
-                        onClick={() => setSelectedImageIndex(index)}
-                      >
-                        <img
-                          src={image}
-                          alt={`${selectedProduct.name} - Image ${index + 1}`}
-                          className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : selectedProduct.image ? (
-                <div className="mb-6">
-                  <p className="text-sm font-semibold text-gray-600 mb-3 uppercase">Product Image</p>
-                  <div 
-                    className="bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
-                    onClick={() => setSelectedImageIndex(0)}
-                  >
+              {/* Image thumbnails (if multiple) */}
+              {selectedProduct.images && selectedProduct.images.length > 1 && (
+                <div className="absolute bottom-3 left-3 right-3 flex gap-1.5 overflow-x-auto scrollbar-hide">
+                  {selectedProduct.images.map((image, index) => (
                     <img
-                      src={selectedProduct.image}
-                      alt={selectedProduct.name}
-                      className="w-full h-80 object-cover hover:scale-105 transition-transform duration-300"
+                      key={index}
+                      src={image}
+                      alt={`${selectedProduct.name} ${index + 1}`}
+                      className="w-12 h-12 rounded-lg object-cover border-2 border-white/80 cursor-pointer shrink-0 hover:border-white transition-colors shadow-sm"
+                      onClick={() => setSelectedImageIndex(index)}
                     />
-                  </div>
-                </div>
-              ) : (
-                <div className="mb-6 bg-gray-200 rounded-lg p-16 flex items-center justify-center text-6xl">
-                  📦
+                  ))}
                 </div>
               )}
 
-              {/* Product Details */}
-              <div className="space-y-4 mb-6">
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 uppercase font-semibold mb-1">Category</p>
-                  <p className="text-lg text-gray-700">{selectedProduct.category}</p>
+              {/* Out of stock badge */}
+              {selectedProduct.quantity === 0 && (
+                <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Out of Stock
                 </div>
+              )}
+            </div>
 
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-4">
+              {/* Name + Category */}
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 leading-snug">{selectedProduct.name}</h2>
+              <div className="flex items-center gap-2 mt-1 mb-3">
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{selectedProduct.category}</span>
                 {selectedProduct.modelName && (
-                  <div className="border-t pt-4">
-                    <p className="text-sm text-gray-500 uppercase font-semibold mb-1">Model</p>
-                    <p className="text-lg text-gray-700 font-semibold">{selectedProduct.modelName}</p>
-                  </div>
+                  <span className="text-xs text-gray-500">{selectedProduct.modelName}</span>
                 )}
+                {selectedProduct.quantity > 0 ? (
+                  <span className="text-xs text-green-600 font-medium">In Stock</span>
+                ) : (
+                  <span className="text-xs text-red-500 font-medium">Out of Stock</span>
+                )}
+              </div>
 
-                {selectedProduct.description && selectedProduct.description.trim() ? (
-                  <div className="border-t pt-4">
-                    <p className="text-sm text-gray-500 uppercase font-semibold mb-2">Description</p>
-                    <p className="text-gray-700 leading-relaxed">{selectedProduct.description}</p>
-                  </div>
-                ) : null}
-
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 uppercase font-semibold mb-1">Base Price</p>
-                  <p className="text-3xl font-bold text-indigo-600">₹{selectedProduct.price.toFixed(2)}</p>
-                </div>
-
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 uppercase font-semibold mb-1">Stock Status</p>
-                  <p className={`text-lg font-bold ${selectedProduct.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {selectedProduct.quantity > 0 ? `✓ In Stock (${selectedProduct.quantity} available)` : '✕ Out of Stock'}
-                  </p>
-                </div>
-
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 uppercase font-semibold mb-3">Discount Tiers</p>
-                  <div className="space-y-2">
-                    <div className="bg-blue-50 p-3 rounded border border-blue-200">
-                      <p className="text-blue-900 font-semibold">🛍️ Retail: {selectedProduct.retailDiscount || 0}%</p>
-                      {selectedProduct.minRetailQuantity && <p className="text-sm text-blue-700">Minimum: {selectedProduct.minRetailQuantity} units</p>}
-                      <p className="text-sm text-blue-700 font-bold">Price: ₹{(selectedProduct.price * (1 - (selectedProduct.retailDiscount || 0) / 100)).toFixed(2)}</p>
-                    </div>
-                    <div className="bg-green-50 p-3 rounded border border-green-200">
-                      <p className="text-green-900 font-semibold">🏪 Wholesale: {selectedProduct.discount || 0}%</p>
-                      {selectedProduct.minWholesaleQuantity && <p className="text-sm text-green-700">Minimum: {selectedProduct.minWholesaleQuantity} units</p>}
-                      <p className="text-sm text-green-700 font-bold">Price: ₹{(selectedProduct.price * (1 - (selectedProduct.discount || 0) / 100)).toFixed(2)}</p>
-                    </div>
-                    <div className="bg-amber-50 p-3 rounded border border-amber-200">
-                      <p className="text-amber-900 font-semibold">⭐ Super Wholesale: {selectedProduct.superDiscount || 0}%</p>
-                      {selectedProduct.minSuperWholesaleQuantity && <p className="text-sm text-amber-700">Minimum: {selectedProduct.minSuperWholesaleQuantity} units</p>}
-                      <p className="text-sm text-amber-700 font-bold">Price: ₹{(selectedProduct.price * (1 - (selectedProduct.superDiscount || 0) / 100)).toFixed(2)}</p>
-                    </div>
-                  </div>
+              {/* Price Section */}
+              <div className="bg-gray-50 rounded-xl p-3 mb-3">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-gray-900">
+                    ₹{Number(selectedProduct.retailPrice || selectedProduct.price).toFixed(0)}
+                  </span>
+                  {selectedProduct.price > (selectedProduct.retailPrice || selectedProduct.price) && (
+                    <>
+                      <span className="text-sm text-gray-400 line-through">₹{Number(selectedProduct.price).toFixed(0)}</span>
+                      <span className="text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                        {Math.round(((selectedProduct.price - (selectedProduct.retailPrice || selectedProduct.price)) / selectedProduct.price) * 100)}% off
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
-              {/* Close and Add to Cart Buttons */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    onAddToCart?.(selectedProduct);
-                    setSelectedProduct(null);
-                  }}
-                  disabled={selectedProduct.quantity <= 0}
-                  className={`flex-1 py-3 rounded-lg font-bold transition-colors ${
-                    selectedProduct.quantity > 0
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                      : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                  }`}
-                >
-                  🛒 Add to Cart
-                </button>
-                <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="flex-1 py-3 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition-colors"
-                >
-                  ← Back
-                </button>
+              {/* Description */}
+              {selectedProduct.description && selectedProduct.description.trim() && (
+                <p className="text-sm text-gray-600 leading-relaxed mb-3">{selectedProduct.description}</p>
+              )}
+
+              {/* Pricing Tiers — compact */}
+              <div className="mb-3">
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Pricing Tiers</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-blue-50 rounded-lg p-2 text-center">
+                    <p className="text-[10px] text-blue-500 font-medium">Retail</p>
+                    <p className="text-sm font-bold text-blue-700">₹{Number(selectedProduct.retailPrice || (selectedProduct.price * (1 - (selectedProduct.retailDiscount || 0) / 100))).toFixed(0)}</p>
+                    {selectedProduct.minRetailQuantity && (
+                      <p className="text-[10px] text-blue-400">{selectedProduct.minRetailQuantity}+ units</p>
+                    )}
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-2 text-center">
+                    <p className="text-[10px] text-green-500 font-medium">Wholesale</p>
+                    <p className="text-sm font-bold text-green-700">₹{Number(selectedProduct.wholesalePrice || (selectedProduct.price * (1 - (selectedProduct.discount || 0) / 100))).toFixed(0)}</p>
+                    {selectedProduct.minWholesaleQuantity && (
+                      <p className="text-[10px] text-green-400">{selectedProduct.minWholesaleQuantity}+ units</p>
+                    )}
+                  </div>
+                  <div className="bg-amber-50 rounded-lg p-2 text-center">
+                    <p className="text-[10px] text-amber-500 font-medium">Super W.</p>
+                    <p className="text-sm font-bold text-amber-700">₹{Number(selectedProduct.superWholesalePrice || (selectedProduct.price * (1 - (selectedProduct.superDiscount || 0) / 100))).toFixed(0)}</p>
+                    {selectedProduct.minSuperWholesaleQuantity && (
+                      <p className="text-[10px] text-amber-400">{selectedProduct.minSuperWholesaleQuantity}+ units</p>
+                    )}
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* Bottom Action Bar — sticky */}
+            <div className="shrink-0 px-4 py-3 sm:px-5 border-t border-gray-100 bg-white flex gap-2">
+              <button
+                onClick={() => {
+                  onAddToCart?.(selectedProduct);
+                  setSelectedProduct(null);
+                }}
+                disabled={selectedProduct.quantity <= 0}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  selectedProduct.quantity > 0
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                {selectedProduct.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+              </button>
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="px-4 py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
             </div>
 
             {/* Fullscreen Image Popup */}
             {selectedImageIndex !== null && (
-              <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-[60] p-4">
+              <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-60 p-2 sm:p-4">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <button
                     onClick={() => setSelectedImageIndex(null)}
-                    className="absolute top-4 right-4 text-white text-4xl font-bold hover:text-gray-300 z-[61]"
+                    className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/20 text-white flex items-center justify-center text-lg hover:bg-white/30 transition-colors z-61 backdrop-blur-sm"
                   >
                     ✕
                   </button>
@@ -403,7 +418,7 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
                   <img
                     src={selectedProduct.images?.[selectedImageIndex] || selectedProduct.image}
                     alt={`${selectedProduct.name} - Full size`}
-                    className="max-w-4xl max-h-[90vh] object-contain"
+                    className="max-w-full max-h-[85vh] object-contain"
                   />
 
                   {/* Navigation Arrows */}
@@ -414,7 +429,7 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
                           e.stopPropagation();
                           setSelectedImageIndex((prev) => (prev === 0 ? selectedProduct.images!.length - 1 : prev! - 1));
                         }}
-                        className="absolute left-4 bg-white/20 hover:bg-white/40 text-white text-3xl p-3 rounded-full transition-colors"
+                        className="absolute left-2 sm:left-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center text-xl transition-colors backdrop-blur-sm"
                       >
                         ❮
                       </button>
@@ -423,13 +438,13 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
                           e.stopPropagation();
                           setSelectedImageIndex((prev) => (prev === selectedProduct.images!.length - 1 ? 0 : prev! + 1));
                         }}
-                        className="absolute right-4 bg-white/20 hover:bg-white/40 text-white text-3xl p-3 rounded-full transition-colors"
+                        className="absolute right-2 sm:right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center text-xl transition-colors backdrop-blur-sm"
                       >
                         ❯
                       </button>
 
                       {/* Image Counter */}
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
                         {selectedImageIndex! + 1} / {selectedProduct.images.length}
                       </div>
                     </>
