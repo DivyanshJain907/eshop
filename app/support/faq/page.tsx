@@ -93,14 +93,14 @@ export default function FAQPage() {
   const filteredFAQs = selectedCategory === 'all' ? faqData : faqData.filter((item) => item.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
-          <p className="text-xl text-gray-600">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
+          <p className="text-base sm:text-xl text-gray-600">
             Find answers to common questions about our 24-hour booking system, delivery, and orders.
           </p>
         </div>
@@ -170,7 +170,7 @@ export default function FAQPage() {
                 onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                 className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
               >
-                <h3 className="text-left text-lg font-semibold text-gray-900">
+                <h3 className="text-left text-base sm:text-lg font-semibold text-gray-900">
                   {item.question}
                 </h3>
                 <span
@@ -194,8 +194,8 @@ export default function FAQPage() {
         </div>
 
         {/* Still Need Help */}
-        <div className="mt-12 p-8 bg-indigo-50 rounded-lg border-2 border-indigo-200">
-          <h3 className="text-2xl font-bold text-indigo-900 mb-2">Still have questions?</h3>
+        <div className="mt-8 sm:mt-12 p-4 sm:p-8 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+          <h3 className="text-xl sm:text-2xl font-bold text-indigo-900 mb-2">Still have questions?</h3>
           <p className="text-indigo-700 mb-4">
             Can't find the answer you're looking for? Contact our support team.
           </p>
@@ -208,6 +208,7 @@ export default function FAQPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }
 

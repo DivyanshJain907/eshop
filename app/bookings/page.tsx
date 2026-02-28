@@ -39,14 +39,14 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-linear-to-br from-blue-50 via-white to-purple-50">
 
       {/* Hero */}
       <div className="relative overflow-hidden">
         <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
         <div className="absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-purple-200/40 blur-3xl" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 relative">
           <div className="flex flex-col gap-4">
             <span className="inline-flex items-center gap-2 rounded-full bg-blue-600/10 text-blue-700 px-4 py-2 text-sm font-semibold w-fit">
               📅 Booking Center
@@ -79,10 +79,11 @@ export default function BookingsPage() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 md:p-8">
           <BookingManagement />
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

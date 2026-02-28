@@ -36,20 +36,20 @@ export default function SupportPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Support Center</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <div className="mb-8 sm:mb-12 text-center">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Support Center</h1>
+          <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto">
             We're here to help! Find answers to your questions about bookings, delivery, returns, and more.
           </p>
         </div>
 
         {/* Quick Search Info */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-12">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-8 sm:mb-12">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">🔍 Quick Help Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -68,16 +68,16 @@ export default function SupportPage() {
         </div>
 
         {/* Support Options Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
           {supportOptions.map((option, index) => (
             <Link
               key={index}
               href={option.link}
               className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 overflow-hidden"
             >
-              <div className={`bg-linear-to-r ${option.color} p-6 text-white`}>
-                <div className="text-5xl mb-2">{option.icon}</div>
-                <h3 className="text-2xl font-bold">{option.title}</h3>
+              <div className={`bg-linear-to-r ${option.color} p-4 sm:p-6 text-white`}>
+                <div className="text-3xl sm:text-5xl mb-2">{option.icon}</div>
+                <h3 className="text-xl sm:text-2xl font-bold">{option.title}</h3>
               </div>
               <div className="p-6">
                 <p className="text-gray-600 mb-4">{option.description}</p>
@@ -90,9 +90,9 @@ export default function SupportPage() {
         </div>
 
         {/* Direct Contact Section */}
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Direct Contact</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Direct Contact</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">📞 Phone</h3>
               <a href="tel:774-483-5784" className="text-indigo-600 hover:text-indigo-700 font-bold">
@@ -116,5 +116,6 @@ export default function SupportPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

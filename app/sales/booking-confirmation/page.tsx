@@ -218,9 +218,9 @@ export default function BookingConfirmationPage() {
         <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} cartCount={cartItems.length} />
         
         <div className="flex-1 flex items-center justify-center px-4 py-12">
-          <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md w-full text-center border-t-4 border-green-500">
-            <div className="text-6xl mb-6 animate-bounce">✅</div>
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-4">Order Confirmed!</h1>
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-12 max-w-md w-full text-center border-t-4 border-green-500">
+            <div className="text-4xl sm:text-6xl mb-6 animate-bounce">✅</div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4">Order Confirmed!</h1>
             <p className="text-gray-600 mb-2">Your order has been successfully placed</p>
             <p className="text-sm text-indigo-600 font-semibold mb-6">Order ID: {orderId}</p>
             
@@ -287,12 +287,12 @@ export default function BookingConfirmationPage() {
       
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
         {/* Header */}
-        <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-cyan-500 text-white rounded-3xl shadow-2xl p-8 mb-8">
+        <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-cyan-500 text-white rounded-3xl shadow-2xl p-4 sm:p-8 mb-6 sm:mb-8">
           <div className="flex items-center mb-2">
-            <span className="text-4xl mr-3">🛒</span>
-            <h1 className="text-4xl font-extrabold">Order Confirmation</h1>
+            <span className="text-2xl sm:text-4xl mr-2 sm:mr-3">🛒</span>
+            <h1 className="text-2xl sm:text-4xl font-extrabold">Order Confirmation</h1>
           </div>
-          <p className="text-indigo-100 text-lg mt-2">Review and confirm your order</p>
+          <p className="text-indigo-100 text-base sm:text-lg mt-2">Review and confirm your order</p>
         </div>
 
         {error && (
@@ -318,9 +318,9 @@ export default function BookingConfirmationPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Order Summary */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-indigo-600 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <span className="text-3xl mr-2">📦</span>
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 border-t-4 border-indigo-600 mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="text-2xl sm:text-3xl mr-2">📦</span>
                 Order Items
               </h2>
 
@@ -347,9 +347,9 @@ export default function BookingConfirmationPage() {
             </div>
 
             {/* Delivery Information */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-green-600">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <span className="text-3xl mr-2">⏰</span>
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 border-t-4 border-green-600">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="text-2xl sm:text-3xl mr-2">⏰</span>
                 Delivery Information
               </h2>
 
@@ -415,7 +415,7 @@ export default function BookingConfirmationPage() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-lg font-bold">Total:</span>
-                <span className="text-3xl font-extrabold">₹{total.toFixed(2)}</span>
+                <span className="text-2xl sm:text-3xl font-extrabold">₹{total.toFixed(2)}</span>
               </div>
             </div>
 

@@ -165,11 +165,11 @@ export default function MyBookingsPage() {
         onLogout={handleLogout}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-20">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-3">My Bookings</h1>
-          <p className="text-gray-600 text-lg">Track and manage your product bookings</p>
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-5xl font-bold text-gray-900 mb-3">My Bookings</h1>
+          <p className="text-gray-600 text-base sm:text-lg">Track and manage your product bookings</p>
         </div>
 
         {error && (
@@ -183,8 +183,8 @@ export default function MyBookingsPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-2 border-indigo-300 border-t-indigo-600"></div>
           </div>
         ) : bookings.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">📦</div>
+          <div className="text-center py-12 sm:py-20">
+            <div className="text-4xl sm:text-6xl mb-4">📦</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">No Bookings Yet</h2>
             <p className="text-gray-600 mb-6">You haven't made any product bookings yet</p>
             <button

@@ -156,20 +156,20 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Manage Products</h1>
-            <p className="text-gray-600 mt-2">View and manage all products</p>
+            <h1 className="text-xl sm:text-3xl font-bold text-gray-900">Manage Products</h1>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">View and manage all products</p>
           </div>
           <Link
             href="/products/add"
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+            className="px-4 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition text-sm sm:text-base text-center shrink-0"
           >
-            ➕ Add New Product
+            ➕ Add Product
           </Link>
         </div>
 
@@ -286,5 +286,6 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

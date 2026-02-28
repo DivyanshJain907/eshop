@@ -169,8 +169,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <button
@@ -181,9 +181,9 @@ export default function CheckoutPage() {
         </button>
 
         {/* Header */}
-        <div className="bg-linear-to-r from-green-600 to-emerald-700 rounded-2xl shadow-2xl p-8 text-white mb-8 border-b-4 border-emerald-800">
-          <h1 className="text-4xl font-bold drop-shadow-lg">👤 Customer Details</h1>
-          <p className="text-green-50 mt-3 text-lg drop-shadow">Complete the checkout and finalize your sale</p>
+        <div className="bg-linear-to-r from-green-600 to-emerald-700 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-8 text-white mb-4 sm:mb-8 border-b-4 border-emerald-800">
+          <h1 className="text-xl sm:text-4xl font-bold drop-shadow-lg">👤 Customer Details</h1>
+          <p className="text-green-50 mt-1 sm:mt-3 text-sm sm:text-lg drop-shadow">Complete the checkout and finalize your sale</p>
         </div>
 
         {error && (
@@ -376,5 +376,6 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

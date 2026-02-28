@@ -102,8 +102,8 @@ export default function BillPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Print Button */}
         <div className="mb-6 flex gap-3 print:hidden">
@@ -122,7 +122,7 @@ export default function BillPage() {
         </div>
 
         {/* Bill Content - A4 Size */}
-        <div id="bill-content" className="bg-white" style={{ width: '210mm', margin: '0 auto' }}>
+        <div id="bill-content" className="bg-white w-full max-w-[210mm] overflow-x-auto" style={{ margin: '0 auto' }}>
           {/* Header Section */}
           <div className="mb-6 border-b-4 border-gray-900 pb-4 px-6 pt-6">
             <div className="flex justify-between items-start mb-3">
@@ -137,7 +137,7 @@ export default function BillPage() {
               <p className="text-xs font-bold text-black mb-1">TAX INVOICE</p>
               <div className="flex items-center justify-center gap-3 mb-1">
                 <img src="/jsclogo.png" alt="JSC" className="w-10 h-10 object-contain print:w-10 print:h-10" />
-                <h1 className="text-3xl font-bold text-black">JAIN SALES CORPORATION</h1>
+                <h1 className="text-xl sm:text-3xl font-bold text-black">JAIN SALES CORPORATION</h1>
               </div>
               <p className="text-xs text-black mt-1">PREET VIHAR COLONY, RUDRAPUR</p>
             </div>
@@ -150,7 +150,7 @@ export default function BillPage() {
           </div>
 
           {/* Party Details and Invoice Details */}
-          <div className="grid grid-cols-2 gap-6 mb-6 border-t-2 border-b-2 border-gray-300 py-3 px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 border-t-2 border-b-2 border-gray-300 py-3 px-4 sm:px-6">
             {/* Party Details */}
             <div>
               <p className="text-xs font-bold text-black mb-2">Party Details :</p>
@@ -227,7 +227,7 @@ export default function BillPage() {
           </div>
 
           {/* Totals Section */}
-          <div className="mb-6 grid grid-cols-2 gap-6 px-6">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 px-4 sm:px-6">
             {/* Left side - empty */}
             <div></div>
 
@@ -301,7 +301,7 @@ export default function BillPage() {
           </div>
 
           {/* Terms, QR Code, and Signature Section */}
-          <div className="grid grid-cols-3 gap-2 border border-gray-300 min-h-40 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 border border-gray-300 min-h-40 text-xs">
             {/* Left Column - Terms & Conditions */}
             <div className="border-r border-gray-300 p-2">
               <p className="text-xs font-bold text-black mb-1">Terms & Conditions</p>
@@ -389,5 +389,6 @@ export default function BillPage() {
         }
       `}</style>
     </div>
+    </UserHeader>
   );
 }

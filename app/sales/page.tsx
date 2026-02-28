@@ -268,8 +268,8 @@ export default function SalesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
@@ -282,35 +282,35 @@ export default function SalesPage() {
           {/* Products Section */}
           <div className="w-full">
             {/* Header Section with Enhanced Design */}
-            <div className="mb-8 bg-linear-to-br from-indigo-600 via-blue-500 to-cyan-500 rounded-2xl p-8 shadow-2xl border border-indigo-400 relative overflow-hidden">
+            <div className="mb-4 sm:mb-8 bg-linear-to-br from-indigo-600 via-blue-500 to-cyan-500 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-2xl border border-indigo-400 relative overflow-hidden">
               {/* Background decoration */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full -ml-24 -mb-24"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="text-6xl drop-shadow-lg">🏪</div>
+                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-6">
+                  <div className="text-3xl sm:text-6xl drop-shadow-lg">🏪</div>
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                    <h1 className="text-xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
                       Direct Sales Portal
                     </h1>
-                    <p className="text-indigo-100 text-sm md:text-base mt-2">💼 Sell directly with custom pricing & real-time discounts</p>
+                    <p className="text-indigo-100 text-xs sm:text-sm md:text-base mt-1 sm:mt-2">💼 Sell directly with custom pricing</p>
                   </div>
                 </div>
                 
                 {/* Quick Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                  <div className="bg-white bg-opacity-95 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-shadow">
-                    <p className="text-gray-600 text-xs font-bold uppercase tracking-wide">Products Available</p>
-                    <p className="text-3xl font-bold text-indigo-600 mt-2">{products.length}</p>
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-3 sm:mt-6">
+                  <div className="bg-white bg-opacity-95 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center shadow-lg">
+                    <p className="text-gray-600 text-[9px] sm:text-xs font-bold uppercase tracking-wide">Products</p>
+                    <p className="text-lg sm:text-3xl font-bold text-indigo-600 mt-1">{products.length}</p>
                   </div>
-                  <div className="bg-white bg-opacity-95 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-shadow">
-                    <p className="text-gray-600 text-xs font-bold uppercase tracking-wide">Items in Cart</p>
-                    <p className="text-3xl font-bold text-blue-600 mt-2">{cartItems.length}</p>
+                  <div className="bg-white bg-opacity-95 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center shadow-lg">
+                    <p className="text-gray-600 text-[9px] sm:text-xs font-bold uppercase tracking-wide">In Cart</p>
+                    <p className="text-lg sm:text-3xl font-bold text-blue-600 mt-1">{cartItems.length}</p>
                   </div>
-                  <div className="bg-white bg-opacity-95 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-shadow">
-                    <p className="text-gray-600 text-xs font-bold uppercase tracking-wide">Cart Value</p>
-                    <p className="text-3xl font-bold text-green-600 mt-2">₹{cartTotal.toFixed(0)}</p>
+                  <div className="bg-white bg-opacity-95 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center shadow-lg">
+                    <p className="text-gray-600 text-[9px] sm:text-xs font-bold uppercase tracking-wide">Cart Value</p>
+                    <p className="text-lg sm:text-3xl font-bold text-green-600 mt-1">₹{cartTotal.toFixed(0)}</p>
                   </div>
                 </div>
               </div>
@@ -942,5 +942,6 @@ export default function SalesPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

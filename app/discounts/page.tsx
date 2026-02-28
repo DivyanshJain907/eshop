@@ -176,15 +176,15 @@ export default function DiscountsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
 
       <div className="flex-1 overflow-auto">
         <div className="max-w-7xl mx-auto px-4 py-8">
           {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-5xl font-black text-gray-900">💰 Discount Dashboard</h1>
-            <p className="text-gray-600 mt-2 text-lg">Manage category-wide discount strategies</p>
+          <div className="mb-6 sm:mb-12">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900">💰 Discount Dashboard</h1>
+            <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-lg">Manage category-wide discount strategies</p>
           </div>
 
           {error && (
@@ -195,26 +195,26 @@ export default function DiscountsPage() {
 
           {/* Summary Stats */}
           {!loading && categories.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-purple-500 hover:shadow-lg transition-shadow">
-                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Total Categories</p>
-                <p className="text-4xl font-black text-purple-600 mt-2">{categories.length}</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-12">
+              <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-4 border-purple-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-[10px] sm:text-sm font-semibold uppercase tracking-wide">Total Categories</p>
+                <p className="text-xl sm:text-4xl font-black text-purple-600 mt-1 sm:mt-2">{categories.length}</p>
               </div>
-              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-blue-500 hover:shadow-lg transition-shadow">
-                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Avg Retail Discount</p>
-                <p className="text-4xl font-black text-blue-600 mt-2">
+              <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-4 border-blue-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-[10px] sm:text-sm font-semibold uppercase tracking-wide">Avg Retail</p>
+                <p className="text-xl sm:text-4xl font-black text-blue-600 mt-1 sm:mt-2">
                   {(categories.reduce((sum, c) => sum + c.retailDiscount, 0) / categories.length).toFixed(1)}%
                 </p>
               </div>
-              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-green-500 hover:shadow-lg transition-shadow">
-                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Avg Wholesale Discount</p>
-                <p className="text-4xl font-black text-green-600 mt-2">
+              <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-4 border-green-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-[10px] sm:text-sm font-semibold uppercase tracking-wide">Avg Wholesale</p>
+                <p className="text-xl sm:text-4xl font-black text-green-600 mt-1 sm:mt-2">
                   {(categories.reduce((sum, c) => sum + c.wholesaleDiscount, 0) / categories.length).toFixed(1)}%
                 </p>
               </div>
-              <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-amber-500 hover:shadow-lg transition-shadow">
-                <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Avg Super WS Discount</p>
-                <p className="text-4xl font-black text-amber-600 mt-2">
+              <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-4 border-amber-500 hover:shadow-lg transition-shadow">
+                <p className="text-gray-600 text-[10px] sm:text-sm font-semibold uppercase tracking-wide">Avg Super WS</p>
+                <p className="text-xl sm:text-4xl font-black text-amber-600 mt-1 sm:mt-2">
                   {(categories.reduce((sum, c) => sum + c.superWholesaleDiscount, 0) / categories.length).toFixed(1)}%
                 </p>
               </div>
@@ -451,6 +451,7 @@ export default function DiscountsPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }
 

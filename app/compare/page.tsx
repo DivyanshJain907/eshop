@@ -119,8 +119,8 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-linear-to-br from-blue-50 via-white to-purple-50">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -480,5 +480,6 @@ export default function ComparePage() {
         )}
       </div>
     </div>
+    </UserHeader>
   );
 }

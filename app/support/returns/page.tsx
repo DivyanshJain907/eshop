@@ -5,43 +5,43 @@ import UserHeader from '@/components/UserHeader';
 
 export default function ReturnsPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Returns & Refunds Policy</h1>
-          <p className="text-xl text-gray-600">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">Returns & Refunds Policy</h1>
+          <p className="text-base sm:text-xl text-gray-600">
             Understand our hassle-free return and refund policy for a worry-free shopping experience.
           </p>
         </div>
 
         {/* Quick Overview */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-12 border-l-4 border-green-600">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Overview</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 mb-8 sm:mb-12 border-l-4 border-green-600">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Quick Overview</h2>
           <p className="text-gray-600 mb-4">
             At Jain Sales Corporation, we stand behind our products. If you're not satisfied with your purchase, we offer flexible return and refund options within our booking window and beyond.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">24</div>
-              <p className="text-gray-600">Hour Booking Window</p>
+              <div className="text-2xl sm:text-4xl font-bold text-green-600 mb-2">24</div>
+              <p className="text-gray-600 text-sm sm:text-base">Hour Window</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">7</div>
-              <p className="text-gray-600">Days for Returns</p>
+              <div className="text-2xl sm:text-4xl font-bold text-green-600 mb-2">7</div>
+              <p className="text-gray-600 text-sm sm:text-base">Days Returns</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">100%</div>
-              <p className="text-gray-600">Money Back Guarantee</p>
+              <div className="text-2xl sm:text-4xl font-bold text-green-600 mb-2">100%</div>
+              <p className="text-gray-600 text-sm sm:text-base">Money Back</p>
             </div>
           </div>
         </div>
 
         {/* Return Timeline */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Return Timeline</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Return Timeline</h2>
 
           <div className="space-y-4">
             {/* 24 Hour Window */}
@@ -117,10 +117,10 @@ export default function ReturnsPage() {
 
         {/* Return Process */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">How to Return Items</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">How to Return Items</h2>
 
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Step-by-Step Return Process</h3>
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-6">Step-by-Step Return Process</h3>
 
             <div className="space-y-4">
               <div className="flex gap-4">
@@ -238,8 +238,8 @@ export default function ReturnsPage() {
         </div>
 
         {/* Defective Items */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Defective or Damaged Items</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Defective or Damaged Items</h2>
           
           <p className="text-gray-600 mb-4">
             If you receive a defective or damaged item, we'll provide a replacement or full refund immediately:
@@ -266,8 +266,8 @@ export default function ReturnsPage() {
         </div>
 
         {/* Refund Methods */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Refund Processing</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Refund Processing</h2>
           
           <p className="text-gray-600 mb-6">
             Refunds are processed to the same payment method used for the original booking:
@@ -299,8 +299,8 @@ export default function ReturnsPage() {
         </div>
 
         {/* Support CTA */}
-        <div className="bg-linear-to-r from-indigo-600 to-blue-600 rounded-lg p-8 text-white">
-          <h3 className="text-2xl font-bold mb-3">Need Help with Your Return?</h3>
+        <div className="bg-linear-to-r from-indigo-600 to-blue-600 rounded-lg p-4 sm:p-8 text-white">
+          <h3 className="text-xl sm:text-2xl font-bold mb-3">Need Help with Your Return?</h3>
           <p className="mb-6 text-indigo-100">
             Our support team is ready to help you with any questions or issues regarding returns and refunds.
           </p>
@@ -313,6 +313,7 @@ export default function ReturnsPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }
 

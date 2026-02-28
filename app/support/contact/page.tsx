@@ -40,14 +40,14 @@ export default function ContactUsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 mb-8 sm:mb-12">
           {/* Contact Information */}
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
             <p className="text-gray-600 mb-8">
               Have questions about your booking or order? We're here to help! Contact us through any of the methods below.
             </p>
@@ -128,8 +128,8 @@ export default function ContactUsPage() {
 
           {/* Contact Form */}
           <div>
-            <div className="bg-white rounded-lg shadow-md p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
 
               {submitMessage && (
                 <div className={`mb-6 p-4 rounded-lg ${submitMessage.includes('Thank') ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
@@ -242,6 +242,7 @@ export default function ContactUsPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }
 

@@ -208,10 +208,10 @@ export default function EditProductPage() {
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="text-4xl">✏️</div>
+            <div className="text-2xl sm:text-4xl">✏️</div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Edit Product</h1>
-              <p className="text-gray-600 mt-1">Update product details and pricing</p>
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">Edit Product</h1>
+              <p className="text-gray-600 mt-1 text-sm sm:text-base">Update product details and pricing</p>
             </div>
           </div>
         </div>

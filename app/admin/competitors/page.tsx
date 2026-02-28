@@ -207,22 +207,22 @@ export default function CompetitorsAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-linear-to-br from-blue-50 via-white to-purple-50">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Competitor Management</h1>
-            <p className="text-gray-600">Manage competitor websites for price comparison</p>
+            <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Competitor Management</h1>
+            <p className="text-gray-600 text-sm sm:text-base">Manage competitor websites for price comparison</p>
           </div>
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm sm:text-base shrink-0"
             >
-              ➕ Add New Competitor
+              ➕ Add Competitor
             </button>
           )}
         </div>
@@ -398,5 +398,6 @@ export default function CompetitorsAdminPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

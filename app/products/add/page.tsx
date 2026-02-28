@@ -44,15 +44,15 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-blue-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-linear-to-br from-indigo-50 via-white to-blue-50">
       
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
         {/* Form Card */}
         <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100">
           {/* Form Header */}
-          <div className="bg-linear-to-r from-indigo-600 to-blue-600 px-8 py-6">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <div className="bg-linear-to-r from-indigo-600 to-blue-600 px-4 sm:px-8 py-4 sm:py-6">
+            <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
               <span>✨</span> Create Your Product
             </h2>
             <p className="text-indigo-100 mt-2">Fill in all the details below to add your product to the inventory</p>
@@ -63,9 +63,9 @@ export default function AddProductPage() {
         </div>
 
         {/* Help Section */}
-        <div className="mt-12 bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-8">
-          <div className="flex items-start gap-4">
-            <div className="text-3xl">💡</div>
+        <div className="mt-6 sm:mt-12 bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4 sm:p-8">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="text-xl sm:text-3xl">💡</div>
             <div>
               <h3 className="text-lg font-bold text-amber-900 mb-2">Quick Tips for Better Results</h3>
               <ul className="space-y-2 text-amber-800">
@@ -101,5 +101,6 @@ export default function AddProductPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

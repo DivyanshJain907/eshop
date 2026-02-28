@@ -12,25 +12,25 @@ export default function ShippingInfoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-white">
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Header */}
-        <div className="mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Shipping & Collection</h1>
-          <p className="text-lg text-gray-600">
+        <div className="mb-8 sm:mb-16">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Shipping & Collection</h1>
+          <p className="text-base sm:text-lg text-gray-600">
             Simple, flexible options for getting your items within 24 hours
           </p>
         </div>
 
         {/* Two Main Options - Minimalist Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 sm:mb-16">
           {/* Self Pickup */}
-          <div className="border border-gray-200 rounded-lg p-8 hover:shadow-md transition-shadow">
+          <div className="border border-gray-200 rounded-lg p-4 sm:p-8 hover:shadow-md transition-shadow">
             <div className="mb-6">
-              <div className="text-4xl mb-3">🏪</div>
-              <h2 className="text-2xl font-bold text-gray-900">In-Store Collection</h2>
+              <div className="text-3xl sm:text-4xl mb-3">🏪</div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">In-Store Collection</h2>
             </div>
 
             <div className="space-y-6 text-gray-600">
@@ -69,10 +69,10 @@ export default function ShippingInfoPage() {
           </div>
 
           {/* Home Delivery */}
-          <div className="border border-gray-200 rounded-lg p-8 hover:shadow-md transition-shadow bg-gray-50">
+          <div className="border border-gray-200 rounded-lg p-4 sm:p-8 hover:shadow-md transition-shadow bg-gray-50">
             <div className="mb-6">
-              <div className="text-4xl mb-3">🚚</div>
-              <h2 className="text-2xl font-bold text-gray-900">Home Delivery</h2>
+              <div className="text-3xl sm:text-4xl mb-3">🚚</div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Home Delivery</h2>
             </div>
 
             <div className="space-y-6 text-gray-600">
@@ -114,8 +114,8 @@ export default function ShippingInfoPage() {
         </div>
 
         {/* Key Information - Simple List */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Important to Know</h2>
+        <div className="mb-8 sm:mb-16">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">Important to Know</h2>
           
           <div className="space-y-4">
             <div className="flex gap-4 p-4 border-l-4 border-indigo-600 bg-indigo-50">
@@ -153,30 +153,30 @@ export default function ShippingInfoPage() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-          <div className="text-center p-6 border border-gray-200 rounded-lg">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-16">
+          <div className="text-center p-3 sm:p-6 border border-gray-200 rounded-lg">
             <div className="text-3xl font-bold text-gray-900">24</div>
             <p className="text-xs text-gray-600 mt-2">Hours to Collect</p>
           </div>
 
-          <div className="text-center p-6 border border-gray-200 rounded-lg">
+          <div className="text-center p-3 sm:p-6 border border-gray-200 rounded-lg">
             <div className="text-3xl font-bold text-gray-900">2</div>
             <p className="text-xs text-gray-600 mt-2">Collection Options</p>
           </div>
 
-          <div className="text-center p-6 border border-gray-200 rounded-lg">
+          <div className="text-center p-3 sm:p-6 border border-gray-200 rounded-lg">
             <div className="text-sm font-bold text-gray-900">Same Day</div>
             <p className="text-xs text-gray-600 mt-2">Delivery Available</p>
           </div>
 
-          <div className="text-center p-6 border border-gray-200 rounded-lg">
+          <div className="text-center p-3 sm:p-6 border border-gray-200 rounded-lg">
             <div className="text-3xl font-bold text-gray-900">∞</div>
             <p className="text-xs text-gray-600 mt-2">Flexible Options</p>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="text-center p-8 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 sm:p-8 bg-gray-50 rounded-lg">
           <h3 className="text-xl font-bold text-gray-900 mb-3">Ready to get started?</h3>
           <p className="text-gray-600 mb-6">Browse products and place your booking today.</p>
           <Link
@@ -188,5 +188,6 @@ export default function ShippingInfoPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

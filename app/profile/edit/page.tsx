@@ -99,21 +99,21 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-white">
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         {/* Page Header */}
         <div className="mb-10">
           <Link href="/" className="text-indigo-600 hover:text-indigo-700 mb-4 inline-flex items-center gap-2 font-semibold">
             <span>←</span> Back to Home
           </Link>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-3">Edit Profile</h1>
-          <p className="text-lg text-gray-600">Keep your information up to date</p>
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3">Edit Profile</h1>
+          <p className="text-base sm:text-lg text-gray-600">Keep your information up to date</p>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
           {/* Error/Success Messages */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
@@ -128,7 +128,7 @@ export default function EditProfilePage() {
           )}
 
           {/* Read-Only Information */}
-          <div className="mb-8 p-6 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl border-2 border-indigo-200">
+          <div className="mb-8 p-4 sm:p-6 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl border-2 border-indigo-200">
             <h2 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">🔒 Secure Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -260,11 +260,11 @@ export default function EditProfilePage() {
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-4 pt-8 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 sm:px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -278,7 +278,7 @@ export default function EditProfilePage() {
 
               <Link
                 href="/"
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all"
+                className="px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all text-center"
               >
                 Cancel
               </Link>
@@ -294,5 +294,6 @@ export default function EditProfilePage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

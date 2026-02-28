@@ -105,8 +105,8 @@ export default function MyOrdersPage() {
 
       <main className="grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-2">📦 My Orders</h1>
-          <p className="text-lg text-gray-600">View your previous direct sales orders</p>
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-2">📦 My Orders</h1>
+          <p className="text-base sm:text-lg text-gray-600">View your previous direct sales orders</p>
         </div>
 
         {loading ? (
@@ -114,8 +114,8 @@ export default function MyOrdersPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           </div>
         ) : orders.length === 0 ? (
-          <div className="rounded-lg bg-gradient-to-br from-indigo-50 to-cyan-50 border-2 border-indigo-200 p-12 text-center">
-            <div className="text-6xl mb-4">📭</div>
+          <div className="rounded-lg bg-gradient-to-br from-indigo-50 to-cyan-50 border-2 border-indigo-200 p-8 sm:p-12 text-center">
+            <div className="text-4xl sm:text-6xl mb-4">📭</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">No Orders Yet</h2>
             <p className="text-gray-600 mb-6">You don't have any previous orders. Start shopping or place a new order!</p>
             <a
@@ -187,7 +187,7 @@ export default function MyOrdersPage() {
                   {/* Order Total */}
                   <div className="mt-6 pt-6 border-t-2 border-indigo-200 flex justify-between items-center">
                     <span className="text-xl font-bold text-gray-900">Total Amount:</span>
-                    <span className="text-3xl font-extrabold text-indigo-600">₹{order.totalAmount.toFixed(2)}</span>
+                    <span className="text-2xl sm:text-3xl font-extrabold text-indigo-600">₹{order.totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

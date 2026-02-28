@@ -119,17 +119,17 @@ export default function SalesHistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
-        <div className="mb-8 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-lg p-8 text-white">
+        <div className="mb-4 sm:mb-8 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-lg p-4 sm:p-8 text-white">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="text-5xl">💰</div>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="text-2xl sm:text-5xl">💰</div>
               <div>
-                <h1 className="text-4xl font-bold">Sales History</h1>
-                <p className="text-indigo-100 text-lg mt-2">Track all direct and online sales transactions</p>
+                <h1 className="text-xl sm:text-4xl font-bold">Sales History</h1>
+                <p className="text-indigo-100 text-xs sm:text-lg mt-1 sm:mt-2">Track all sales transactions</p>
               </div>
             </div>
             <div className="hidden md:flex items-center gap-3">
@@ -201,22 +201,22 @@ export default function SalesHistoryPage() {
 
         {/* Sales Summary */}
         {filteredSales.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg shadow-md p-6 border-l-4 border-indigo-600 hover:shadow-lg transition">
-              <p className="text-gray-600 text-sm font-semibold mb-2">📊 Total Transactions</p>
-              <p className="text-4xl font-bold text-indigo-600">{filteredSales.length}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-indigo-600 hover:shadow-lg transition">
+              <p className="text-gray-600 text-xs sm:text-sm font-semibold mb-2">📊 Total Transactions</p>
+              <p className="text-2xl sm:text-4xl font-bold text-indigo-600">{filteredSales.length}</p>
               <p className="text-xs text-gray-500 mt-2">showing filtered results</p>
             </div>
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow-md p-6 border-l-4 border-green-600 hover:shadow-lg transition">
-              <p className="text-gray-600 text-sm font-semibold mb-2">💵 Total Revenue</p>
-              <p className="text-4xl font-bold text-green-600">
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-green-600 hover:shadow-lg transition">
+              <p className="text-gray-600 text-xs sm:text-sm font-semibold mb-2">💵 Total Revenue</p>
+              <p className="text-2xl sm:text-4xl font-bold text-green-600">
                 ₹{filteredSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0).toFixed(2)}
               </p>
               <p className="text-xs text-gray-500 mt-2">from selected sales</p>
             </div>
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-md p-6 border-l-4 border-blue-600 hover:shadow-lg transition">
-              <p className="text-gray-600 text-sm font-semibold mb-2">📈 Average Sale</p>
-              <p className="text-4xl font-bold text-blue-600">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-blue-600 hover:shadow-lg transition">
+              <p className="text-gray-600 text-xs sm:text-sm font-semibold mb-2">📈 Average Sale</p>
+              <p className="text-2xl sm:text-4xl font-bold text-blue-600">
                 ₹{(filteredSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0) / filteredSales.length).toFixed(2)}
               </p>
               <p className="text-xs text-gray-500 mt-2">per transaction</p>
@@ -253,5 +253,6 @@ export default function SalesHistoryPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

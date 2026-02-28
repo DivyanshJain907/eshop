@@ -179,141 +179,141 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <UserHeader />
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+    <UserHeader>
+      <div className="flex-1 bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="mb-4 sm:mb-8">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 truncate">
                 📊 Dashboard
               </h1>
-              <p className="text-gray-600 mt-2 text-lg">Welcome back, {user?.name}! Here's your business overview</p>
+              <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-lg truncate">Welcome back, {user?.name}!</p>
             </div>
             <button
               onClick={fetchDashboardData}
-              className="ml-4 px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition text-base flex items-center gap-2"
+              className="shrink-0 p-2 sm:px-5 sm:py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition text-sm sm:text-base flex items-center gap-1 sm:gap-2"
               disabled={dataLoading}
               title="Refresh dashboard data"
             >
-              <span className="text-lg">🔄</span> Refresh
+              <span className="text-base sm:text-lg">🔄</span> <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
         </div>
 
         {/* Main Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
           {/* Financial Metrics - ADMIN ONLY */}
           {user?.role === 'admin' && (
             <>
               {/* Total Revenue Card */}
-              <div className="bg-linear-to-br from-green-50 to-emerald-100 rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <p className="text-green-700 text-sm font-semibold mb-1">Total Revenue</p>
-                    <h3 className="text-3xl font-bold text-green-900">
-                      Rs. {dataLoading ? '...' : (dashboardData?.totalRevenue || 0).toFixed(2)}
+              <div className="bg-linear-to-br from-green-50 to-emerald-100 rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-green-500">
+                <div className="flex justify-between items-start mb-1 sm:mb-3">
+                  <div className="min-w-0">
+                    <p className="text-green-700 text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">Total Revenue</p>
+                    <h3 className="text-lg sm:text-3xl font-bold text-green-900 truncate">
+                      ₹{dataLoading ? '...' : (dashboardData?.totalRevenue || 0).toFixed(0)}
                     </h3>
                   </div>
-                  <span className="text-4xl">💵</span>
+                  <span className="text-2xl sm:text-4xl">💵</span>
                 </div>
-                <p className="text-xs text-green-700">From all sales transactions</p>
+                <p className="text-[10px] sm:text-xs text-green-700 hidden sm:block">From all sales transactions</p>
               </div>
 
               {/* Total Paid Card */}
-              <div className="bg-linear-to-br from-blue-50 to-cyan-100 rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <p className="text-blue-700 text-sm font-semibold mb-1">Amount Received</p>
-                    <h3 className="text-3xl font-bold text-blue-900">
-                      Rs. {dataLoading ? '...' : (dashboardData?.totalPaid || 0).toFixed(2)}
+              <div className="bg-linear-to-br from-blue-50 to-cyan-100 rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-blue-500">
+                <div className="flex justify-between items-start mb-1 sm:mb-3">
+                  <div className="min-w-0">
+                    <p className="text-blue-700 text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">Amt Received</p>
+                    <h3 className="text-lg sm:text-3xl font-bold text-blue-900 truncate">
+                      ₹{dataLoading ? '...' : (dashboardData?.totalPaid || 0).toFixed(0)}
                     </h3>
                   </div>
-                  <span className="text-4xl">✅</span>
+                  <span className="text-2xl sm:text-4xl">✅</span>
                 </div>
-                <p className="text-xs text-blue-700">Fully & partially paid</p>
+                <p className="text-[10px] sm:text-xs text-blue-700 hidden sm:block">Fully & partially paid</p>
               </div>
 
               {/* Total Due Card */}
-              <div className="bg-linear-to-br from-orange-50 to-amber-100 rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <p className="text-orange-700 text-sm font-semibold mb-1">Outstanding Due</p>
-                    <h3 className="text-3xl font-bold text-orange-900">
-                      Rs. {dataLoading ? '...' : (dashboardData?.totalDue || 0).toFixed(2)}
+              <div className="bg-linear-to-br from-orange-50 to-amber-100 rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-orange-500">
+                <div className="flex justify-between items-start mb-1 sm:mb-3">
+                  <div className="min-w-0">
+                    <p className="text-orange-700 text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">Outstanding</p>
+                    <h3 className="text-lg sm:text-3xl font-bold text-orange-900 truncate">
+                      ₹{dataLoading ? '...' : (dashboardData?.totalDue || 0).toFixed(0)}
                     </h3>
                   </div>
-                  <span className="text-4xl">⏳</span>
+                  <span className="text-2xl sm:text-4xl">⏳</span>
                 </div>
-                <p className="text-xs text-orange-700">Pending payments</p>
+                <p className="text-[10px] sm:text-xs text-orange-700 hidden sm:block">Pending payments</p>
               </div>
 
               {/* Inventory Value Card */}
-              <div className="bg-linear-to-br from-purple-50 to-pink-100 rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
-                <div className="flex justify-between items-start mb-3">
-              <div>
-                <p className="text-purple-700 text-sm font-semibold mb-1">Inventory Value</p>
-                <h3 className="text-3xl font-bold text-purple-900">
-                  Rs. {dataLoading ? '...' : (dashboardData?.totalInventoryValue || 0).toFixed(2)}
-                </h3>
+              <div className="bg-linear-to-br from-purple-50 to-pink-100 rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-purple-500">
+                <div className="flex justify-between items-start mb-1 sm:mb-3">
+                  <div className="min-w-0">
+                    <p className="text-purple-700 text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">Inventory Value</p>
+                    <h3 className="text-lg sm:text-3xl font-bold text-purple-900 truncate">
+                      ₹{dataLoading ? '...' : (dashboardData?.totalInventoryValue || 0).toFixed(0)}
+                    </h3>
+                  </div>
+                  <span className="text-2xl sm:text-4xl">📦</span>
+                </div>
+                <p className="text-[10px] sm:text-xs text-purple-700 hidden sm:block">Total stock value</p>
               </div>
-              <span className="text-4xl">📦</span>
-            </div>
-            <p className="text-xs text-purple-700">Total stock value</p>
-          </div>
             </>
           )}
         </div>
 
         {/* Secondary Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
           {/* Customers Card */}
-          <div className="bg-white rounded-xl shadow-md p-6 border-t-2 border-indigo-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-gray-700 font-semibold">Total Customers</h4>
-              <span className="text-2xl">👥</span>
+          <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-2 border-indigo-500 hover:shadow-lg transition">
+            <div className="flex items-center justify-between mb-1 sm:mb-2">
+              <h4 className="text-gray-700 text-xs sm:text-base font-semibold">Customers</h4>
+              <span className="text-lg sm:text-2xl">👥</span>
             </div>
-            <p className="text-3xl font-bold text-indigo-600 mb-2">
+            <p className="text-xl sm:text-3xl font-bold text-indigo-600 mb-1 sm:mb-2">
               {dataLoading ? '...' : dashboardData?.customerCount || 0}
             </p>
-            <p className="text-xs text-gray-500">Active & Direct Sales Customers</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Active & Direct Sales</p>
           </div>
 
           {/* Products Card */}
-          <div className="bg-white rounded-xl shadow-md p-6 border-t-2 border-green-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-gray-700 font-semibold">Total Products</h4>
-              <span className="text-2xl">📦</span>
+          <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-2 border-green-500 hover:shadow-lg transition">
+            <div className="flex items-center justify-between mb-1 sm:mb-2">
+              <h4 className="text-gray-700 text-xs sm:text-base font-semibold">Products</h4>
+              <span className="text-lg sm:text-2xl">📦</span>
             </div>
-            <p className="text-3xl font-bold text-green-600 mb-2">
+            <p className="text-xl sm:text-3xl font-bold text-green-600 mb-1 sm:mb-2">
               {dataLoading ? '...' : dashboardData?.totalProducts || 0}
             </p>
-            <p className="text-xs text-gray-500">In your catalog</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">In your catalog</p>
           </div>
 
           {/* Low Stock Card */}
-          <div className="bg-white rounded-xl shadow-md p-6 border-t-2 border-red-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-gray-700 font-semibold">Low Stock Items</h4>
-              <span className="text-2xl">⚠️</span>
+          <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-2 border-red-500 hover:shadow-lg transition">
+            <div className="flex items-center justify-between mb-1 sm:mb-2">
+              <h4 className="text-gray-700 text-xs sm:text-base font-semibold">Low Stock</h4>
+              <span className="text-lg sm:text-2xl">⚠️</span>
             </div>
-            <p className="text-3xl font-bold text-red-600 mb-2">
+            <p className="text-xl sm:text-3xl font-bold text-red-600 mb-1 sm:mb-2">
               {dataLoading ? '...' : dashboardData?.lowStockProducts || 0}
             </p>
-            <p className="text-xs text-gray-500">Need attention</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Need attention</p>
           </div>
 
           {/* Total Sales Card */}
-          <div className="bg-white rounded-xl shadow-md p-6 border-t-2 border-blue-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-gray-700 font-semibold">Total Sales</h4>
-              <span className="text-2xl">📊</span>
+          <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 border-t-2 border-blue-500 hover:shadow-lg transition">
+            <div className="flex items-center justify-between mb-1 sm:mb-2">
+              <h4 className="text-gray-700 text-xs sm:text-base font-semibold">Sales</h4>
+              <span className="text-lg sm:text-2xl">📊</span>
             </div>
-            <p className="text-3xl font-bold text-blue-600 mb-2">
+            <p className="text-xl sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">
               {dataLoading ? '...' : dashboardData?.totalSales || 0}
             </p>
-            <p className="text-xs text-gray-500">Transactions completed</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Transactions completed</p>
           </div>
 
           {/* Competitor Stats Card - Admin Only */}
@@ -321,74 +321,74 @@ export default function DashboardPage() {
         </div>
 
         {/* Payment Status Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-3 gap-2 sm:gap-6 mb-4 sm:mb-8">
           {/* Fully Paid */}
-          <div className="bg-linear-to-br from-green-50 to-green-100 rounded-xl shadow-md p-6 border border-green-200">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">✅</span>
-              <h4 className="text-lg font-bold text-green-900">Fully Paid</h4>
+          <div className="bg-linear-to-br from-green-50 to-green-100 rounded-xl shadow-md p-3 sm:p-6 border border-green-200">
+            <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+              <span className="text-lg sm:text-3xl">✅</span>
+              <h4 className="text-xs sm:text-lg font-bold text-green-900">Paid</h4>
             </div>
-            <p className="text-4xl font-bold text-green-700 mb-1">
+            <p className="text-2xl sm:text-4xl font-bold text-green-700 mb-0.5 sm:mb-1">
               {dataLoading ? '...' : dashboardData?.fullyPaidSales || 0}
             </p>
-            <p className="text-sm text-green-700">Orders received in full</p>
+            <p className="text-[10px] sm:text-sm text-green-700 hidden sm:block">Orders received in full</p>
           </div>
 
           {/* Partially Paid */}
-          <div className="bg-linear-to-br from-amber-50 to-amber-100 rounded-xl shadow-md p-6 border border-amber-200">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">⏳</span>
-              <h4 className="text-lg font-bold text-amber-900">Partially Paid</h4>
+          <div className="bg-linear-to-br from-amber-50 to-amber-100 rounded-xl shadow-md p-3 sm:p-6 border border-amber-200">
+            <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+              <span className="text-lg sm:text-3xl">⏳</span>
+              <h4 className="text-xs sm:text-lg font-bold text-amber-900">Partial</h4>
             </div>
-            <p className="text-4xl font-bold text-amber-700 mb-1">
+            <p className="text-2xl sm:text-4xl font-bold text-amber-700 mb-0.5 sm:mb-1">
               {dataLoading ? '...' : dashboardData?.partiallyPaidSales || 0}
             </p>
-            <p className="text-sm text-amber-700">Awaiting remaining payment</p>
+            <p className="text-[10px] sm:text-sm text-amber-700 hidden sm:block">Awaiting remaining</p>
           </div>
 
           {/* Pending */}
-          <div className="bg-linear-to-br from-red-50 to-red-100 rounded-xl shadow-md p-6 border border-red-200">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">🔔</span>
-              <h4 className="text-lg font-bold text-red-900">Pending Payment</h4>
+          <div className="bg-linear-to-br from-red-50 to-red-100 rounded-xl shadow-md p-3 sm:p-6 border border-red-200">
+            <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+              <span className="text-lg sm:text-3xl">🔔</span>
+              <h4 className="text-xs sm:text-lg font-bold text-red-900">Pending</h4>
             </div>
-            <p className="text-4xl font-bold text-red-700 mb-1">
+            <p className="text-2xl sm:text-4xl font-bold text-red-700 mb-0.5 sm:mb-1">
               {dataLoading ? '...' : dashboardData?.pendingSales || 0}
             </p>
-            <p className="text-sm text-red-700">Awaiting payment</p>
+            <p className="text-[10px] sm:text-sm text-red-700 hidden sm:block">Awaiting payment</p>
           </div>
         </div>
 
         {/* Charts Section */}
-        <div className="mt-12 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">📈 Analytics & Insights</h2>
+        <div className="mt-6 sm:mt-12 mb-4 sm:mb-8">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">📈 Analytics & Insights</h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Revenue Trend Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-blue-500">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Revenue Trend (Last 7 Days)</h3>
+            <div className="bg-white rounded-xl shadow-lg p-3 sm:p-6 border-t-4 border-blue-500">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Revenue Trend (7 Days)</h3>
               {chartData.revenue && chartData.revenue.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={chartData.revenue}>
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={chartData.revenue} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => `Rs. ${Number(value).toFixed(0)}`} />
-                    <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6' }} />
+                    <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip formatter={(value) => `₹${Number(value).toFixed(0)}`} />
+                    <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6', r: 3 }} />
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-75 flex items-center justify-center text-gray-500 bg-gray-50 rounded">
+                <div className="h-55 flex items-center justify-center text-gray-500 bg-gray-50 rounded text-sm">
                   <p>No revenue data available</p>
                 </div>
               )}
             </div>
 
             {/* Payment Status Pie Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-green-500">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Payment Status Distribution</h3>
+            <div className="bg-white rounded-xl shadow-lg p-3 sm:p-6 border-t-4 border-green-500">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Payment Distribution</h3>
               {chartData.paymentStatus && chartData.paymentStatus.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
                     <Pie
                       data={chartData.paymentStatus}
@@ -396,7 +396,7 @@ export default function DashboardPage() {
                       cy="50%"
                       labelLine={false}
                       label={({ name, value }) => `${name}: ${value}`}
-                      outerRadius={80}
+                      outerRadius={70}
                       fill="#8884d8"
                       dataKey="value"
                     >
@@ -408,60 +408,60 @@ export default function DashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-75 flex items-center justify-center text-gray-500 bg-gray-50 rounded">
+                <div className="h-55 flex items-center justify-center text-gray-500 bg-gray-50 rounded text-sm">
                   <p>No payment data available</p>
                 </div>
               )}
             </div>
 
             {/* Product Tiers Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-purple-500">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Products by Pricing Tier</h3>
+            <div className="bg-white rounded-xl shadow-lg p-3 sm:p-6 border-t-4 border-purple-500">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Products by Tier</h3>
               {chartData.productTiers && chartData.productTiers.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={chartData.productTiers}>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={chartData.productTiers} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip />
                     <Bar dataKey="count" fill="#a855f7" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-75 flex items-center justify-center text-gray-500 bg-gray-50 rounded">
+                <div className="h-55 flex items-center justify-center text-gray-500 bg-gray-50 rounded text-sm">
                   <p>No product data available</p>
                 </div>
               )}
             </div>
 
             {/* Sales Summary Bar Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-orange-500">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Sales Summary</h3>
+            <div className="bg-white rounded-xl shadow-lg p-3 sm:p-6 border-t-4 border-orange-500">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Sales Summary</h3>
               {dashboardData ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={220}>
                   <BarChart
                     data={[
                       {
                         name: 'Sales',
-                        'Total Sales': dashboardData.totalSales,
-                        'Fully Paid': dashboardData.fullyPaidSales,
-                        'Partially Paid': dashboardData.partiallyPaidSales,
+                        'Paid': dashboardData.fullyPaidSales,
+                        'Partial': dashboardData.partiallyPaidSales,
                         'Pending': dashboardData.pendingSales
                       }
                     ]}
+                    margin={{ top: 5, right: 5, left: -15, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip />
-                    <Legend />
-                    <Bar dataKey="Fully Paid" fill="#10b981" />
-                    <Bar dataKey="Partially Paid" fill="#f59e0b" />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Bar dataKey="Paid" fill="#10b981" />
+                    <Bar dataKey="Partial" fill="#f59e0b" />
                     <Bar dataKey="Pending" fill="#ef4444" />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-75 flex items-center justify-center text-gray-500">
+                <div className="h-55 flex items-center justify-center text-gray-500 text-sm">
                   Loading...
                 </div>
               )}
@@ -470,5 +470,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }

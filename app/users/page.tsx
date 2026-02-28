@@ -39,8 +39,8 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UserHeader />
+    <UserHeader>
+      <div className="flex-1 bg-gray-50">
 
 
       <div className="w-full flex flex-col items-stretch px-0 pb-0">
@@ -52,5 +52,6 @@ export default function UsersPage() {
         </div>
       </div>
     </div>
+    </UserHeader>
   );
 }
