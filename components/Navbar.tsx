@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface NavbarProps {
@@ -105,12 +106,8 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="text-xl md:text-2xl transition-transform group-hover:scale-110">🛒</div>
-            <div className="hidden sm:block">
-              <span className="text-lg font-bold text-gray-900">Jain Sales</span>
-              <p className="text-xs text-gray-500">Corporation</p>
-            </div>
+          <Link href="/" className="flex items-center shrink-0 group">
+            <Image src="/jsclogo.png" alt="JSC" width={48} height={48} className="w-10 h-10 md:w-12 md:h-12 object-contain transition-transform group-hover:scale-110" />
           </Link>
 
           {/* Navigation Links */}

@@ -161,26 +161,27 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Jain Sales Corporation</h1>
-          <p className="text-gray-600 mt-2">Create your account</p>
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-6 sm:py-12 px-3 sm:px-6 lg:px-8 flex items-start sm:items-center justify-center">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-4 sm:p-8">
+        <div className="text-center mb-5 sm:mb-8">
+          <img src="/jsclogo.png" alt="JSC" className="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto mb-2 sm:mb-3" />
+          <h1 className="text-xl sm:text-3xl font-bold text-gray-900">Jain Sales Corporation</h1>
+          <p className="text-gray-500 mt-1 text-sm">Create your account</p>
         </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg">
             <p className="text-sm">{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Personal Information */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Personal Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Personal Information</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="block text-xs font-medium text-gray-600 mb-1">
                   Full Name *
                 </label>
                 <input
@@ -190,13 +191,13 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-xs font-medium text-gray-600 mb-1">
                   Email Address *
                 </label>
                 <input
@@ -206,14 +207,14 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
                   placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number * <span className="text-red-500 text-xs">(10 digits)</span>
+                <label htmlFor="phone" className="block text-xs font-medium text-gray-600 mb-1">
+                  Phone Number * <span className="text-gray-400">(10 digits)</span>
                 </label>
                 <input
                   type="tel"
@@ -224,14 +225,14 @@ export default function RegisterPage() {
                   maxLength={10}
                   pattern="\d{10}"
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
                   placeholder="9876543210"
                 />
               </div>
 
               <div>
-                <label htmlFor="shopName" className="block text-sm font-medium text-gray-700">
-                  Shop Name <span className="text-gray-500">(Optional)</span>
+                <label htmlFor="shopName" className="block text-xs font-medium text-gray-600 mb-1">
+                  Shop Name <span className="text-gray-400">(Optional)</span>
                 </label>
                 <input
                   type="text"
@@ -239,22 +240,22 @@ export default function RegisterPage() {
                   name="shopName"
                   value={formData.shopName}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
                   placeholder="My Shop"
                 />
               </div>
             </div>
           </div>
 
-          {/* Password Information */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Security</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Password */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Security</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-xs font-medium text-gray-600 mb-1">
                   Password *
                 </label>
-                <div className="relative mt-1">
+                <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     id="password"
@@ -262,13 +263,13 @@ export default function RegisterPage() {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all pr-10"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 text-sm"
                   >
                     {showPassword ? '🙈' : '👁️'}
                   </button>
@@ -276,7 +277,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-600 mb-1">
                   Confirm Password *
                 </label>
                 <input
@@ -286,19 +287,19 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
                   placeholder="••••••••"
                 />
               </div>
             </div>
           </div>
 
-          {/* Address Information */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Address</h3>
-            <div className="space-y-4">
+          {/* Address */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Address</h3>
+            <div className="space-y-3">
               <div>
-                <label htmlFor="street" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="street" className="block text-xs font-medium text-gray-600 mb-1">
                   Street Address *
                 </label>
                 <input
@@ -308,14 +309,14 @@ export default function RegisterPage() {
                   value={formData.street}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
                   placeholder="123 Main Street"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="city" className="block text-xs font-medium text-gray-600 mb-1">
                     City *
                   </label>
                   <input
@@ -325,13 +326,13 @@ export default function RegisterPage() {
                     value={formData.city}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
-                    placeholder="New York"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                    placeholder="City"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="state" className="block text-xs font-medium text-gray-600 mb-1">
                     State *
                   </label>
                   <input
@@ -341,14 +342,14 @@ export default function RegisterPage() {
                     value={formData.state}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
-                    placeholder="NY"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                    placeholder="State"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="pincode" className="block text-sm font-medium text-gray-700">
-                    Pincode * (6 digits)
+                  <label htmlFor="pincode" className="block text-xs font-medium text-gray-600 mb-1">
+                    Pincode *
                   </label>
                   <input
                     type="text"
@@ -360,30 +361,10 @@ export default function RegisterPage() {
                     pattern="\d{6}"
                     inputMode="numeric"
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
-                    placeholder="100001"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                    placeholder="263153"
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Account Type */}
-          <div className="mb-6">
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="registrationKey" className="block text-sm font-medium text-gray-700">
-                  Registration Key <span className="text-gray-500">(Optional - for Employee/Admin)</span>
-                </label>
-                <input
-                  type="password"
-                  id="registrationKey"
-                  name="registrationKey"
-                  value={formData.registrationKey}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
-                  placeholder="Leave empty for Customer account"
-                />
               </div>
             </div>
           </div>
@@ -391,20 +372,20 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm transition-all active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
           >
             {isLoading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+        <div className="mt-5 text-center">
+          <p className="text-sm text-gray-500">
             Already have an account?{' '}
             <Link
               href="/login"
-              className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+              className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
             >
-              Sign in here
+              Sign in
             </Link>
           </p>
         </div>

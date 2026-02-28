@@ -31,8 +31,9 @@ export default function UserHeader() {
     <div className="bg-white shadow-md">
       {/* Top Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-indigo-600">
-          Jain Sales Corporation
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/jsclogo.png" alt="JSC" className="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
+          <span className="text-xl sm:text-2xl font-bold text-indigo-600">Jain Sales Corporation</span>
         </Link>
 
         {isAuthenticated && user ? (

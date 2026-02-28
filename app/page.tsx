@@ -307,7 +307,7 @@ export default function LandingPage() {
             {/* About */}
             <div>
               <h3 className="text-gray-900 font-bold text-lg mb-4 flex items-center gap-2">
-                <span className="text-2xl">🛒</span> Jain Sales Corporation
+                <img src="/jsclogo.png" alt="JSC" className="w-10 h-10 object-contain" /> Jain Sales Corporation
               </h3>
               <p className="text-sm text-gray-500 leading-relaxed">
                 Your trusted online shopping destination for quality products and excellent customer service.
@@ -407,7 +407,7 @@ export default function LandingPage() {
                 className="w-full px-4 py-3 bg-white text-gray-900 font-bold flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
                 <span className="flex items-center gap-2">
-                  <span className="text-lg">🛒</span> Jain Sales Corporation
+                  <img src="/jsclogo.png" alt="JSC" className="w-8 h-8 object-contain" /> Jain Sales Corporation
                 </span>
                 <span className={`transform transition-transform ${expandedSection === 'about' ? 'rotate-180' : ''}`}>
                   ▼

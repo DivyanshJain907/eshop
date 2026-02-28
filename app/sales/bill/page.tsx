@@ -135,7 +135,10 @@ export default function BillPage() {
             </div>
             <div className="text-center mb-4">
               <p className="text-xs font-bold text-black mb-1">TAX INVOICE</p>
-              <h1 className="text-3xl font-bold text-black">JAIN SALES CORPORATION</h1>
+              <div className="flex items-center justify-center gap-3 mb-1">
+                <img src="/jsclogo.png" alt="JSC" className="w-10 h-10 object-contain print:w-10 print:h-10" />
+                <h1 className="text-3xl font-bold text-black">JAIN SALES CORPORATION</h1>
+              </div>
               <p className="text-xs text-black mt-1">PREET VIHAR COLONY, RUDRAPUR</p>
             </div>
             <div className="text-center text-xs text-black space-y-0.5">

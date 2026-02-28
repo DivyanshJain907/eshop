@@ -96,7 +96,7 @@ function ValidateNameClient() {
     <div className="min-h-screen bg-linear-to-br from-indigo-50 to-cyan-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🔍</div>
+          <img src="/jsclogo.png" alt="JSC" className="w-14 h-14 mx-auto mb-3 object-contain" />
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Verify Your Name</h1>
           <p className="text-gray-600">
             We found previous orders under a different name. Please confirm your correct name.
