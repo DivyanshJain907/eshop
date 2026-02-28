@@ -72,7 +72,7 @@ export default function LoginPage() {
       if (userRole === 'admin' || userRole === 'employee') {
         router.push('/dashboard');
       } else {
-        router.push('/home');
+        router.push('/products-browse');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred');

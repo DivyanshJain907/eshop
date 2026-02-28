@@ -95,7 +95,7 @@ export default function Navbar({ isAuthenticated = false, userName, userRole, ca
   // Avatar initials
   const avatar = userName ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) : '👤';
 
-  // Cart icon for /home page (optional, can be passed as prop if needed)
+  // Cart icon for /products-browse page (optional, can be passed as prop if needed)
   // const cartCount = 0; // You can pass this as a prop if you want live count
 
   return (

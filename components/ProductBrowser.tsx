@@ -122,72 +122,93 @@ export default function ProductBrowser({ onAddToCart }: ProductBrowserProps) {
       {/* Products Grid */}
       {displayedProducts.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
             {displayedProducts.map((product) => (
             <div
               key={product._id || product.id}
-              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all duration-300 cursor-pointer"
               onClick={() => setSelectedProduct(product)}
             >
               {/* Product Image */}
-              <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-36 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0]}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : product.image ? (
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
-                  <span className="text-4xl">📦</span>
+                  <span className="text-4xl opacity-30">📦</span>
+                )}
+                {product.quantity === 0 && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>
+                  </div>
                 )}
               </div>
 
               {/* Product Info */}
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 truncate">{product.name}</h3>
+              <div className="p-3 sm:p-4">
+                <h3 className="font-semibold text-gray-900 text-xs sm:text-sm leading-tight line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">{product.name}</h3>
 
                 {/* Price */}
-                <p className="text-lg font-bold text-indigo-600 my-2">
-                  ₹{product.price.toFixed(2)}
-                </p>
-
-                {/* Stock Status */}
-                <div className="mb-4">
-                  {product.quantity > 0 ? (
-                    <span className="text-sm text-green-600 font-medium">
-                      ✓ In Stock ({product.quantity} available)
-                    </span>
-                  ) : (
-                    <span className="text-sm text-red-600 font-medium">Out of Stock</span>
+                <div className="mb-2">
+                  {product.price > 0 && (
+                    <div className="text-[10px] sm:text-xs text-gray-400 line-through">₹{Number(product.price).toFixed(0)}</div>
+                  )}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-base sm:text-lg font-bold text-gray-900">₹{Number(product.retailPrice || product.price).toFixed(0)}</span>
+                    {product.price > 0 && product.price > (product.retailPrice || product.price) && (
+                      <span className="text-[10px] sm:text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                        {Math.round(((product.price - (product.retailPrice || product.price)) / product.price) * 100)}% off
+                      </span>
+                    )}
+                  </div>
+                  {/* Wholesale price hint */}
+                  {product.wholesalePrice && product.wholesalePrice > 0 && product.wholesalePrice < product.price && (
+                    <div className="mt-1 text-[10px] sm:text-xs text-blue-600 font-medium">
+                      Wholesale: ₹{Number(product.wholesalePrice).toFixed(0)} <span className="text-green-600">({Math.round(((product.price - product.wholesalePrice) / product.price) * 100)}% off)</span>
+                    </div>
                   )}
                 </div>
 
-                {/* Action Buttons */}
+                {/* Stock Status */}
+                <div className="mb-3 hidden sm:block">
+                  {product.quantity > 0 ? (
+                    <span className="text-xs text-green-600 font-medium">
+                      In Stock
+                    </span>
+                  ) : (
+                    <span className="text-xs text-red-500 font-medium">Out of Stock</span>
+                  )}
+                </div>
+
+                {/* Action Button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleAddToCart(product);
                   }}
                   disabled={product.quantity === 0}
-                  className={`w-full py-2 px-4 rounded-lg font-medium transition-all ${
+                  className={`w-full py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 ${
                     addedProduct === (product._id || product.id)
-                      ? 'bg-green-500 text-white scale-105'
+                      ? 'bg-green-500 text-white scale-[1.02]'
                       : product.quantity > 0
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                      : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
                 >
                   {addedProduct === (product._id || product.id)
-                    ? '✅ Added to Cart!'
+                    ? '✓ Added!'
                     : product.quantity > 0
-                    ? '🛒 Add to Cart'
-                    : 'Out of Stock'}
+                    ? 'Add to Cart'
+                    : 'Sold Out'}
                 </button>
               </div>
             </div>

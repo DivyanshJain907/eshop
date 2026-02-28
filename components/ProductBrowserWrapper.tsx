@@ -160,38 +160,10 @@ export default function ProductBrowserWrapper() {
       />
 
       {/* View Navigation */}
-      <main className="grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        {/* Tab Buttons */}
-        <div className="flex gap-2 mb-6 border-b border-gray-200 pb-4">
-          <button
-            onClick={() => setActiveView('browse')}
-            className={`px-6 py-3 rounded-t-xl font-semibold transition-all border-b-2 ${
-              activeView === 'browse'
-                ? 'border-indigo-600 text-indigo-700 bg-indigo-50'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            🛍️ Browse Products
-          </button>
-          <button
-            onClick={() => setActiveView('cart')}
-            className={`px-6 py-3 rounded-t-xl font-semibold transition-all border-b-2 relative ${
-              activeView === 'cart'
-                ? 'border-cyan-600 text-cyan-700 bg-cyan-50'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            🛒 Cart
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {cartItems.length > 9 ? '9+' : cartItems.length}
-              </span>
-            )}
-          </button>
-        </div>
+      <main className="grow w-full px-4 sm:px-6 lg:px-8 py-6">
 
         {/* View Content */}
-        <div className="rounded-lg bg-white shadow-sm p-6 min-h-96">
+        <div className="bg-white min-h-96">
           {activeView === 'browse' && (
             <ProductBrowser onAddToCart={handleAddToCart} />
           )}
@@ -222,7 +194,7 @@ export default function ProductBrowserWrapper() {
         </button>
       )}
 
-      <Footer />
+      {activeView !== 'cart' && <Footer />}
     </div>
   );
 }

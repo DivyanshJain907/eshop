@@ -109,45 +109,54 @@ export default function LandingPage() {
       <Navbar isAuthenticated={false} />
 
       {/* Hero Section */}
-      <section className="relative py-20 md:py-28 overflow-hidden bg-linear-to-br from-blue-50 via-white to-indigo-50">
+      <section className="relative py-20 md:py-32 overflow-hidden bg-linear-to-br from-blue-50 via-white to-indigo-50">
         {/* Decorative shapes */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/3"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/3 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-40 translate-y-1/2 -translate-x-1/3 animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-100 rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-medium">
-            <span>🛍️</span> Welcome to Jain Sales Corporation
+          <div className="mb-6 inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg shadow-blue-600/25">
+            <span className="animate-bounce">🔥</span> Trusted by 1000+ Happy Customers
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
-            Shop the Best <span className="text-blue-600">Products</span> Online
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+            Your Everyday <br className="hidden sm:block" /><span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">Shopping Destination</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl mx-auto">
-            Discover quality products at great prices. Your one-stop shop for all your everyday needs.
+          <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Premium quality products at unbeatable prices. From daily essentials to top brands — everything you need, delivered to your doorstep.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => router.push('/login')} 
-              className="px-8 py-3.5 bg-blue-600 text-white font-semibold text-base rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40"
+              className="group px-8 py-4 bg-blue-600 text-white font-bold text-base rounded-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/30 hover:shadow-2xl hover:shadow-blue-600/40 hover:-translate-y-0.5"
             >
-              Browse Products
+              Start Shopping <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
             </button>
             <button 
               onClick={() => router.push('/register')} 
-              className="px-8 py-3.5 border-2 border-gray-300 text-gray-700 font-semibold text-base rounded-lg hover:border-blue-600 hover:text-blue-600 transition-all bg-white"
+              className="px-8 py-4 border-2 border-gray-200 text-gray-700 font-bold text-base rounded-xl hover:border-blue-600 hover:text-blue-600 transition-all bg-white hover:shadow-lg hover:-translate-y-0.5"
             >
-              Create Account
+              Create Free Account
             </button>
           </div>
 
           {/* Trust indicators */}
-          <div className="mt-12 flex flex-wrap justify-center gap-6 md:gap-10 text-sm text-gray-400">
-            <div className="flex items-center gap-2"><span className="text-green-500 text-lg">✓</span> Free Shipping</div>
-            <div className="flex items-center gap-2"><span className="text-green-500 text-lg">✓</span> Secure Payments</div>
-            <div className="flex items-center gap-2"><span className="text-green-500 text-lg">✓</span> Quality Products</div>
-            <div className="flex items-center gap-2"><span className="text-green-500 text-lg">✓</span> 24/7 Support</div>
+          <div className="mt-14 grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-4 sm:gap-8 text-sm">
+            <div className="flex items-center justify-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-100">
+              <span className="text-lg">🚚</span> <span className="text-gray-700 font-medium">Free Shipping</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-100">
+              <span className="text-lg">🔒</span> <span className="text-gray-700 font-medium">Secure Payments</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-100">
+              <span className="text-lg">⭐</span> <span className="text-gray-700 font-medium">Top Quality</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-100">
+              <span className="text-lg">💬</span> <span className="text-gray-700 font-medium">24/7 Support</span>
+            </div>
           </div>
         </div>
       </section>
@@ -189,11 +198,18 @@ export default function LandingPage() {
                     <h3 className="font-semibold text-gray-900 mb-2 text-sm leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">{product.name}</h3>
                     
                     {/* Price */}
-                    <div className="flex gap-2 items-baseline mb-2">
-                      <span className="text-xl font-bold text-gray-900">₹{product.retailPrice}</span>
-                      {product.wholesalePrice && (
-                        <span className="text-sm text-gray-400 line-through">₹{product.wholesalePrice}</span>
+                    <div className="mb-2">
+                      {product.price > 0 && (
+                        <div className="text-xs text-gray-400 line-through mb-0.5">₹{Number(product.price).toFixed(0)}</div>
                       )}
+                      <div className="flex gap-2 items-center flex-wrap">
+                        <span className="text-lg sm:text-xl font-bold text-gray-900">₹{Number(product.retailPrice || product.price).toFixed(0)}</span>
+                        {product.price > 0 && product.price > (product.retailPrice || product.price) && (
+                          <span className="text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                            {Math.round(((product.price - (product.retailPrice || product.price)) / product.price) * 100)}% off
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     {/* Stock */}

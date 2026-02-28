@@ -76,54 +76,38 @@ export default function CategoryPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-indigo-50 to-cyan-50">
+      <div className="flex justify-center items-center min-h-screen bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading categories...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-500 font-medium">Loading categories...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navbar isAuthenticated={isAuthenticated} userName={user?.name} userRole={user?.role} cartCount={cartItems.length} />
       
-      {/* Hero Section */}
-      <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 text-white py-16 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-5xl font-black">📂 Browse by Category</h1>
-          <p className="text-indigo-100 text-lg mt-3">Discover our products organized by category</p>
-          <div className="mt-4 flex items-center text-indigo-100 text-sm font-semibold">
-            <span>📦 {products.length} total products</span>
-            <span className="mx-3">•</span>
-            <span>📂 {categories.length} categories</span>
-          </div>
+      {/* Header */}
+      <div className="bg-gray-50 border-b border-gray-200 py-8 sm:py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-lg sm:text-xl font-semibold text-gray-900">Browse by Category</h1>
+          <p className="text-gray-400 mt-0.5 text-xs sm:text-sm">
+            {products.length} products across {categories.length} categories
+          </p>
         </div>
       </div>
 
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-12">
-        {/* Categories Grid */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-black text-gray-900 mb-8">All Categories</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((category, index) => {
+      <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Categories - Horizontal scroll on mobile, grid on desktop */}
+        <div className="mb-8">
+          <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-3 scrollbar-hide sm:flex-wrap">
+            {categories.map((category) => {
               const categoryCount = products.filter(
                 p => (p.category || 'Uncategorized') === category
               ).length;
               const isSelected = selectedCategory === category;
-              
-              // Color schemes for different categories
-              const colors = [
-                { bg: 'from-blue-500 to-blue-600', light: 'from-blue-50 to-blue-100', icon: '👕' },
-                { bg: 'from-purple-500 to-purple-600', light: 'from-purple-50 to-purple-100', icon: '👞' },
-                { bg: 'from-pink-500 to-pink-600', light: 'from-pink-50 to-pink-100', icon: '🎒' },
-                { bg: 'from-amber-500 to-amber-600', light: 'from-amber-50 to-amber-100', icon: '⌚' },
-                { bg: 'from-green-500 to-green-600', light: 'from-green-50 to-green-100', icon: '🧢' },
-                { bg: 'from-red-500 to-red-600', light: 'from-red-50 to-red-100', icon: '🎩' },
-              ];
-              
-              const color = colors[index % colors.length];
 
               return (
                 <button
@@ -132,140 +116,121 @@ export default function CategoryPage() {
                     setSelectedCategory(category);
                     setSearchQuery('');
                   }}
-                  className={`text-left rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${
-                    isSelected ? 'ring-4 ring-indigo-500' : ''
+                  className={`shrink-0 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border ${
+                    isSelected
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                      : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:text-blue-600'
                   }`}
                 >
-                  <div className={`bg-linear-to-br ${color.bg} text-white p-8 relative overflow-hidden`}>
-                    {/* Decorative Background */}
-                    <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full"></div>
-                    <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-white/10 rounded-full"></div>
-
-                    {/* Content */}
-                    <div className="relative z-10">
-                      <h3 className="text-2xl font-black mb-2 line-clamp-2">{category}</h3>
-                      <p className="text-white/80 text-sm font-semibold">{categoryCount} products</p>
-                    </div>
-
-                    {/* Badge */}
-                    {isSelected && (
-                      <div className="absolute top-3 right-3 bg-white text-indigo-600 rounded-full px-3 py-1 text-xs font-bold">
-                        ✓ Selected
-                      </div>
-                    )}
-                  </div>
+                  {category} <span className={`ml-1 ${isSelected ? 'text-blue-200' : 'text-gray-400'}`}>({categoryCount})</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Products Section */}
+        {/* Search */}
         {selectedCategory && (
-          <div>
-            {/* Category Header with Search */}
-            <div className="mb-8">
-              <div className="mb-6">
-                <h2 className="text-3xl font-black text-gray-900 mb-2">{selectedCategory}</h2>
-                <p className="text-gray-600">
-                  {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} available
-                  {searchQuery && <span className="ml-2 text-indigo-600 font-semibold">• Filtered by "{searchQuery}"</span>}
-                </p>
-              </div>
-
-              {/* Search Bar */}
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl">🔍</span>
-                <input
-                  type="text"
-                  placeholder="Search in this category..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent bg-white font-medium shadow-sm transition-all"
-                />
-              </div>
+          <div className="mb-6">
+            <div className="relative max-w-md">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder={`Search in ${selectedCategory}...`}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm"
+              />
             </div>
+            <p className="text-xs text-gray-400 mt-2">
+              {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+              {searchQuery && <span> matching &quot;{searchQuery}&quot;</span>}
+            </p>
+          </div>
+        )}
 
-            {/* Products Grid */}
+        {/* Products Grid */}
+        {selectedCategory && (
+          <>
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((product, index) => (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-5">
+                {filteredProducts.map((product) => (
                   <div
                     key={product._id || product.id}
-                    className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden hover:shadow-2xl hover:border-indigo-300 transition-all duration-300 cursor-pointer group"
-                    style={{
-                      animationDelay: `${index * 50}ms`,
-                      animation: 'slideUp 0.5s ease-out forwards',
-                    }}
+                    className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all duration-300 cursor-pointer"
                     onClick={() => {
                       const id = product._id || product.id;
                       if (id) handleViewProduct(id);
                     }}
                   >
                     {/* Product Image */}
-                    <div className="w-full h-56 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden relative">
-                      {product.image ? (
+                    <div className="relative w-full h-36 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : product.image && !product.image.match(/^[\u{1F000}-\u{1FFFF}]/u) ? (
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <span className="text-6xl group-hover:scale-125 transition-transform duration-300">📦</span>
-                      )}
-                      
-                      {/* Stock Badge */}
-                      {product.quantity > 0 && (
-                        <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                          In Stock
-                        </div>
+                        <span className="text-4xl opacity-30">📦</span>
                       )}
                       {product.quantity === 0 && (
-                        <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                          Out of Stock
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>
                         </div>
                       )}
                     </div>
 
                     {/* Product Info */}
-                    <div className="p-5">
-                      <h3 className="font-bold text-gray-900 line-clamp-2 text-lg mb-2 group-hover:text-indigo-600 transition-colors">
-                        {product.name}
-                      </h3>
+                    <div className="p-3 sm:p-4">
+                      <h3 className="font-semibold text-gray-900 text-xs sm:text-sm leading-tight line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">{product.name}</h3>
 
                       {/* Price */}
-                      <div className="mb-3">
-                        <p className="text-2xl font-extrabold text-indigo-600">
-                          ₹{product.price.toFixed(0)}
-                        </p>
-                      </div>
-
-                      {/* Stock Info */}
-                      <div className="mb-4">
-                        {product.quantity > 0 ? (
-                          <span className="inline-flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-lg text-xs font-semibold border border-green-200">
-                            {product.quantity} in stock
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center bg-red-50 text-red-700 px-3 py-1 rounded-lg text-xs font-semibold border border-red-200">
-                            Out of stock
-                          </span>
+                      <div className="mb-2">
+                        {product.price > 0 && product.price > (product.retailPrice || product.price) && (
+                          <div className="text-[10px] sm:text-xs text-gray-400 line-through">₹{Number(product.price).toFixed(0)}</div>
+                        )}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-base sm:text-lg font-bold text-gray-900">₹{Number(product.retailPrice || product.price).toFixed(0)}</span>
+                          {product.price > 0 && product.price > (product.retailPrice || product.price) && (
+                            <span className="text-[10px] sm:text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                              {Math.round(((product.price - (product.retailPrice || product.price)) / product.price) * 100)}% off
+                            </span>
+                          )}
+                        </div>
+                        {/* Wholesale hint */}
+                        {product.wholesalePrice && product.wholesalePrice > 0 && product.wholesalePrice < product.price && (
+                          <div className="mt-1 text-[10px] sm:text-xs text-blue-600 font-medium">
+                            Wholesale: ₹{Number(product.wholesalePrice).toFixed(0)} <span className="text-green-600">({Math.round(((product.price - product.wholesalePrice) / product.price) * 100)}% off)</span>
+                          </div>
                         )}
                       </div>
 
-                      {/* Action Button */}
+                      {/* Stock - desktop only */}
+                      <div className="mb-3 hidden sm:block">
+                        {product.quantity > 0 ? (
+                          <span className="text-xs text-green-600 font-medium">In Stock</span>
+                        ) : (
+                          <span className="text-xs text-red-500 font-medium">Out of Stock</span>
+                        )}
+                      </div>
+
+                      {/* View Details Button */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           const id = product._id || product.id;
                           if (id) handleViewProduct(id);
                         }}
-                        className={`w-full py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center ${
-                          product.quantity > 0
-                            ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                        disabled={product.quantity === 0}
+                        className="w-full py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-blue-600 text-white hover:bg-blue-700 active:scale-95"
                       >
                         View Details
                       </button>
@@ -274,36 +239,18 @@ export default function CategoryPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
-                <div className="text-6xl mb-4">🔍</div>
-                <p className="text-gray-500 text-lg font-medium mb-2">
-                  No products found
-                </p>
-                <p className="text-gray-400 text-sm">
-                  {searchQuery 
-                    ? `Try adjusting your search for "${searchQuery}"`
-                    : 'No products in this category yet'}
+              <div className="text-center py-16">
+                <p className="text-gray-400 text-lg mb-1">No products found</p>
+                <p className="text-gray-300 text-sm">
+                  {searchQuery ? `Try adjusting your search` : 'No products in this category yet'}
                 </p>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
 
       <Footer />
-
-      <style>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

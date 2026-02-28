@@ -48,12 +48,12 @@ function ValidateNameClient() {
             setSelectedName(data.customerNames[0]);
           }
         } else {
-          // No direct sales found, allow user to proceed to home
-          router.push('/home');
+          // No direct sales found, allow user to proceed to products
+          router.push('/products-browse');
         }
       } catch (error) {
         console.error('Error checking direct sales info:', error);
-        router.push('/home');
+        router.push('/products-browse');
       } finally {
         setLoading(false);
       }
