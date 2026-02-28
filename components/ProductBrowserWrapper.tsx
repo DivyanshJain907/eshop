@@ -26,16 +26,13 @@ export default function ProductBrowserWrapper() {
   // Load cart from localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Check if cart view should be opened via query parameter
+      // Only show cart view if explicitly requested via URL param
       const view = searchParams.get('view');
       if (view === 'cart') {
         setActiveView('cart');
       } else {
-        // Load activeView from localStorage
-        const savedView = localStorage.getItem('productsPageView') as 'browse' | 'cart' | null;
-        if (savedView) {
-          setActiveView(savedView);
-        }
+        // Always default to browse view
+        setActiveView('browse');
       }
 
       // Load cart with 24-hour expiration
@@ -52,12 +49,7 @@ export default function ProductBrowserWrapper() {
     }
   }, [cartItems]);
 
-  // Save activeView to localStorage (persistence)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('productsPageView', activeView);
-    }
-  }, [activeView]);
+  // No longer persisting activeView to localStorage to prevent sticky cart issue
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prevItems) => {
