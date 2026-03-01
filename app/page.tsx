@@ -188,57 +188,80 @@ export default function LandingPage() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-gray-100 aspect-3/4 mb-3"></div>
-                  <div className="h-3 bg-gray-100 w-1/3 mb-2"></div>
-                  <div className="h-4 bg-gray-100 w-2/3 mb-2"></div>
-                  <div className="h-4 bg-gray-100 w-1/4"></div>
+                <div key={i} className="animate-pulse bg-white border border-gray-100">
+                  <div className="bg-gray-100 aspect-square"></div>
+                  <div className="p-4 space-y-2">
+                    <div className="h-2.5 bg-gray-100 w-1/4 rounded-full"></div>
+                    <div className="h-4 bg-gray-100 w-3/4 rounded"></div>
+                    <div className="h-4 bg-gray-100 w-1/3 rounded"></div>
+                  </div>
                 </div>
               ))}
             </div>
           ) : products.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-6">
               {products.map((product) => {
                 const price = product.retailPrice || product.price || 0;
                 const mrp = product.mrp || product.price || 0;
                 const discount = mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
                 return (
-                  <Link key={product._id?.toString()} href="/login" className="group block">
-                    <div className="relative bg-gray-50 aspect-3/4 overflow-hidden mb-4">
+                  <Link
+                    key={product._id?.toString()}
+                    href="/login"
+                    className="group block bg-white border-2 border-gray-200 hover:border-black hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+                  >
+                    {/* ── Image ── */}
+                    <div className="relative bg-gray-50 aspect-square overflow-hidden">
                       {(product.images && product.images.length > 0) || product.image ? (
                         <img
                           src={product.images?.[0] || product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                          <span className="text-5xl opacity-30">📦</span>
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-6xl opacity-20">📦</span>
                         </div>
                       )}
+
+                      {/* Discount badge */}
                       {discount > 0 && (
-                        <span className="absolute top-3 left-3 bg-orange-400 text-black text-xs font-bold px-2 py-1 uppercase tracking-wider">
+                        <span className="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-black px-2.5 py-1 uppercase tracking-widest">
                           -{discount}%
                         </span>
                       )}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-end justify-center pb-4 opacity-0 group-hover:opacity-100">
-                        <span className="bg-black text-white text-xs font-bold uppercase tracking-widest px-6 py-2">
-                          View Details
+
+                      {/* Slide-up CTA */}
+                      <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out bg-black py-3 text-center">
+                        <span className="text-white text-[10px] font-bold uppercase tracking-[0.25em]">
+                          Quick View →
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{product.category || 'Product'}</p>
-                    <h3 className="text-sm font-bold text-black uppercase tracking-wide leading-tight mb-2 line-clamp-1">{product.name}</h3>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-black text-black">₹{price.toFixed(2)}</span>
-                      {discount > 0 && <span className="text-xs text-gray-400 line-through">₹{mrp.toFixed(2)}</span>}
-                      {discount > 0 && (
-                        <span className="text-xs font-bold text-orange-500 bg-orange-50 px-1.5 py-0.5">
-                          {discount}% off
-                        </span>
-                      )}
+
+                    {/* ── Info ── */}
+                    <div className="p-4 border-t border-gray-200">
+                      <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest mb-1.5">
+                        {product.category || 'Product'}
+                      </p>
+                      <h3 className="text-sm font-semibold text-gray-900 leading-snug mb-3 line-clamp-2">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-base font-black text-black">₹{price.toFixed(0)}</span>
+                          {discount > 0 && (
+                            <span className="text-xs text-gray-400 line-through">₹{mrp.toFixed(0)}</span>
+                          )}
+                        </div>
+                        {discount > 0 && (
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">
+                            {discount}% off
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </Link>
                 );
@@ -313,54 +336,102 @@ export default function LandingPage() {
       </section>
 
       {/* ── CATEGORIES COLLAGE ───────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 bg-white">
+      <section className="bg-white py-16 sm:py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-4">Categories</p>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-black leading-tight mb-8">
-                ADJUST TO<br />
-                YOUR EVERYDAY<br />
-                <span className="text-orange-400">SHOPPING</span><br />
-                NEEDS!
-              </h2>
-              <Link href="/login" className="inline-block bg-black text-white text-xs font-bold uppercase tracking-[0.25em] px-8 py-4 hover:bg-gray-800 transition-colors">
-                Browse All
-              </Link>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* ── Left: copy ── */}
+            <div className="flex flex-col gap-8">
+              <div>
+                <p className="text-xs tracking-[0.35em] text-orange-400 font-bold uppercase mb-6">
+                  — Shop by Brand —
+                </p>
+                <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase leading-[0.95] tracking-tight">
+                  <span className="text-black">ADJUST TO</span><br />
+                  <span className="text-black">YOUR</span>{' '}
+                  <span className="text-orange-400 italic">EVERYDAY</span><br />
+                  <span className="text-black">SHOPPING</span><br />
+                  <span className="text-black">NEEDS!</span>
+                </h2>
+              </div>
+
+              <p className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-sm">
+                Explore top kitchenware and home brands curated for Indian households. Quality you can trust, prices that make sense.
+              </p>
+
+              {/* Stats row */}
+              <div className="flex gap-8 border-t border-gray-200 pt-8">
+                {[
+                  { num: '4',   label: 'Brands' },
+                  { num: '14+', label: 'Products' },
+                  { num: '100%',label: 'Genuine' },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <p className="text-2xl sm:text-3xl font-black text-orange-400 leading-none">{s.num}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-3 bg-orange-500 text-black text-xs font-black uppercase tracking-[0.25em] px-8 py-4 hover:bg-orange-400 transition-colors"
+                >
+                  Browse All
+                  <span className="text-base">→</span>
+                </Link>
+                <Link
+                  href="/login"
+                  className="text-xs text-gray-400 font-bold uppercase tracking-widest hover:text-orange-400 transition-colors"
+                >
+                  View Deals
+                </Link>
+              </div>
             </div>
 
+            {/* ── Right: tile mosaic ── */}
             <div className="grid grid-cols-2 gap-3">
               {[
-                { name: 'Borosil',      image: '/Borosil.png',     items: '6 items' },
-                { name: 'Jaypee',       image: '/Jaypee.png',      items: '4 items' },
-                { name: 'Borosil Larah',image: '/Larah.png',       items: '2 items' },
-                { name: 'Jaypee Plus',  image: '/Jaypee_plus.png', items: '2 items' },
+                { name: 'Borosil',       image: '/Borosil.png',     items: '6 items', span: '' },
+                { name: 'Jaypee',        image: '/Jaypee.png',      items: '4 items', span: '' },
+                { name: 'Borosil Larah', image: '/Larah.png',       items: '2 items', span: '' },
+                { name: 'Jaypee Plus',   image: '/Jaypee_plus.png', items: '2 items', span: '' },
               ].map((cat, i) => {
-                const heights = ['aspect-square', 'aspect-[4/5]', 'aspect-[4/5]', 'aspect-square'];
+                const heights = ['aspect-[3/4]', 'aspect-square', 'aspect-square', 'aspect-[3/4]'];
                 return (
                   <Link
                     key={cat.name}
                     href="/login"
-                    className={`group relative ${heights[i]} overflow-hidden flex flex-col justify-end`}
+                    className={`group relative ${heights[i]} overflow-hidden flex flex-col justify-end border border-gray-200 hover:border-orange-500 transition-colors duration-300`}
                   >
-                    <div className="absolute inset-0 bottom-14 bg-gray-50">
+                    {/* White bg + logo */}
+                    <div className="absolute inset-0 bottom-14 bg-white">
                       <img
                         src={cat.image}
                         alt={cat.name}
-                        className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
-                    <div className="relative z-10 bg-black px-4 py-3 flex items-center justify-between mt-auto">
+                    {/* Dark overlay on hover */}
+                    <div className="absolute inset-0 bottom-14 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+                    {/* Label bar */}
+                    <div className="relative z-10 bg-zinc-900 group-hover:bg-orange-500 px-4 py-3 flex items-center justify-between transition-colors duration-300">
                       <div>
-                        <h3 className="text-xs sm:text-sm font-black uppercase text-white leading-tight tracking-wide">{cat.name}</h3>
-                        <p className="text-xs text-white/50 mt-0.5">{cat.items}</p>
+                        <h3 className="text-xs sm:text-sm font-black uppercase text-white leading-tight tracking-wide group-hover:text-black transition-colors duration-300">
+                          {cat.name}
+                        </h3>
+                        <p className="text-[10px] text-white/40 group-hover:text-black/60 mt-0.5 transition-colors duration-300">
+                          {cat.items}
+                        </p>
                       </div>
-                      <span className="text-white/40 group-hover:text-orange-400 transition-colors text-sm">→</span>
+                      <span className="text-white/30 group-hover:text-black font-bold transition-colors duration-300 text-sm">→</span>
                     </div>
                   </Link>
                 );
               })}
             </div>
+
           </div>
         </div>
       </section>
