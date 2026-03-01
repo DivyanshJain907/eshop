@@ -93,50 +93,6 @@ export default function LandingPage() {
 
   const allCategoryLabels = ['ALL', ...categories.map((c) => c.name.toUpperCase())];
 
-  // Keyword → image map for category tiles
-  const getCategoryImage = (name: string): string => {
-    const n = name.toLowerCase().trim();
-    // Brand-specific images from public folder
-    if (n.includes('borosil larah') || n.includes('larah borosil')) return '/Larah.png';
-    if (n.includes('borosil')) return '/Borosil.png';
-    if (n.includes('jaypee plus') || n.includes('jaypee_plus')) return '/Jaypee_plus.png';
-    if (n.includes('jaypee')) return '/Jaypee.png';
-    if (n.includes('larah')) return '/Larah.png';
-    // Generic keyword fallbacks
-    if (n.includes('electron') || n.includes('mobile') || n.includes('phone') || n.includes('gadget'))
-      return 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&q=80';
-    if (n.includes('cloth') || n.includes('fashion') || n.includes('wear') || n.includes('shirt') || n.includes('apparel'))
-      return 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80';
-    if (n.includes('kitchen') || n.includes('cook') || n.includes('utensil') || n.includes('vessel'))
-      return 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80';
-    if (n.includes('home') || n.includes('household') || n.includes('furniture') || n.includes('decor'))
-      return 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80';
-    if (n.includes('beauty') || n.includes('cosmetic') || n.includes('skin') || n.includes('care') || n.includes('personal'))
-      return 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80';
-    if (n.includes('food') || n.includes('grocery') || n.includes('snack') || n.includes('beverage') || n.includes('drink'))
-      return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80';
-    if (n.includes('sport') || n.includes('fitness') || n.includes('gym') || n.includes('outdoor'))
-      return 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80';
-    if (n.includes('toy') || n.includes('kid') || n.includes('child') || n.includes('baby'))
-      return 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=600&q=80';
-    if (n.includes('stationer') || n.includes('book') || n.includes('office') || n.includes('school'))
-      return 'https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?w=600&q=80';
-    if (n.includes('bag') || n.includes('luggage') || n.includes('travel') || n.includes('accessory') || n.includes('accessories'))
-      return 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80';
-    if (n.includes('tool') || n.includes('hardware') || n.includes('electric'))
-      return 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&q=80';
-    if (n.includes('health') || n.includes('medicine') || n.includes('medical') || n.includes('pharma'))
-      return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80';
-    if (n.includes('water') || n.includes('bottle') || n.includes('container'))
-      return 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80';
-    return 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&q=80';
-  };
-
-  const isBrandLogo = (name: string): boolean => {
-    const n = name.toLowerCase().trim();
-    return n.includes('borosil') || n.includes('jaypee') || n.includes('larah');
-  };
-
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
       {/* Navigation */}
@@ -146,7 +102,7 @@ export default function LandingPage() {
       <section className="relative bg-black overflow-hidden" style={{ minHeight: '88vh' }}>
         <div
           className="absolute inset-0 bg-cover bg-center opacity-55"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=80')" }}
+          style={{ backgroundImage: "url('/hero-model.png')" }}
         />
         <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/40 to-transparent" />
 
@@ -336,7 +292,7 @@ export default function LandingPage() {
       <section className="grid grid-cols-1 lg:grid-cols-2 min-h-[60vh]">
         <div className="relative overflow-hidden min-h-64 lg:min-h-auto">
           <img
-            src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=900&q=80"
+            src="/hero-model.png"
             alt="Collection"
             className="w-full h-full object-cover"
           />
@@ -374,65 +330,36 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              {categories.length > 0 ? (
-                categories.slice(0, 4).map((cat, i) => {
-                  const heights = ['aspect-square', 'aspect-[4/5]', 'aspect-[4/5]', 'aspect-square'];
-                  const isBrand = isBrandLogo(cat.name);
-                  return (
-                    <Link
-                      key={cat.name}
-                      href="/login"
-                      className={`group relative ${heights[i]} overflow-hidden flex flex-col justify-end`}
-                    >
-                      {/* background */}
-                      <div className={`absolute inset-0 ${isBrand ? 'bg-gray-50' : ''}`}>
-                        <img
-                          src={getCategoryImage(cat.name)}
-                          alt={cat.name}
-                          className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                            isBrand ? 'object-contain p-6' : 'object-cover'
-                          }`}
-                        />
+              {[
+                { name: 'Borosil',      image: '/Borosil.png',     items: '6 items' },
+                { name: 'Jaypee',       image: '/Jaypee.png',      items: '4 items' },
+                { name: 'Borosil Larah',image: '/Larah.png',       items: '2 items' },
+                { name: 'Jaypee Plus',  image: '/Jaypee_plus.png', items: '2 items' },
+              ].map((cat, i) => {
+                const heights = ['aspect-square', 'aspect-[4/5]', 'aspect-[4/5]', 'aspect-square'];
+                return (
+                  <Link
+                    key={cat.name}
+                    href="/login"
+                    className={`group relative ${heights[i]} overflow-hidden flex flex-col justify-end`}
+                  >
+                    <div className="absolute inset-0 bottom-14 bg-gray-50">
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="relative z-10 bg-black px-4 py-3 flex items-center justify-between mt-auto">
+                      <div>
+                        <h3 className="text-xs sm:text-sm font-black uppercase text-white leading-tight tracking-wide">{cat.name}</h3>
+                        <p className="text-xs text-white/50 mt-0.5">{cat.items}</p>
                       </div>
-                      {/* overlay */}
-                      <div className={`absolute inset-0 ${isBrand ? 'bg-linear-to-t from-black/80 via-black/10 to-transparent' : 'bg-linear-to-t from-black/75 via-black/20 to-transparent'}`} />
-                      {/* text */}
-                      <div className="relative z-10 p-5">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 mb-1">{cat.productCount} items</p>
-                        <h3 className="text-sm sm:text-base font-black uppercase text-white leading-tight">{cat.name}</h3>
-                        <span className="text-xs text-white/50 mt-1 group-hover:text-white transition-colors block">Browse →</span>
-                      </div>
-                    </Link>
-                  );
-                })
-              ) : (
-                ['Home Essentials', 'Electronics', 'Accessories', 'Daily Needs'].map((name, i) => {
-                  const heights = ['aspect-square', 'aspect-[4/5]', 'aspect-[4/5]', 'aspect-square'];
-                  const isBrand = isBrandLogo(name);
-                  return (
-                    <Link
-                      key={name}
-                      href="/login"
-                      className={`group relative ${heights[i]} overflow-hidden flex flex-col justify-end`}
-                    >
-                      <div className={`absolute inset-0 ${isBrand ? 'bg-gray-50' : ''}`}>
-                        <img
-                          src={getCategoryImage(name)}
-                          alt={name}
-                          className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                            isBrand ? 'object-contain p-6' : 'object-cover'
-                          }`}
-                        />
-                      </div>
-                      <div className={`absolute inset-0 ${isBrand ? 'bg-linear-to-t from-black/80 via-black/10 to-transparent' : 'bg-linear-to-t from-black/75 via-black/20 to-transparent'}`} />
-                      <div className="relative z-10 p-5">
-                        <h3 className="text-sm sm:text-base font-black uppercase text-white leading-tight">{name}</h3>
-                        <span className="text-xs text-white/50 mt-1 group-hover:text-white transition-colors block">Browse →</span>
-                      </div>
-                    </Link>
-                  );
-                })
-              )}
+                      <span className="text-white/40 group-hover:text-orange-400 transition-colors text-sm">→</span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
