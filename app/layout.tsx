@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jain Sales Corporation - Inventory Management",
-  description: "Manage your e-shop inventory efficiently",
+  title: "Jain Sales Corporation",
+  description: "Discover Jain Sales Corporation's wide variety of kitchenware items.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
